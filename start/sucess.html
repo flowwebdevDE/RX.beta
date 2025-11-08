@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nachricht gesendet!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      
+      background: url("/data/images/bg.jpg");
+      background-size: cover;
+      backdrop-filter: blur(3px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .success-box {
+      background: #00000046;
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      padding: 40px;
+      max-width: 400px;
+    }
+
+    h1 {
+      color: #2863a7;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #c6c6c6;
+      margin-bottom: 25px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="success-box">
+    <h1>Vielen Dank!</h1>
+    <p>Deine Nachricht wurde erfolgreich gesendet.</p>
+    <button onclick="window.history.back()">Schließen</button>
+  </div>
+</body>
+</html>

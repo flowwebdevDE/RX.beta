@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rail Explorer - Mitentwickeln</title>
+    <link rel="stylesheet" href="data/styles/apply.css">
+    <link rel="stylesheet" href="data/styles/info.css">
+</head>
+
+<body>
+
+    <header>
+        <img src="data/images/logos/logo.png" style="width: 10%; height: auto; border-radius: 15px;">
+        <p>Hier kannst du dich bewerben</p>
+    </header>
+
+    <div class="frmtx">
+        <form action="https://form.taxi/s/s088zn36" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Stelle</legend>
+                <label for="job">Bewerbung für *</label>
+                <select name="Bewerbung für" id="job" required>
+                    <option>Mitentwickeln</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <legend>Persönliche Angaben</legend>
+                <div>
+                    <div>
+                        <label for="vn">Vorname *</label>
+                        <input type="text" name="Vorname" id="vn" required>
+                    </div>
+                    <div>
+                        <label for="nn">Nachname *</label>
+                        <input type="text" name="Nachname" id="nn" required>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <label for="sb">Staatsbürgerschaft</label>
+                        <input type="text" name="Staatsbürgerschaft" id="sb">
+                    </div>
+                    <div>
+                        <label for="gd">Geburtsdatum</label>
+                        <input type="date" name="Geburtsdatum" id="gd">
+                    </div>
+                </div>
+                <label for="ad">Adresse</label>
+                <input type="text" name="Adresse" id="ad">
+                <div>
+                    <div>
+                        <label for="zip">PLZ</label>
+                        <input type="text" name="PLZ" id="zip">
+                    </div>
+                    <div>
+                        <label for="ort">Ort</label>
+                        <input type="text" name="Ort" id="ort">
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <label for="tel">Telefon *</label>
+                        <input type="tel" name="Telefon" id="tel" required>
+                    </div>
+                    <div>
+                        <label for="mail">E-Mail-Adresse *</label>
+                        <input type="email" name="E-Mail" id="mail" required>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Bewerbungsunterlagen</legend>
+                <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+                <div>
+                    <div>
+                        <label for="bs">Bewerbungsschreiben</label>
+                        <input class="file" type="file" name="Bewerbungsschreiben" id="bs"
+                            accept=".doc,.docx,.pdf,.jpg,.jpeg">
+                    </div>
+                    <div>
+                        <label for="ll">Lebenslauf</label>
+                        <input class="file" type="file" name="Lebenslauf" id="ll" accept=".doc,.docx,.pdf,.jpg,.jpeg">
+                    </div>
+                </div>
+                <p>mögliche Dateitypen: DOC, PDF, JPG. Maximale Dateigröße: 10 MB.</p>
+            </fieldset>
+            <fieldset>
+                <label><input type="checkbox" name="Datenverarbeitung bestätigt" value="Ja" required> Ich bin mit der
+                    Verarbeitung meiner Eingaben zum Zwecke der Anfragebearbeitung einverstanden.</label>
+                <input type="text" name="_gotcha" value="">
+                <button type="submit">Bewerbung absenden</button>
+            </fieldset>
+        </form>
+    </div>
+</body>
+
+<footer>
+    © 2025 Rail Explorer <a href="changelog.html">Version 2.0</a> | Entwickelt von <a
+        href="https://flowwebdesign.de">FlowWebDesign</a>
+</footer>
+
+</html>
