@@ -147,7 +147,7 @@ html, body {
   color: white;
   text-align: center;
   border-radius: 10px;
-  margin-top: 40px;
+  margin-top: 10px;
   margin-inline: 10px;
 }
 
@@ -230,6 +230,9 @@ html, body {
     height: 75vh;
     max-width: auto;
   }
+  .home-btn {
+    margin-top: 40px;
+  }
 }
 
 /* Tablets (iPad landscape) */
@@ -303,5 +306,9 @@ html, body {
   .msg {
     font-size: 1rem;
     line-height: 1.5;
+  }
+
+  .home-btn {
+    margin-top: 40px;
   }
 }
