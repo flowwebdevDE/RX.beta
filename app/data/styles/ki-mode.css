@@ -250,6 +250,10 @@ html, body {
     background-size: cover;
   }
 
+  .home-btn {
+    margin-top: 35px;
+  }
+
   #map {
     display: none !important;
   }
