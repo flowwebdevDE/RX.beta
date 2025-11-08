@@ -246,7 +246,7 @@ html, body {
     overflow: hidden;
     width: 100vw;
     height: 100dvh;
-    background: url("../data/images/bg.jpg");
+    background: url("../images/bg.jpg");
     background-size: cover;
   }
 
