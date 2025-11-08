@@ -218,6 +218,7 @@ td {
         flex-direction: column;
         margin: 0;
         background: transparent;
+        height: 100vh;
     }
 
     #left {
@@ -230,9 +231,10 @@ td {
 
     #map {
         flex: 1;
-        height: 50vh;
+        height: 100vh;
         border-radius: 15px 15px 0 0;
         margin: 0;
+        border: none;
     }
 
     table,
