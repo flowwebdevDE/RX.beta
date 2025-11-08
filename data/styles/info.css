@@ -1,7 +1,7 @@
  :root {
    --primary: #1a4d8f9d;
    --secondary: #0067c273;
-   --bg: url("/data/images/bg.jpg");
+   --bg: url("../data/images/bg.jpg");
    --card-bg: #ffffff23;
    --text: #222;
    --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
