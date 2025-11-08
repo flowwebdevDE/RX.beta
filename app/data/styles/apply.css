@@ -1,0 +1,155 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: url("/data/images/bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    backdrop-filter: blur(30px);
+    margin: 0;
+}
+
+ header {
+   background: rgba(98, 153, 255, 0.571);
+   backdrop-filter: blur(10px);
+   color: white;
+   padding: 2rem 1rem;
+   text-align: center;
+ }
+
+ header h1 {
+   margin: 0;
+   font-size: 2.2rem;
+ }
+
+/*Form Styles*/
+
+.frmtx {
+    --font-size: 100%;
+    --font-family: inherit;
+    --font-color: inherit;
+    --background-color: #00000039;
+    --border-color: #00000068;
+    --border-width: 1px;
+    --border-radius: 10px;
+    container: form/inline-size
+}
+
+.frmtx * {
+    color: var(--font-color);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    margin: 0;
+    padding: 0;
+    appearance: auto;
+    outline: none;
+    box-sizing: border-box
+}
+
+.frmtx form {
+    margin: 1rem;
+    min-width: 240px;
+}
+
+.frmtx fieldset {
+    margin-top: 1.5em;
+    border: 0
+}
+
+.frmtx fieldset:first-child {
+    margin: 0
+}
+
+.frmtx legend {
+    font-weight: bold;
+    font-size: 1.1em
+}
+
+.frmtx label {
+    margin: 0;
+    padding: 1em 0 .3em;
+    display: block;
+    line-height: 1.3
+}
+
+.frmtx>label:first-child {
+    padding-top: 0
+}
+
+.frmtx label:not([for]) {
+    cursor: pointer
+}
+
+.frmtx label.h {
+    padding-bottom: 0;
+    margin-bottom: -.3em
+}
+
+.frmtx fieldset:last-child label {
+    padding: 0
+}
+
+.frmtx input,
+.frmtx select,
+.frmtx button {
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color)
+}
+
+.frmtx input,
+.frmtx select {
+    width: 100%;
+    padding: .5em;
+    line-height: 1.3;
+    background-image: none
+}
+
+.frmtx input[name="_gotcha"] {
+    display: none
+}
+
+input::file-selector-button {
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.219);
+  padding: 0.5em;
+  border: 1px solid rgba(0, 0, 0, 0.273);
+  border-radius: 10px;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #ffffff57;
+}
+
+.frmtx input[type="checkbox"] {
+    display: inline;
+    width: 1.1em;
+    height: 1.1em;
+    appearance: auto;
+    margin-right: .2em;
+    vertical-align: text-bottom
+}
+
+.frmtx p {
+    margin: .75em 0
+}
+
+.frmtx button {
+    display: block;
+    padding: .5em 1.5em;
+    margin: 1.5em 0 0;
+    line-height: 1.5;
+    font-weight: bold;
+    cursor: pointer
+}
+
+@container form (width > 480px) {
+    .frmtx fieldset>div {
+        display: flex;
+        align-items: flex-end;
+        gap: 0 1.5em
+    }
+
+    .frmtx fieldset>div>div {
+        flex: 1
+    }
+}
