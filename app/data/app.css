@@ -1,0 +1,93 @@
+ /* Grundlayout */
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: url("../data/images/bg.jpg");
+            background-size: cover;
+            backdrop-filter: blur(10px);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        section {
+            background: rgba(0, 0, 0, 0.21);
+            padding: 15px;
+            margin: 15px;
+            border-radius: 25px;
+            text-align: left;
+        }
+
+        header img {
+            width: 120px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0.5rem 0;
+        }
+
+        p {
+            font-size: 1.1rem;
+            max-width: 400px;
+            margin-bottom: 2rem;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background-color: white;
+            color: #1e40af;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e0e7ff;
+            transform: scale(1.05);
+        }
+
+         .btnX {
+            background-color: white;
+            box-shadow: 0 0 50px rgb(0, 0, 255);
+            color: #1e40af;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btnX:hover {
+            background-color: #e0e7ff;
+            transform: scale(1.05);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 1rem;
+            font-size: 0.9rem;
+            color: #dbeafe;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: rgb(179, 179, 179);
+            font-weight: bold;
+        }

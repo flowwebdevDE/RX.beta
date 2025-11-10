@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rail Explorer - Chat Mode</title>
+    <link rel="icon" href="data/images/logos/logo.png" type="images/png">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Maplibre GL -->
+    <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+
+    <!-- Maplibre GL Leaflet  -->
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="data/styles/ki-mode.css">
+
+</head>
+
+<body>
+
+    <div id="main-content">
+        <div id="map"></div>
+
+        <div id="chat-container">
+            <a class="home-btn" href="main.html">Zurück zur Startseite</a>
+            <p class="version">© 2025 Rail Explorer – <a href="changelog.html">Version 2.0</a></p>
+            <div id="chat-messages"></div>
+            <div id="user-input-container">
+                <input type="text" id="user-input" placeholder="Gebe eine Route ein.">
+                <button id="send-btn">&#10132;</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- KI Chat Script -->
+    <script src="data/scripts/ki.js"></script>
+    <script src="data/scripts/mobile.js"></script>
+
+</body>
+
+</html>
