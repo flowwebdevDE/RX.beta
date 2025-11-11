@@ -1,99 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Rail Explorer</title>
-  <link rel="icon" href="data/images/logos/logo.png" type="images/png">
-  <link rel="stylesheet" href="data/styles/main.css">
-
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<!-- Maplibre GL -->
-<link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
-<script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
-
-<!-- Maplibre GL Leaflet  -->
-<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rail Explorer</title>
+    <link rel="stylesheet" href="data/web.css">
 </head>
 
 <body>
-  <div id="app">
-    <div id="left">
-      <header>
-        <img class="logo" src="data/images/logos/logo.png" alt="Rail Explorer Logo">
-        <div class="nav-container">
-          <nav>
-            <a href="ki-mode.html">Chat-Mode</a>
-            <a style="display: none;" href="info.html">Info</a>
-            <a href="kontakt.html">Kontakt</a>
-          </nav>
+    <header>
+        <img src="data/images/logos/logo.png" alt="App Logo" />
+    </header>
+
+    <main>
+        <h1>Rail Explorer</h1>
+        <div class="buttons">
+            <a href="chat.html" class="btnX">Chat-Bot Fahrzeitenrechner</a>
+            <a href="main.html" class="btn">Standart Fahrzeitenrechner</a>
+            <a href="finder.html" class="btn">Betriebsstellensuche</a>
+            <a href="https://drive.google.com/drive/u/1/folders/1Ro3e0_hkJlrV1AdtOfQo-kYv1WBydcx3" class="btn">Lade die Rail Explorer Android App</a>
         </div>
-      </header>
-      <div class="eingabe">
-      <div class="field">
-        <label for="from">Startbahnhof</label>
-        <input id="from" type="text" placeholder="Bahnhof suchen" autocomplete="off">
-        <div id="from-list" class="autocomplete-list" style="display:none"></div>
-      </div>
+    </main>
 
-      <div class="field">
-        <label for="to">Zielbahnhof</label>
-        <input id="to" type="text" placeholder="Bahnhof suchen" autocomplete="off">
-        <div id="to-list" class="autocomplete-list" style="display:none"></div>
-      </div>
-
-      <div class="field">
-        <label for="via">Wegpunkte (optional)</label>
-        <input id="via" type="text" placeholder="Bahnhof suchen" autocomplete="off">
-        <div id="via-list" class="autocomplete-list" style="display:none"></div>
-        <div id="via-list" class="autocomplete-list"></div>
-        <button id="add-via" class="btn-via" type="button">+ Wegpunkt hinzufügen</button>
-
-        <div id="via-tags"></div> <!-- Anzeige der gewählten Zwischenstopps -->
-
-      </div>
-
-      <div class="field">
-        <label for="vmax">Zug V<sub>max</sub> (km/h)</label>
-        <input id="vmax" type="number" min="10" max="300" value="120">
-        <div class="hint">Mindestens 10 km/h, Maximal 300 km/h</div>
-      </div>
-
-      <div class="field">
-        <button class="btn" id="calc">Route berechnen</button>
-        <button id="clear">Zurücksetzen</button>
-      </div>
-      </div>
-
-      <div class="ergebnis">
-      <div id="results">
-        <h3>Ergebnis</h3>
-        <hr>
-        <div id="summary" class="small">Keine Route berechnet.</div>
-        <div id="table-wrap"></div>
-      </div>
-      </div>
-  
-      <div class="hinweis">
-      <div class="small">Hinweis: Diese Web-App verwendet die öffentliche Overpass-API.<br>
-        <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> | <a href="changelog.html">PreRelease</a></p>
-      </div>
-      </div>
-    </div>
-
-    <div id="map"></div>
-  </div>
-
-  <!-- libs -->
-  <script src="data/scripts/functions.js"></script>
-  <script src="data/scripts/lock.js"></script>
-
+    <footer>
+        © 2025 Rail Explorer – <a href="changelog.html">Version 2.0</a>
+    </footer>
 </body>
-
 
 </html>

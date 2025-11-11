@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betriebsstellensuche</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 15px;
+            overflow: hidden;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: url("../data/images/bg.jpg");
+            background-size: cover;
+            backdrop-filter: blur(10px);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        section {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            margin: 15px;
+            border-radius: 25px;
+            min-width: 320px;
+            max-width: 600px;
+            min-height: auto;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        input,
+        select,
+        button {
+            padding: 0.6rem 1rem;
+            border-radius: 9999px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: white;
+            color: #1e40af;
+            transition: all 0.3s ease;
+        }
+
+        button:hover,
+        select:hover,
+        input:hover {
+            background-color: #e0e7ff;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        li {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .ref {
+            font-size: 0.9rem;
+            color: #dbeafe;
+        }
+
+        #status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Popup-Details */
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            min-width: 250px;
+            max-width: 90%;
+            z-index: 100;
+            transition: transform 0.2s ease;
+            text-align: left;
+        }
+
+        #popup h2 {
+            margin-top: 0;
+        }
+
+        #popup button {
+            margin-top: 15px;
+            display: block;
+            width: 100%;
+        }
+
+        #popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <section>
+        <h1>Betriebsstellensuche</h1>
+        <p>Finde Bahnhöfe in Deutschland nach Name oder DS100-Kürzel und entdecke die nächsten Stationen in deiner Nähe.
+        </p>
+
+        <div class="buttons">
+            <select id="searchMode">
+                <option value="name">Name</option>
+                <option value="ref">DS100</option>
+            </select>
+            <input id="search" type="text" placeholder="Suchbegriff…">
+            <button id="geoBtn">📍 Standort</button>
+        </div>
+
+        <p id="status">Lade Bahnhofs-Daten …</p>
+        <ul id="results"></ul>
+    </section>
+
+    <!-- Popup -->
+    <div id="popup">
+        <h2 id="popup-name"></h2>
+        <p id="popup-ref"></p>
+        <p id="popup-operator"></p>
+        <p id="score"></p>
+        <p id="popup-coords"></p>
+        <button id="popup-close">Schließen</button>
+    </div>
+    <script>
+        const searchInput = document.getElementById('search');
+        const searchMode = document.getElementById('searchMode');
+        const geoBtn = document.getElementById('geoBtn');
+        const resultsList = document.getElementById('results');
+        const statusText = document.getElementById('status');
+
+        const popup = document.getElementById('popup');
+        const popupName = document.getElementById('popup-name');
+        const popupRef = document.getElementById('popup-ref');
+        const popupOperator = document.getElementById('popup-operator');
+        const popupCoords = document.getElementById('popup-coords');
+        const popupClose = document.getElementById('popup-close');
+
+        let stations = [];
+        let currentPosition = null;
+        let refreshTimer = null;
+
+        // === JSON laden ===
+        async function loadStations() {
+            try {
+                const res = await fetch('./data/DE_stations.json');
+                const data = await res.json();
+                stations = data.elements || [];
+                statusText.textContent = `Geladen: ${stations.length} Bahnhöfe`;
+            } catch (err) {
+                statusText.textContent = 'Fehler beim Laden der Daten';
+                console.error(err);
+            }
+        }
+
+        // === Distanzberechnung ===
+        function distance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // === Render Stations (Liste inkl. Operator + Network) ===
+        function renderStations(filtered) {
+            resultsList.innerHTML = '';
+            if (filtered.length === 0) {
+                resultsList.innerHTML = '<li>Keine Treffer</li>';
+                return;
+            }
+
+            for (const s of filtered.slice(0, 100)) {
+                const name = s.tags.name || 'Unbenannt';
+                const ref = s.tags["railway:ref"] ? s.tags["railway:ref"].toUpperCase() : '–';
+                const operator = s.tags.operator || '';
+                const network = s.tags.network || '';
+
+                let dist = '';
+                if (currentPosition && s.lat && s.lon) {
+                    dist = ` (${distance(currentPosition.latitude, currentPosition.longitude, s.lat, s.lon).toFixed(1)} km)`;
+                } else if (s.distance) {
+                    dist = ` (${s.distance.toFixed(1)} km)`;
+                }
+
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${name} (${ref})${dist}</strong><br>
+                        <span class="ref">${operator} <br>${network}</span>`;
+                li.addEventListener('click', () => showPopup(s));
+                resultsList.appendChild(li);
+            }
+        }
+
+
+        // === Popup anzeigen ===
+        function showPopup(station) {
+            popupName.textContent = station.tags.name || 'Unbenannt';
+            popupRef.textContent = `DS100: ${station.tags["railway:ref"] || '–'}`;
+            popupOperator.textContent = `Betreiber: ${station.tags.operator || '–'}`;
+            popupCoords.textContent = station.lat && station.lon ? `Koordinaten: ${station.lat.toFixed(5)}, ${station.lon.toFixed(5)}` : '';
+            popup.classList.add('show');
+        }
+
+        popupClose.addEventListener('click', () => popup.classList.remove('show'));
+
+        // === Suchfunktion (Start-of-Input + Sortierung) ===
+        searchInput.addEventListener('input', e => {
+            const term = e.target.value.toLowerCase().trim();
+            const mode = searchMode.value;
+            if (!term) { if (currentPosition) updateNearbyStations(); return; }
+
+            let filtered = stations.filter(s => {
+                const value = mode === 'name' ? (s.tags.name || '').toLowerCase() : (s.tags["railway:ref"] || '').toLowerCase();
+                return value.startsWith(term);
+            });
+
+            // Sortierung: exakte Matches oben (falls unterschiedlich lang)
+            filtered.sort((a, b) => {
+                const aVal = mode === 'name' ? (a.tags.name || '').toLowerCase() : (a.tags["railway:ref"] || '').toLowerCase();
+                const bVal = mode === 'name' ? (b.tags.name || '').toLowerCase() : (b.tags["railway:ref"] || '').toLowerCase();
+                const aScore = aVal.startsWith(term) ? 1 : 0;
+                const bScore = bVal.startsWith(term) ? 1 : 0;
+                return bScore - aScore;
+            });
+
+            renderStations(filtered);
+        });
+
+        // === Umkreissuche ===
+        function updateNearbyStations() {
+            if (!currentPosition) return;
+            const { latitude, longitude } = currentPosition;
+            const nearby = stations
+                .map(s => {
+                    if (!s.lat || !s.lon) return null;
+                    const dist = distance(latitude, longitude, s.lat, s.lon);
+                    return { ...s, distance: dist };
+                })
+                .filter(s => s && s.distance <= 10)
+                .sort((a, b) => a.distance - b.distance);
+            renderStations(nearby);
+        }
+
+        // === Standort automatisch abfragen ===
+        function startGeoTracking() {
+            if (!navigator.geolocation) {
+                statusText.textContent = 'Geolocation nicht unterstützt';
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    currentPosition = pos.coords;
+                    updateNearbyStations();
+                    statusText.textContent = '';
+                    if (refreshTimer) clearInterval(refreshTimer);
+                    refreshTimer = setInterval(updateNearbyStations, 5 * 60 * 1000);
+                },
+                err => {
+                    statusText.textContent = 'Standortzugriff verweigert';
+                    console.error(err);
+                }
+            );
+        }
+
+        geoBtn.addEventListener('click', startGeoTracking);
+
+        // === Start ===
+        (async () => {
+            await loadStations();
+            startGeoTracking(); // automatisch
+        })();
+
+    </script>
+<script src="data/scripts/lock.js"></script>
+</body>
+
+</html>

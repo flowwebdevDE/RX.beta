@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Rail Explorer</title>
+  <link rel="icon" href="data/images/logos/logo.png" type="images/png">
+  <link rel="stylesheet" href="data/styles/main.css">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Maplibre GL -->
+  <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+
+  <!-- Maplibre GL Leaflet  -->
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+
+</head>
+
+<body>
+  <div id="app">
+    <div id="left">
+      <header>
+        <img class="logo" src="data/images/logos/logo.png" alt="Rail Explorer Logo">
+      </header>
+      <div class="eingabe">
+        <div class="field">
+          <label for="from">Startbahnhof</label>
+          <input id="from" type="text" placeholder="Bahnhof suchen" autocomplete="off">
+          <div id="from-list" class="autocomplete-list" style="display:none"></div>
+        </div>
+
+        <div class="field">
+          <label for="to">Zielbahnhof</label>
+          <input id="to" type="text" placeholder="Bahnhof suchen" autocomplete="off">
+          <div id="to-list" class="autocomplete-list" style="display:none"></div>
+        </div>
+
+        <hr>
+        <details>
+          <summary>
+            Mehr optionen zeigen
+          </summary>
+          <div class="field">
+            <label for="via">Wegpunkte (optional)</label>
+            <input id="via" type="text" placeholder="Bahnhof suchen" autocomplete="off">
+            <div id="via-list" class="autocomplete-list" style="display:none"></div>
+            <div id="via-list" class="autocomplete-list"></div>
+            <button id="add-via" class="btn-via" type="button">+ Wegpunkt hinzufügen</button>
+
+            <div id="via-tags"></div> <!-- Anzeige der gewählten Zwischenstopps -->
+
+          </div>
+
+          <div class="field">
+            <label for="vmax">Zug V<sub>max</sub> (km/h)</label>
+            <input id="vmax" type="number" min="10" max="300" value="120">
+            <div class="hint">Mindestens 10 km/h, Maximal 300 km/h</div>
+          </div>
+        </details>
+        <hr>
+
+        <div class="field">
+          <button class="btn" id="calc">Route berechnen</button>
+          <button id="clear">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div class="ergebnis">
+        <div id="results">
+          <h3>Ergebnis</h3>
+          <hr>
+          <div id="summary" class="small">Keine Route berechnet.</div>
+          <div id="table-wrap"></div>
+        </div>
+      </div>
+
+      <div class="hinweis">
+        <details>
+          <summary>Version 2.0</summary>
+          <div class="small">Hinweis: Diese Web-App verwendet die öffentliche Overpass-API.<br>
+            <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> | <a href="changelog.html">Version
+                2.0</a></p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <!-- libs -->
+  <script src="data/scripts/functions.js"></script>
+  <script src="data/scripts/lock.js"></script>
+
+</body>
+
+
+</html>

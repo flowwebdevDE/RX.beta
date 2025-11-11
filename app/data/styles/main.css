@@ -1,0 +1,312 @@
+body {
+    margin: 0;
+    font-family: system-ui, Arial;
+    background: url("../images/bg.jpg");
+    background-size: cover;
+    backdrop-filter: blur(10px);
+}
+
+header {
+  display: flex;
+  justify-content: center;
+}
+
+header img {
+  width: 25%;
+  height: auto;
+  border-radius: 50%;
+}
+
+
+.nav-container {
+    background-color: #ffffff94;
+    padding: 5px;
+    margin-top: 18px;
+    margin-bottom: -5px;
+    border-radius: 12px;
+}
+
+nav {
+    text-align: center;
+    padding: 3px;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 5px;
+    margin-inline: 10px;
+    border-radius: 10px;
+    background: #2b7cff;
+    color: white;
+}
+
+nav a:hover {
+    background-color: #1a5edb;
+}
+
+#app {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 10px);
+    background: transparent;
+    margin-top: 10px;
+}
+
+#left {
+    width: 380px;
+    min-width: 300px;
+    padding: 12px;
+    box-sizing: border-box;
+    overflow: auto;
+    margin: 15px;
+    margin-right: 0;
+    background: #ffffff;
+    border-radius: 25px 0 0 25px;
+}
+
+#map {
+    flex: 1;
+    margin: 15px;
+    margin-left: 0;
+    border-radius: 0 25px 25px 0;
+    background: #00000018;
+}
+
+.field {
+    margin-bottom: 10px;
+}
+
+.eingabe,
+.ergebnis,
+.hinweis {
+    background: #ffffff5d;
+    padding: 10px;
+    border: solid 1px #00000048;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+input[type=text],
+input[type=number],
+select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #cccccc;
+    border-radius: 15px;
+    font-size: 1rem;
+    background: #ffffff5c;
+}
+
+input[type=text]:hover,
+input[type=number]:hover,
+select:hover {
+    border: 1px solid black;
+}
+
+button {
+    padding: 8px 12px;
+    border-radius: 15px;
+    border: 0;
+    background: #2b7cff;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #1a5edb;
+}
+
+.small {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+#results {
+    margin-top: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #000000;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.hint {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.autocomplete-list {
+    background: rgba(246, 246, 246, 0.494);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow: auto;
+    position: relative;
+    z-index: 1000;
+}
+
+.autocomplete-item {
+    padding: 6px 8px;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background: #f0f4ff;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 12px;
+    background: #2b7cff;
+    color: white;
+    text-decoration: none;
+    border-radius: 15px;
+    margin-bottom: 12px;
+}
+
+.btn:hover {
+    background: #1a5edb;
+}
+
+.btnerr {
+    background: #ff4b5c;
+}
+
+.btnerr:hover {
+    background: #e03a4b;
+}
+
+.btn-via {
+    margin-top: 5px;
+}
+
+ #clear {
+        background: #727272;
+    }
+
+    #clear:hover {
+        background: #444;
+    }
+
+
+/* --- Responsive Styles --- */
+@media (max-width: 768px) {
+
+    body {
+        background: #ffffff;
+    }
+
+    #app {
+        flex-direction: column;
+        margin: 0;
+        margin-top: 30px;
+        background: transparent;
+        border-radius: 0;
+        height: calc(100vh - 30px);
+    }
+
+    #left {
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+        margin: 0;
+        border-radius: 0;
+        border-bottom: solid 1px black;
+    }
+
+    #map {
+        flex: 1;
+        height: 100vh;
+        border-radius: 0;
+        margin: 0;
+        border: none;
+    }
+
+    table,
+    th,
+    td {
+        font-size: 0.8rem;
+    }
+
+    button {
+        width: 100%;
+        margin-bottom: 6px;
+    }
+
+     #clear {
+        margin-left: 0;
+        background: #999;
+    }
+
+    #clear:hover {
+        background: #444;
+    }
+
+    header {
+        display: none;
+    }
+}
+
+
+@media (max-width: 480px) {
+    body {
+        font-size: 0.9rem;
+    }
+
+    #left {
+        padding: 8px;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+    }
+
+    input,
+    button {
+        font-size: 0.9rem;
+    }
+
+    table,
+    th,
+    td {
+        font-size: 0.75rem;
+    }
+
+}
+
+a {
+    text-decoration: none;
+    color: #545454;
+}
+
+a:hover {
+    color: #3a394f;
+}
+
+.via-tag {
+    display: inline-block;
+    background: #ddd;
+    border-radius: 8px;
+    padding: 4px 8px;
+    margin: 3px;
+    cursor: pointer;
+}
+
+.via-tag:hover {
+    background: #ccc;
+}
