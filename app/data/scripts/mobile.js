@@ -57,7 +57,7 @@ function showMiniMap(latlngs) {
     });
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 14 }).addTo(miniMap);
-    const route = L.polyline(latlngs, { color: "#007bff", weight: 4 }).addTo(miniMap);
+    const route = L.polyline(latlngs, { color: "#002e5fff", weight: 2 }).addTo(miniMap);
     miniMap.fitBounds(route.getBounds(), { padding: [10, 10] });
     miniMap.invalidateSize();
   });

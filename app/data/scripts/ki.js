@@ -220,7 +220,7 @@ function findNearestNode(nodes,lat,lon){
 async function computeRouteWithGraph(points,trainVmax){
   // 1. Großen Graphen für die gesamte Route bauen
   const bbox = bboxFromPoints(points, 25); // Größerer Puffer für die Gesamtroute
-  addMessage('Lade Netzwerkdaten für die Route...', 'bot');
+  addMessage('Lade Gleisdaten für die gewünschte Route...', 'bot');
   const { nodes, ways } = await fetchRailNetwork(bbox);
   if (Object.keys(nodes).length === 0) {
     throw new Error('Keine Schienendaten im ausgewählten Bereich gefunden.');
@@ -357,7 +357,7 @@ async function handleUserMessage(text){
     const res = await computeRouteWithGraph(allPoints,vmax);
 
     // Polyline auf der Hauptkarte
-    const poly = L.polyline(res.polyline,{weight:5,color:'blue'}).addTo(routeLayer);
+    const poly = L.polyline(res.polyline,{weight:3,color:'#020095ff'}).addTo(routeLayer);
     map.fitBounds(poly.getBounds(),{padding:[40,40]});
 
     // Mini-Map für mobile Ansicht
