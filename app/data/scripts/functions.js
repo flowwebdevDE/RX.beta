@@ -284,20 +284,40 @@ function bboxFromPoints(points, pad_km = 15) {
   return [minLat - padDeg, minLon - padDeg, maxLat + padDeg, maxLon + padDeg];
 }
 
+const OVERPASS_ENDPOINTS_FUNC = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.openstreetmap.fr/api/interpreter'
+];
+
 async function fetchRailNetwork(bbox) {
   const [s, w, n, e] = bbox;
   const q = `[out:json][timeout:60];
     (way["railway"~"^(rail|railway)$"](${s},${w},${n},${e}); >;);
     out body;`;
-  const url = 'https://overpass-api.de/api/interpreter';
-  const res = await fetch(url, { method: 'POST', body: q, headers: { 'Content-Type': 'text/plain' } });
-  const js = await res.json();
-  const nodes = {}, ways = {};
-  for (const el of js.elements) {
-    if (el.type === 'node') nodes[el.id] = { id: el.id, lat: el.lat, lon: el.lon };
-    if (el.type === 'way') ways[el.id] = el;
+  const maxRetries = 2;
+
+  for (const endpoint of OVERPASS_ENDPOINTS_FUNC) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const res = await fetch(endpoint, { method: 'POST', body: q, headers: { 'Content-Type': 'text/plain' } });
+        if (!res.ok) throw new Error(`HTTP-Status: ${res.status}`);
+        const js = await res.json();
+        const nodes = {}, ways = {};
+        if (js.elements) {
+          for (const el of js.elements) {
+            if (el.type === 'node') nodes[el.id] = { id: el.id, lat: el.lat, lon: el.lon };
+            if (el.type === 'way') ways[el.id] = el;
+          }
+        }
+        return { nodes, ways }; // Erfolgreich
+      } catch (error) {
+        console.warn(`Fehler bei Anfrage an ${endpoint} (Versuch ${attempt}):`, error.message);
+        if (attempt < maxRetries) await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+    }
   }
-  return { nodes, ways };
+  throw new Error("Konnte keine Netzwerkdaten von den Overpass-Servern abrufen.");
 }
 
 function buildGraph(nodes, ways) {
@@ -339,28 +359,34 @@ function findNearestNode(nodes, lat, lon) {
 }
 
 async function computeRoute(points, trainVmax_kmh) {
+  // 1. Großen Graphen für die gesamte Route bauen
+  const bbox = bboxFromPoints(points, 25); // Größerer Puffer für die Gesamtroute
+  const net = await fetchRailNetwork(bbox);
+  if (Object.keys(net.nodes).length === 0) {
+    throw new Error('Keine Schienendaten im ausgewählten Bereich gefunden.');
+  }
+  const graph = buildGraph(net.nodes, net.ways);
+
+  // 2. Pfade für einzelne Segmente auf dem großen Graphen berechnen
   const segmentResults = [];
   let totalTimeSec = 0, totalLen = 0;
   const fullPolyline = [];
 
   for (let i = 0; i < points.length - 1; i++) {
     const a = points[i], b = points[i + 1];
-    const bbox = bboxFromPoints([a, b], 12);
-    const net = await fetchRailNetwork(bbox);
-    const graph = buildGraph(net.nodes, net.ways);
     const na = findNearestNode(net.nodes, a.lat, a.lon);
     const nb = findNearestNode(net.nodes, b.lat, b.lon);
     if (!na || !nb) throw new Error('Keine Schienendaten im Ausschnitt gefunden.');
+
     const res = dijkstra(graph, String(na.id), String(nb.id), trainVmax_kmh);
-    if (!res) throw new Error('Kein Pfad gefunden.');
+    if (!res) throw new Error(`Kein Pfad zwischen ${a.display} und ${b.display} gefunden.`);
 
     const segCoords = [];
-    let cur = String(na.id);
-    segCoords.push([net.nodes[cur].lat, net.nodes[cur].lon]);
     for (const step of res.path) {
       const to = step.to;
       segCoords.push([net.nodes[to].lat, net.nodes[to].lon]);
     }
+    segCoords.unshift([net.nodes[na.id].lat, net.nodes[na.id].lon]);
 
     let segLen = 0;
     for (let k = 0; k < segCoords.length - 1; k++)
@@ -369,6 +395,10 @@ async function computeRoute(points, trainVmax_kmh) {
     totalTimeSec += res.time_s;
     totalLen += segLen;
     fullPolyline.push(...segCoords);
+    // Entferne den ersten Punkt aus dem nächsten Segment, um Duplikate zu vermeiden
+    if (i < points.length - 2) {
+      fullPolyline.pop();
+    }
     segmentResults.push({ from: a.display, to: b.display, time_s: res.time_s, len_m: segLen });
   }
 

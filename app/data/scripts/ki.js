@@ -218,30 +218,36 @@ function findNearestNode(nodes,lat,lon){
 }
 
 async function computeRouteWithGraph(points,trainVmax){
-  let segmentResults=[],totalTimeSec=0,totalLen=0,fullPolyline=[];
+  // 1. Großen Graphen für die gesamte Route bauen
+  const bbox = bboxFromPoints(points, 25); // Größerer Puffer für die Gesamtroute
+  addMessage('Lade Netzwerkdaten für die Route...', 'bot');
+  const { nodes, ways } = await fetchRailNetwork(bbox);
+  if (Object.keys(nodes).length === 0) {
+    throw new Error('Keine Schienendaten im ausgewählten Bereich gefunden.');
+  }
+  //addMessage('Netzwerkdaten geladen, baue Routen-Graph...', 'bot');
+  const graph = buildGraph(nodes, ways);
+  //addMessage('Graph erstellt, berechne die Abschnitte...', 'bot');
 
+  // 2. Pfade für einzelne Segmente auf dem großen Graphen berechnen
+  let segmentResults=[], totalTimeSec=0, totalLen=0, fullPolyline=[];
   for(let i=0;i<points.length-1;i++){
     const a=points[i], b=points[i+1];
-    const bbox = bboxFromPoints([a,b],12);
-    
-    const { nodes, ways } = await fetchRailNetwork(bbox);
-    if (Object.keys(nodes).length === 0) {
-      throw new Error('Keine Schienendaten im Ausschnitt gefunden. Der Kartenausschnitt ist möglicherweise zu klein oder leer.');
-    }
-    const graph = buildGraph(nodes, ways);
 
-    const na=findNearestNode(nodes,a.lat,a.lon);
-    const nb=findNearestNode(nodes,b.lat,b.lon);
+    const na = findNearestNode(nodes, a.lat, a.lon);
+    const nb = findNearestNode(nodes, b.lat, b.lon);
     if(!na||!nb) throw new Error('Keine Schienendaten im Ausschnitt gefunden.');
+
     const res = dijkstra(graph,String(na.id),String(nb.id),trainVmax);
-    if(!res) throw new Error('Kein Pfad gefunden.');
+    if(!res) throw new Error(`Kein Pfad zwischen ${a.display} und ${b.display} gefunden.`);
 
     const segCoords = [];
-    segCoords.push([nodes[na.id].lat, nodes[na.id].lon]);
     for(const step of res.path){
       const to = step.to;
       segCoords.push([nodes[to].lat, nodes[to].lon]);
     }
+    // Sicherstellen, dass der Startpunkt des Segments am Anfang steht
+    segCoords.unshift([nodes[na.id].lat, nodes[na.id].lon]);
 
     let segLen=0;
     for(let k=0;k<segCoords.length-1;k++)
@@ -250,6 +256,10 @@ async function computeRouteWithGraph(points,trainVmax){
     totalTimeSec+=res.time_s;
     totalLen+=segLen;
     fullPolyline.push(...segCoords);
+    // Entferne den letzten Punkt, wenn es nicht das letzte Segment ist, um Duplikate zu vermeiden
+    if (i < points.length - 2) {
+      fullPolyline.pop();
+    }
     segmentResults.push({from:a.display,to:b.display,time_s:res.time_s,len_m:segLen});
   }
 
@@ -328,7 +338,12 @@ async function handleUserMessage(text){
   const { from, to, via, time, vmax } = lastRouteContext;
   const allPoints = [from, ...via, to];
 
-  addMessage(`Berechne Route von ${from.display} nach ${to.display} mit maximal ${vmax} km/h... \n Das kann einen Moment dauern.`,'bot');
+  let routeMsg = `Berechne Route von ${from.display} nach ${to.display}`;
+  if (via.length > 0) {
+    routeMsg += ` über ${via.map(p => p.display).join(', ')}`;
+  }
+  routeMsg += ` mit max. ${vmax} km/h.`;
+  addMessage(routeMsg, 'bot');
 
   try{
     routeLayer.clearLayers();
