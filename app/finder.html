@@ -505,7 +505,7 @@
             // Service Worker registrieren
             if ('serviceWorker' in navigator) {
                 try {
-                    await navigator.serviceWorker.register('./sw.js');
+                    await navigator.serviceWorker.register('./data/sw.js');
                     console.log('Service Worker erfolgreich registriert.');
                 } catch (error) {
                     console.error('Service Worker Registrierung fehlgeschlagen:', error);

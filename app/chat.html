@@ -65,7 +65,7 @@
                     // Diese Logik sollte idealerweise direkt in die send-Funktion in ki.js integriert werden.
                     const chatMessages = document.getElementById('chat-messages');
                     const errorMsg = document.createElement('div');
-                    errorMsg.className = 'message bot-message'; // Annahme einer CSS-Klasse
+                    errorMsg.className = 'msg.bot'; // Annahme einer CSS-Klasse
                     errorMsg.textContent = 'Keine Internetverbindung. Der Chat-Modus benötigt eine aktive Verbindung.';
                     chatMessages.appendChild(errorMsg);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -78,7 +78,7 @@
 
         // Service Worker registrieren
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw_chat.js')
+            navigator.serviceWorker.register('./data/sw_chat.js')
                 .then(registration => console.log('Service Worker (chat) erfolgreich registriert:', registration))
                 .catch(error => console.error('Service Worker (chat) Registrierung fehlgeschlagen:', error));
         }

@@ -75,7 +75,7 @@
         <summary>Infos anzeigen</summary>
         <div class="small">Hinweis: Diese App verwendet die öffentliche Overpass-API.<br>
           <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> | <a href="changelog.html">Version
-              2.0.1</a>
+              2.1</a>
           </p>
         </div>
       </details>
@@ -110,7 +110,7 @@
 
     // Service Worker registrieren
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw_main.js')
+      navigator.serviceWorker.register('./data/sw_main.js')
         .then(registration => console.log('Service Worker (main) erfolgreich registriert:', registration))
         .catch(error => console.error('Service Worker (main) Registrierung fehlgeschlagen:', error));
     }
