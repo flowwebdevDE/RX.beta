@@ -1,0 +1,315 @@
+/* === Reset & Grundlayout === */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111;
+  overflow: hidden;
+}
+
+.main-content {
+  background: transparent;
+}
+
+/* === Karte === */
+#map {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* === Chat-Container (Desktop) === */
+#chat-container {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 360px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.17);
+  border: solid 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px) saturate(160%);
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* === Nachrichtenbereich === */
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar Styling */
+#chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+#chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+#chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* === Chat-Bubbles === */
+.msg {
+  max-width: 80%;
+  padding: 0.7rem 1rem;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  animation: fadeInUp 0.25s ease forwards;
+  word-break: break-word;
+}
+
+.msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #4286f49e, #2f6de075);
+  color: #fff;
+  border: solid 1px rgba(0, 0, 0, 0.189);
+  border-bottom-right-radius: 4px;
+}
+
+.msg.bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.316);
+  border: solid 1px rgba(0, 0, 0, 0.189);
+  border-bottom-left-radius: 4px;
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* === Eingabefeld unten === */
+#user-input-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.567);
+  backdrop-filter: blur(12px);
+  padding: 0.5rem;
+  margin: 5px;
+  border-radius: 20px;
+}
+
+#user-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.8rem 0.9rem;
+  font-size: 1rem;
+  color: #000000;
+}
+
+#user-input::placeholder {
+  color: #888;
+}
+
+#send-btn {
+  border: none;
+  background: #4286f485;
+  color: white;
+  font-weight: 600;
+  border-radius: 15px;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+#send-btn:hover {
+  background: #2f6de0;
+  transform: scale(1.05);
+}
+
+.home-btn {
+  background-color: #2f6de080;
+  border: solid 1px rgba(0, 0, 0, 0.25);
+  padding: 5px;
+  text-decoration: none;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-inline: 10px;
+}
+
+.home-btn:hover {
+  background: #4285f4;
+}
+
+.version {
+  text-align: center;
+  font-size: 0.7rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.version a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+/* === Animationen === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Mobile Warning Overlay === */
+#mobile-warning {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+  padding: 2rem;
+}
+
+#mobile-warning h2 {
+  font-size: 2rem;
+  margin-bottom: 0.6em;
+}
+
+#mobile-warning a {
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: background 0.2s ease;
+}
+
+#mobile-warning a:hover {
+  background: rgba(155, 155, 155, 0.15);
+}
+
+/* === Responsive Verhalten === */
+
+/* Tablets (iPad portrait) */
+@media (max-width: 1024px) and (orientation: portrait) {
+  #chat-container {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 1rem;
+    width: 100vw;
+    height: 75vh;
+    max-width: auto;
+  }
+  .home-btn {
+    margin-top: 40px;
+  }
+}
+
+/* Tablets (iPad landscape) */
+@media (max-width: 1366px) and (orientation: landscape) {
+  #chat-container {
+    width: 320px;
+    height: 80vh;
+  }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+  html, body {
+    overflow: hidden;
+    width: 100vw;
+    height: 100dvh;
+    background: url("../images/bg.jpg");
+    background-size: cover;
+  }
+
+  #map {
+    display: none !important;
+  }
+
+  #chat-container {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: blur(5px);
+    z-index: 100;
+  }
+
+  #chat-messages {
+    flex: 1;
+    padding: 1rem;
+    margin-bottom: 70px;
+    overflow-y: auto;
+  }
+
+  #user-input-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    border-radius: 0;
+    margin: 0;
+    padding: 0.7rem;
+    background: rgba(0, 0, 0, 0.142);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #00000030;
+  }
+  #user-input {
+    background: #0000003a;
+    border: solid 1px rgba(0, 0, 0, 0.273);
+    margin-right: 5px;
+    border-radius: 15px;
+    color: #ffffff;
+  }
+
+  .msg {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .home-btn {
+    margin-top: 40px;
+  }
+}
