@@ -409,6 +409,13 @@ async function computeRoute(points, trainVmax_kmh) {
 // 🚂 Berechnung starten
 // ------------------------------------------------------
 calcBtn.addEventListener('click', async () => {
+  // NEU: Prüfen, ob eine Internetverbindung besteht.
+  if (!navigator.onLine) {
+    summaryDiv.textContent = 'Keine Internetverbindung.';
+    tableWrap.innerHTML = '<p class="hint">Die Routenberechnung erfordert eine aktive Internetverbindung, um auf die Overpass-API zuzugreifen.</p>';
+    return;
+  }
+
   try {
     if (!selectedFrom || !selectedTo) {
       alert('Bitte Start- und Zielbahnhof wählen.');
@@ -447,8 +454,8 @@ calcBtn.addEventListener('click', async () => {
 
   } catch (err) {
     console.error(err);
-    alert('Fehler bei der Berechnung, versuche es bitte nochmal.');
-    summaryDiv.textContent = 'Fehler bei der Berechnung.';
+    summaryDiv.textContent = 'Fehler bei der Routenberechnung.';
+    tableWrap.innerHTML = '<p class="hint">Die Overpass-API konnte nicht erreicht werden. Bitte versuche es später erneut.</p>';
   }
 });
 

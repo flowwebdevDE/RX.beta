@@ -22,7 +22,10 @@
 
 </head>
 
-<body>
+<body style="overscroll-behavior-y: contain;">
+    <!-- 
+        overscroll-behavior-y: contain; verhindert das "Pull-to-Refresh"-Verhalten in der Android WebView.
+    -->
 
     <div id="main-content">
         <div id="map"></div>
@@ -32,7 +35,7 @@
             <div id="chat-messages"></div>
             <div id="user-input-container">
                 <input type="text" id="user-input" placeholder="Gebe eine Route ein.">
-                <button id="send-btn"><img src="../data/images/send_icon.png" style="width: 25px; height: auto;"></button>
+                <button id="send-btn"><img src="data/images/send_icon.png" style="width: 25px; height: auto;"></button>
             </div>
 
         </div>
@@ -42,6 +45,44 @@
     <script src="data/scripts/ki.js"></script>
     <script src="data/scripts/mobile.js"></script>
     <script src="data/scripts/lock.js"></script>
+
+    <script>
+        // Haptisches Feedback für Android
+        function vibrate() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50); // 50ms Vibration
+            }
+        }
+
+        const sendButton = document.getElementById('send-btn');
+        if (sendButton) {
+            sendButton.addEventListener('click', () => {
+                vibrate();
+
+                // Prüfen, ob eine Internetverbindung besteht.
+                if (!navigator.onLine) {
+                    // Verhindere das Senden und zeige eine Nachricht an.
+                    // Diese Logik sollte idealerweise direkt in die send-Funktion in ki.js integriert werden.
+                    const chatMessages = document.getElementById('chat-messages');
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'message bot-message'; // Annahme einer CSS-Klasse
+                    errorMsg.textContent = 'Keine Internetverbindung. Der Chat-Modus benötigt eine aktive Verbindung.';
+                    chatMessages.appendChild(errorMsg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Verhindert, dass der eigentliche Sende-Event in ki.js ausgeführt wird.
+                    event.stopImmediatePropagation(); 
+                }
+            }, true); // 'true' (useCapture) stellt sicher, dass dieser Listener vor anderen läuft.
+        }
+
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw_chat.js')
+                .then(registration => console.log('Service Worker (chat) erfolgreich registriert:', registration))
+                .catch(error => console.error('Service Worker (chat) Registrierung fehlgeschlagen:', error));
+        }
+    </script>
 </body>
 
 </html>

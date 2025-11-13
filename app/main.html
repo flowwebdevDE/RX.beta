@@ -25,6 +25,7 @@
   <div id="app">
     <div id="left">
       <header>
+        <!-- Logo ist hier, aber kein Hintergrundbild wie in finder.html -->
         <img src="data/images/logos/logo.png">
       </header>
       <div class="field">
@@ -85,6 +86,36 @@
   <!-- libs -->
   <script src="data/scripts/functions.js"></script>
   <script src="data/scripts/lock.js"></script>
+  <script>
+    // Haptisches Feedback für Android
+    function vibrate() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(50); // 50ms Vibration
+      }
+    }
+
+    // Alle Buttons mit Vibration ausstatten
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('click', vibrate);
+    });
+
+    // Funktion, um von Android aufgerufen zu werden, um die Karte zu zentrieren oder Marker zu setzen
+    function updateMapLocationFromNative(latitude, longitude) {
+      console.log(`Native Position für Karte erhalten: ${latitude}, ${longitude}`);
+      // Hier würde die Logik stehen, um die Leaflet/Maplibre-Karte zu aktualisieren
+      // Beispiel: map.setView([latitude, longitude], 13);
+      // Oder einen Marker hinzufügen: L.marker([latitude, longitude]).addTo(map);
+      // Diese Implementierung hängt von deiner spezifischen Karteninitialisierung ab.
+    }
+
+    // Service Worker registrieren
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw_main.js')
+        .then(registration => console.log('Service Worker (main) erfolgreich registriert:', registration))
+        .catch(error => console.error('Service Worker (main) Registrierung fehlgeschlagen:', error));
+    }
+  </script>
+
 
 </body>
 </html>
