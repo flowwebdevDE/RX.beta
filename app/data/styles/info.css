@@ -109,17 +109,17 @@
  }
 
  footer {
-  background: transparent;
-  color: white;
+   background: transparent;
+   color: white;
  }
 
  footer a {
-  text-decoration: none;
-  color: antiquewhite;
-  font-weight: bold;
+   text-decoration: none;
+   color: antiquewhite;
+   font-weight: bold;
  }
 
  footer a:hover {
-  text-decoration: underline;
-  color: azure;
+   text-decoration: underline;
+   color: azure;
  }
