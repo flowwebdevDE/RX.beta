@@ -83,7 +83,7 @@
  .time-section {
   /* position the div in center */
   position: absolute;
-  top: 60px;
+  top: 30px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
