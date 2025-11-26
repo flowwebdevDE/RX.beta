@@ -24,6 +24,7 @@ body {
 
 #switchBtn {
     margin-top: 30px;
+    background: rgba(0, 0, 0, 0.455);
     color: white;
     border: none;
     border-radius: 5px;
@@ -68,7 +69,6 @@ body {
     display: flex;
     justify-content: center;
     pointer-events: auto;
-    background: rgba(0, 0, 0, 0.397);
 }
 
 .shutter {
