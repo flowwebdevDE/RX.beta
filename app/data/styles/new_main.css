@@ -50,6 +50,7 @@
       border-radius: 12px;
       box-shadow: black 0 5px 10px;
       text-align: center;
+      padding-bottom: 30px;
     }
 
     section a {
@@ -59,7 +60,6 @@
         text-decoration: none;
         color: white;
         box-shadow: black 0 5px 10px;
-        margin-bottom: 20px;
     }
 
     section h2 {
