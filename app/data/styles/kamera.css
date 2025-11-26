@@ -19,6 +19,15 @@ body {
     object-fit: cover;
 }
 
+#switchBtn {
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.455);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+
 #canvas {
     display: none;
 }
