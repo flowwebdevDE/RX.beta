@@ -1,7 +1,8 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: whitesmoke;
+      background: url("../images/bg.jpg");
+      background-size: cover;
       color: #333;
     }
 
@@ -10,7 +11,8 @@
       align-items: center;
       padding: 12px 16px;
       padding-top: 40px;
-      background: linear-gradient(90deg, rgb(123, 123, 255), rgb(82, 72, 164));
+      background: linear-gradient(90deg, rgba(123, 123, 255, 0.422), rgba(83, 72, 164, 0.422));
+      backdrop-filter: blur(10px);
       color: white;
       flex-wrap: wrap;
       gap: 10px;
@@ -44,13 +46,14 @@
     }
 
     section {
-      background: #fff;
+      background: #ffffff41;
       padding: 15px 18px;
       margin-bottom: 12px;
       border-radius: 12px;
       box-shadow: black 0 5px 10px;
       text-align: center;
       padding-bottom: 30px;
+      backdrop-filter: blur(10px);
     }
 
     section a {
