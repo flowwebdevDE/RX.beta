@@ -2,35 +2,49 @@
 <html lang="de">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rail Explorer</title>
-    <link rel="stylesheet" href="data/app.css">
-    <link rel="stylesheet" href="data/iphone/ios.css">
-    <script src="data/iphone/ios.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rail Explorer – Einstellungen</title>
+  <link rel="icon" href="data/images/logos/logo.png" type="image/png">
+  <link rel="stylesheet" href="data/styles/new_main.css">
 </head>
 
 <body>
-    <header>
-        <p class="time-section" id="location-display" style="display: none;">Schön, dass du da bist!</p>
-        <img src="data/images/logos/logo.png" alt="App Logo" />
-    </header>
 
-    <main>
-        <h1>Rail Explorer</h1>
-        <div class="buttons">
-            <a href="chat.html" class="btn">Chat-Bot Fahrzeitenrechner</a>
-            <a href="main.html" class="btn">Standart Fahrzeitenrechner</a>
-            <a href="finder.html" class="btn">Betriebsstellensuche</a>
-            <a href="kamera.html" class="btn">Kamera (Beta-Version)</a>
-        </div>
-    </main>
+  <header>
+    <img src="data/images/logos/logo.png" alt="Logo">
+    <h1>Rail Explorer<br><em style="font-size: 0.6em; color: rgb(180, 180, 180);">Version 3.0</em></h1>
+    <a href="changelog.html" id="only-android">Einstellungen & Infos</a>
+  </header>
 
-    <footer class="btn-fake">
-        © 2025 Rail Explorer 3.1 &#8226; <a href="changelog.html">Einstellungen</a>
-    </footer>
-    <script src="data/scripts/location.js"></script>
-    <script src="data/scripts/lock.js"></script>
+  <main>
+    <!-- Allgemeine Einstellungen -->
+    <section style="box-shadow: blue 0 5px 10px;">
+      <h2>Chat-Bot Fahrzeitenrechner</h2>
+      <p>Berechne Fahrzeiten im übersichtlichen Chat modus.</p>
+      <a href="chat.html">Chat-Bot</a>
+    </section>
+
+    <!-- Hinweis zum Download -->
+    <section>
+      <h2>Standart Fahrzeitenrechner</h2>
+      <p>Berechne Fahrzeiten individuell im Fahrzeitenrechner.</p>
+      <a href="main.html">Standart Fahrzeitenrechner</a>
+    </section>
+
+    <section>
+      <h2>Betriebstellensuche</h2>
+      <p>Finde Betriebstellen in deiner nähe und nach suche.</p>
+      <a href="finder.html">Betriebstellensuche</a>
+    </section>
+
+    <section>
+        <h2>Kamera (Beta-Version)</h2>
+        <p>Nehme hier deine Fotos auf ohne die App zu verlassen</p>
+        <a href="kamera.html">Kamera</a>
+    </section>
+
+  </main>
 </body>
 
 </html>
