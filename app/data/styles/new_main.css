@@ -3,6 +3,7 @@
       font-family: Arial, sans-serif;
       background: url("../images/bg.jpg");
       background-size: cover;
+      background-repeat: no-repeat;
       color: #333;
     }
 
