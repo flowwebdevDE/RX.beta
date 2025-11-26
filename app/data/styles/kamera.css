@@ -1,120 +1,31 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  background: black;
-  overflow: hidden;
-  height: 100%;
-  font-family: Arial, sans-serif;
+:root{
+  --bg:#000;
+  --ui-bg: rgba(0,0,0,0.35);
+  --white: #fff;
+  --accent: #ff3b30;
 }
+*{box-sizing:border-box}
+html,body,#app{height:100%;margin:0;background:var(--bg);font-family:Inter,Segoe UI,Roboto,Arial}
+#previewContainer{position:relative;height:100%;width:100%;overflow:hidden;background:#000}
+.native-preview{position:absolute;inset:0;background:#000} /* target for native preview */
+.overlay-ui{position:absolute;inset:0;pointer-events:none}
+.topbar{position:absolute;top:18px;right:18px;display:flex;gap:10px;pointer-events:auto}
+.icon{background:var(--ui-bg);border:none;color:var(--white);padding:10px;border-radius:50%;font-size:18px}
+.center-tap-hint{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,0.6);font-size:14px;pointer-events:none}
+.bottombar{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;align-items:center;gap:28px;pointer-events:auto;padding:0 20px}
+.thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#222}
+.shutter-wrap{position:relative;width:92px;height:92px;display:flex;align-items:center;justify-content:center}
+.shutter{width:80px;height:80px;border-radius:50%;background:var(--white);border:6px solid rgba(255,255,255,0.6);box-shadow:0 6px 18px rgba(0,0,0,0.6);pointer-events:auto}
+.shutter:active{transform:scale(0.96)}
+.record-ind{position:absolute;left:calc(50% - 10px);top:calc(50% - 10px);width:20px;height:20px;border-radius:4px;background:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,0.6)}
+.hidden{display:none}
+.mode-row{position:absolute;bottom:120px;left:0;right:0;display:flex;justify-content:center;gap:12px;pointer-events:auto}
+.mode{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--white);padding:8px 16px;border-radius:20px}
+.mode.active{background:var(--white);color:#000}
+.zoom-slider{position:absolute;right:12px;bottom:220px;transform:rotate(-90deg);width:160px;pointer-events:auto}
 
-#camera-screen {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ------------------ Top Bar ------------------ */
-.top-bar {
-  position: absolute;
-  top: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 20px;
-  z-index: 10;
-}
-
-.icon-btn {
-  background: rgba(40,40,40,0.7);
-  backdrop-filter: blur(5px);
-  border: none;
-  color: white;
-  font-size: 22px;
-  padding: 10px;
-  border-radius: 50%;
-  margin-left: 10px;
-}
-
-/* ------------------ Mode Switch ------------------ */
-.mode-switch {
-  position: absolute;
-  bottom: 120px;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  z-index: 10;
-}
-
-.mode-switch span {
-  opacity: 0.5;
-  transition: 0.2s;
-}
-
-.mode-switch .active {
-  opacity: 1;
-  font-weight: bold;
-}
-
-/* ------------------ Bottom Bar ------------------ */
-.bottom-bar {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  padding: 0 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 20;
-}
-
-/* Thumbnail */
-.thumb {
-  width: 55px;
-  height: 55px;
-  border-radius: 8px;
-  object-fit: cover;
-  background: #222;
-}
-
-/* Shutter Button */
-.shutter {
-  width: 80px;
-  height: 80px;
-  background: white;
-  border-radius: 50%;
-  border: 5px solid rgba(255,255,255,0.5);
-  position: relative;
-}
-
-/* Video record */
-.record-btn {
-  width: 80px;
-  height: 80px;
-  background: red;
-  border-radius: 50%;
-  border: 5px solid rgba(255,255,255,0.5);
-}
-
-.stop-btn {
-  width: 80px;
-  height: 80px;
-  background: red;
-  border-radius: 15%;
-  border: 5px solid rgba(255,255,255,0.5);
-}
-
-/* Hidden */
-.hidden { display: none; }
+/* Gallery */
+#galleryScreen{position:fixed;inset:0;background:#000;color:#fff;padding:16px;overflow:auto}
+#galleryBack{position:fixed;left:12px;top:12px;padding:8px 12px;border-radius:8px}
+#galleryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:54px}
+.gallery-item{width:100%;aspect-ratio:3/4;border-radius:8px;object-fit:cover}

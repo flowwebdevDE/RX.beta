@@ -1,52 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Camera App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hybrid Camera (Median)</title>
   <link rel="stylesheet" href="data/styles/kamera.css" />
 </head>
 <body>
 
-<div id="camera-screen">
+  <div id="app">
 
-  <!-- Top bar -->
-  <div class="top-bar">
-    <button class="icon-btn" id="flashBtn">⚡</button>
-    <button class="icon-btn" id="settingsBtn">⚙️</button>
+    <!-- Native preview target (native will stream into this element) -->
+    <div id="previewContainer">
+      <!-- If native cannot render directly into DOM, fallback uses an <img> thumb with video frames -->
+      <div id="nativePreview" class="native-preview"></div>
+      <div id="previewOverlay" class="overlay-ui">
+        <div class="topbar">
+          <button id="flashBtn" class="icon">⚡</button>
+          <button id="settingsBtn" class="icon">⚙️</button>
+        </div>
+
+        <div class="center-tap-hint">Tippe zum fokussieren</div>
+
+        <div class="bottombar">
+          <img id="lastThumb" class="thumb" alt="Letztes Foto">
+          <div class="shutter-wrap">
+            <div id="shutter" class="shutter"></div>
+            <div id="recordIndicator" class="record-ind hidden"></div>
+          </div>
+          <button id="switchBtn" class="icon">🔄</button>
+        </div>
+
+        <div class="mode-row">
+          <button id="modePhoto" class="mode active">Foto</button>
+          <button id="modeVideo" class="mode">Video</button>
+        </div>
+
+        <input id="zoomSlider" class="zoom-slider" type="range" min="0" max="1" step="0.01" value="0">
+
+      </div>
+    </div>
+
+    <!-- Gallery overlay -->
+    <div id="galleryScreen" class="hidden">
+      <button id="galleryBack">⬅ Zurück</button>
+      <div id="galleryGrid"></div>
+    </div>
+
   </div>
 
-  <!-- Camera Preview -->
-  <video id="cameraPreview" autoplay playsinline></video>
-
-  <!-- Mode switch -->
-  <div class="mode-switch">
-    <span id="mode-photo" class="active">Foto</span>
-    <span id="mode-video">Video</span>
-  </div>
-
-  <!-- Bottom bar -->
-  <div class="bottom-bar">
-
-    <!-- last photo preview -->
-    <img id="lastThumb" class="thumb" />
-
-    <!-- capture button -->
-    <div id="captureBtn" class="shutter"></div>
-    <div id="recordBtn" class="record-btn hidden"></div>
-    <div id="stopBtn" class="stop-btn hidden"></div>
-
-    <!-- switch camera -->
-    <button id="switchBtn" class="icon-btn">🔄</button>
-
-  </div>
-
-</div>
-
-<canvas id="canvas" style="display:none"></canvas>
-<video id="videoResult" controls style="display:none"></video>
-
-<script src="data/scripts/app.js"></script>
-<script src="data/scripts/lock.js"></script>
+  <script src="data/scripts/app.js"></script>
 </body>
 </html>
