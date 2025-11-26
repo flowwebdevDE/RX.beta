@@ -155,3 +155,11 @@
         backdrop-filter: blur(10px);
         box-shadow: black 5px 0 10px 5px;
     }
+
+    @media (max-width: 768px) {
+
+        body {
+            overflow: hidden;
+        }
+
+    }
