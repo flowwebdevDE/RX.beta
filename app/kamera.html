@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Camera App</title>
+  <title>WebView Kamera</title>
   <link rel="stylesheet" href="data/styles/kamera.css" />
 </head>
 <body>
 
 <div id="app">
-
   <div id="cameraContainer">
     <video id="camera" autoplay playsinline></video>
-
     <canvas id="canvas"></canvas>
 
     <div id="ui">
-
       <div class="topbar">
         <button id="switchBtn" style="background: transparent; font-size: 1.6em; border: none;">&#10560;</button>
       </div>
@@ -28,12 +25,15 @@
       <div class="bottombar">
         <button id="captureBtn" class="shutter"></button>
       </div>
-
     </div>
   </div>
 
-  <a id="downloadLink" download="railexplorer_camera.jpg"></a>
+  <div id="galleryScreen" class="hidden">
+    <button id="galleryBack">⬅ Zurück</button>
+    <div id="galleryGrid"></div>
+  </div>
 
+  <a id="downloadLink" download="photo.jpg"></a>
 </div>
 
 <script src="data/scripts/app.js"></script>
