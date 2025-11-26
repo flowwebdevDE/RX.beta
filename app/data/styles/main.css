@@ -208,7 +208,7 @@ td {
 @media (max-width: 768px) {
 
     body {
-        background: #ffffff;
+        background: #000000;
     }
 
     #app {
@@ -225,8 +225,15 @@ td {
         height: auto;
         max-height: 50vh;
         margin: 0;
+        color: white;
+        background: black;
         border-radius: 0;
-        border-bottom: solid 1px black;
+        border-bottom: solid 1px white;
+    }
+
+    .small,
+    .small a {
+        color: snow;
     }
 
     #map {

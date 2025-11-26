@@ -331,5 +331,6 @@ html, body {
 
   .home-btn {
     margin-top: 40px;
+    box-shadow: black 0 5px 10px;
   }
 }
