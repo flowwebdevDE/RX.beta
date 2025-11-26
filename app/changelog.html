@@ -4,48 +4,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rail Explorer – Changelog</title>
-  <link rel="icon" href="data/images/logos/logo.png" type="images/png">
-  <link rel="stylesheet" href="data/styles/info.css">
+  <title>Rail Explorer – Einstellungen</title>
+  <link rel="icon" href="data/images/logos/logo.png" type="image/png">
   <style>
-    nav {
-      text-align: center;
-      padding: 10px;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
     }
 
-    nav a {
-      text-decoration: none;
-      padding: 10px;
-      margin-inline: 10px;
-      border-radius: 10px;
+    header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
       background: #2b7cff;
       color: white;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    nav a:hover {
-      background-color: #1a5edb;
+    header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
     }
 
-    li a {
-      color: black;
+    header h1 {
+      margin: 0;
+      font-size: 1.3em;
+      flex-grow: 1;
     }
 
-    li a:hover {
-      color: blue;
+    header a {
+      padding: 6px 12px;
+      background: #1a5edb;
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 0.9em;
     }
 
-    /* Mobile Ansicht */
-    @media (max-width: 768px) {
-      nav {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        padding: 10px;
-      }
+    main {
+      padding: 12px;
+    }
 
-      nav a {
-        margin: 0;
-      }
+    section {
+      background: #fff;
+      padding: 15px 18px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    section h2 {
+      margin-top: 0;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .setting {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    .setting label {
+      font-size: 0.95em;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+
+    select {
+      padding: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 5px;
+      left: 45%;
+      text-align: center;
+      padding: 12px;
+      font-size: 0.85em;
+      color: #666;
     }
   </style>
 </head>
@@ -53,122 +100,106 @@
 <body>
 
   <header>
-    <img src="data/images/logos/logo.png" style="width: 10%; height: auto; border-radius: 50%;">
-    <h1>Highlights & Verbesserungen</h1>
-    <a href="https://median.co/share/bnazlwp#apk" id="only-android" class="only-android" style="padding: 5px; background: #1a5edb; color: white; border-radius: 10px; text-decoration: none">App aktualisieren</a>
+    <img src="data/images/logos/logo.png" alt="Logo">
+    <h1>Einstellungen</h1>
+    <a href="https://median.co/share/bnazlwp#apk" id="only-android">App aktualisieren</a>
   </header>
 
   <main>
+    <!-- Allgemeine Einstellungen -->
 
+    <div style="display: none;">
     <section>
-      <nav>
-        <a href="#1.3.2">Version 1.3.2</a>
-        <a href="#1.4.1">Version 1.4.1</a>
-        <a href="#1.5">Version 1.5</a>
-        <a href="#1.5.1">Version 1.5.1</a>
-        <a href="#2.0">Version 2.0</a>
-        <a href="#2.1">Version 2.1</a>
-      </nav>
+      <h2>Allgemein</h2>
+      <div class="setting">
+        <label for="darkMode">Dunkelmodus aktivieren</label>
+        <input type="checkbox" id="darkMode">
+      </div>
+      <div class="setting">
+        <label for="notifications">Benachrichtigungen aktivieren</label>
+        <input type="checkbox" id="notifications" checked>
+      </div>
+      <div class="setting">
+        <label for="language">Sprache</label>
+        <select id="language">
+          <option value="de" selected>Deutsch</option>
+          <option value="en">Englisch</option>
+          <option value="fr">Französisch</option>
+        </select>
+      </div>
     </section>
 
+    <!-- Karten & Navigation -->
     <section>
-      <h3 style="font-size: 1.5em;" id="2.1">Version 2.1</h3>
-      <h3>Neue Features</h3>
-      <ul>
-        <li>"App" Design in iOS-WebApp angepasst.</li>
-        <li>Moderner Glass-Look eingeführt.</li>
-      </ul>
-      <h3>Fehlerbehebungen</h3>
-      <ul>
-        <li>Fehlerhafte darstellung auf einigen Bildschirmen angepasst.</li>
-      </ul>
+      <h2>Karten & Navigation</h2>
+      <div class="setting">
+        <label for="showStations">Bahnhöfe anzeigen</label>
+        <input type="checkbox" id="showStations" checked>
+      </div>
+      <div class="setting">
+        <label for="showRoutes">Streckenverlauf anzeigen</label>
+        <input type="checkbox" id="showRoutes" checked>
+      </div>
+      <div class="setting">
+        <label for="defaultMap">Standard-Kartenansicht</label>
+        <select id="defaultMap">
+          <option value="satellite">Satellit</option>
+          <option value="terrain" selected>Gelände</option>
+          <option value="standard">Standard</option>
+        </select>
+      </div>
     </section>
 
-     <section>
-      <h3 style="font-size: 1.5em;" id="2.0">Version 2.0 | 11/12.11.2025</h3>
-
-      <h3>Version 2.0.1 | Chat-Bot</h3>
-      <ul>
-        <li>Mehr Zuverlässigkeit</li>
-        <li>Kontextverständnis</li>
-      </ul>
-
-      <h3>Neue Features</h3>
-      <ul>
-        <li>Neuer, übersichtlicherer Aufbau der seite.</li>
-        <li>Du kannst jetzt abkürzungen von <a href="finder.html">Betriebstellen</a> abrufen.</li>
-      </ul>
-      <h3>Fehlerbehebungen</h3>
-      <ul>
-        <li>Allgemeine Anpassungen von Design und Funktionalität.</li>
-        <li>Sonstige Fehlerbehebungen.</li>
-      </ul>
-    </section>
-
+    <!-- Berechnungen & Bahnplanung -->
     <section>
-      <h3 style="font-size: 1.5em;" id="1.5.1">Version 1.5.1 | 07.11.2025</h3>
-      <h3>Neue Features</h3>
-      <ul>
-        <li>Du kannst jetzt im <a href="main.html">Hauptprogramm</a> Bahnhöfe und Betriebsstellen in DE, AT und
-          CH<br>für deine Berechnung auswählen.</li>
-      </ul>
-      <h3>Fehlerbehebungen</h3>
-      <ul>
-        <li>Allgemeine Anpassungen von Design und Funktionalität.</li>
-        <li>Sonstige Fehlerbehebungen.</li>
-      </ul>
+      <h2>Bahnplanung</h2>
+      <div class="setting">
+        <label for="autoCalculate">Automatische Berechnung aktivieren</label>
+        <input type="checkbox" id="autoCalculate" checked>
+      </div>
+      <div class="setting">
+        <label for="showTimes">Fahrzeiten anzeigen</label>
+        <input type="checkbox" id="showTimes" checked>
+      </div>
     </section>
+    </div>
 
+    <!-- Hinweis zum Download -->
     <section>
-      <h3 style="font-size: 1.5em;" id="1.5">Version 1.5 | 06.11.2025</h3>
-      <h3>Neue Features</h3>
-      <ul>
-        <li>Anpassungen für spätere integration neuer Funktionen</li>
-        <li>Android App Download hinzugefügt</li>
-      </ul>
-      <h3>Fehlerbehebungen</h3>
-      <ul>
-        <li>Bahnhöfe in Randgebieten Deutschlands hinzufügen</li>
-        <li>Allgemeine Anpassungen von Design und Funktionalität</li>
-        <li>Sonstige Fehlerbehebungen</li>
-      </ul>
+      <h2>App-Update</h2>
+      <p>Für die neueste Version der Rail Explorer App für Android klicke auf den Button oben rechts.</p>
     </section>
 
     <section>
-      <h3 style="font-size: 1.5em;" id="1.4.1">Version 1.4.1 | 05.11.2025</h3>
-      <h3>Neue Features</h3>
-      <ul>
-        <li>Design anpassungen der UI im Desktop Modus</li>
-        <li>Unterstützung für Bahnhöfe und Strecken in ganz Deutschland hinzugefügt</li>
-        <li>Korrektur von Verlinkungen</li>
-      </ul>
+      <h2>Version</h2>
+      <p>Du nutzt aktuell <strong>Version 3.0<em>beta</em></strong>.</p>
     </section>
-    <section>
-      <h3 style="font-size: 1.5em;" id="1.3.2">Version 1.3.2 | 04.11.2025</h3>
-      <h3>Neue Features</h3>
-      <ul>
-        <li>Einführung des Fahrzeitenrechners für Baden-Württemberg</li>
-        <li>Berechnung von Routen und Fahrzeiten zwischen beliebigen Orten oder Bahnhöfen</li>
-        <li>Darstellung der Ergebnisse in Textform und auf einer interaktiven Karte</li>
-        <li>Optimiertes, übersichtliches Design für Desktop und mobile Geräte</li>
-      </ul>
 
-      <h3>Fehlerbehebungen</h3>
-      <ul>
-        <li>Allgemeine Stabilitätsverbesserungen</li>
-        <li>Kleinere Layoutanpassungen auf mobilen Geräten</li>
-        <li>Fehler in der Routendarstellung bei bestimmten Kombinationen behoben</li>
-      </ul>
-
-    </section>
   </main>
 
   <footer>
     © 2025 Rail Explorer
   </footer>
 
-  <script src="data/scripts/lock.js"></script>
-  <script src="data/iphone/ios.js"></script>
+  <script>
+    // Einstellungen speichern und laden
+    document.querySelectorAll('input, select').forEach(el => {
+      if (el.type === 'checkbox') {
+        el.checked = localStorage.getItem(el.id) === 'true' ? true : el.checked;
+      } else {
+        el.value = localStorage.getItem(el.id) || el.value;
+      }
+
+      el.addEventListener('change', () => {
+        if (el.type === 'checkbox') {
+          localStorage.setItem(el.id, el.checked);
+        } else {
+          localStorage.setItem(el.id, el.value);
+        }
+      });
+    });
+  </script>
+
 </body>
 
 </html>
