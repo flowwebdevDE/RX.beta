@@ -1,54 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hybrid Camera (Median)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera App</title>
   <link rel="stylesheet" href="data/styles/kamera.css" />
 </head>
 <body>
 
-  <div id="app">
+<div id="app">
 
-    <!-- Native preview target (native will stream into this element) -->
-    <div id="previewContainer">
-      <!-- If native cannot render directly into DOM, fallback uses an <img> thumb with video frames -->
-      <div id="nativePreview" class="native-preview"></div>
-      <div id="previewOverlay" class="overlay-ui">
-        <div class="topbar">
-          <button id="flashBtn" class="icon">⚡</button>
-          <button id="settingsBtn" class="icon">⚙️</button>
-        </div>
+  <div id="cameraContainer">
+    <video id="camera" autoplay playsinline></video>
 
-        <div class="center-tap-hint">Tippe zum fokussieren</div>
+    <canvas id="canvas"></canvas>
 
-        <div class="bottombar">
-          <img id="lastThumb" class="thumb" alt="Letztes Foto">
-          <div class="shutter-wrap">
-            <div id="shutter" class="shutter"></div>
-            <div id="recordIndicator" class="record-ind hidden"></div>
-          </div>
-          <button id="switchBtn" class="icon">🔄</button>
-        </div>
+    <div id="ui">
 
-        <div class="mode-row">
-          <button id="modePhoto" class="mode active">Foto</button>
-          <button id="modeVideo" class="mode">Video</button>
-        </div>
-
-        <input id="zoomSlider" class="zoom-slider" type="range" min="0" max="1" step="0.01" value="0">
-
+      <div class="topbar">
+        <button id="switchBtn">🔄</button>
       </div>
-    </div>
 
-    <!-- Gallery overlay -->
-    <div id="galleryScreen" class="hidden">
-      <button id="galleryBack">⬅ Zurück</button>
-      <div id="galleryGrid"></div>
-    </div>
+      <div class="sliderBox">
+        <input type="range" id="zoomSlider" min="1" max="5" step="0.1" value="1">
+      </div>
 
+      <div class="bottombar">
+        <button id="captureBtn" class="shutter"></button>
+      </div>
+
+    </div>
   </div>
 
-  <script src="data/scripts/app.js"></script>
+  <a id="downloadLink" download="photo.jpg"></a>
+
+</div>
+
+<script src="data/scripts/app.js"></script>
 </body>
 </html>
