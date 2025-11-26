@@ -10,7 +10,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      background: whitesmoke;
       color: #333;
     }
 
@@ -18,7 +18,7 @@
       display: flex;
       align-items: center;
       padding: 12px 16px;
-      background: #2b7cff;
+      background: linear-gradient(90deg, blue, rgb(43, 28, 170));
       color: white;
       flex-wrap: wrap;
       gap: 10px;
@@ -94,6 +94,38 @@
       font-size: 0.85em;
       color: #666;
     }
+
+    /*Darkmode*/
+
+    body.darkmode {
+      background-color: #222;
+      color: #eee;
+    }
+
+    header.darkmode {
+      background: #111;
+      color: #fff;
+    }
+
+    section.darkmode {
+      background: #333;
+      color: #fff;
+    }
+
+    a.darkmode {
+      color: #fff;
+    }
+
+    section.darkmode {
+      background: black;
+      color: white;
+    }
+
+    #only-android {
+      background: linear-gradient(rgb(22, 22, 203), rgb(33, 33, 255));
+      box-shadow: black 0 5px 10px;
+    }
+
   </style>
 </head>
 
@@ -107,62 +139,105 @@
 
   <main>
     <!-- Allgemeine Einstellungen -->
-
-    <div style="display: none;">
+<div style="display: none;">
     <section>
-      <h2>Allgemein</h2>
+      <h2>Darstellung</h2>
       <div class="setting">
-        <label for="darkMode">Dunkelmodus aktivieren</label>
+        <label for="darkMode">Darkmode aktivieren</label>
         <input type="checkbox" id="darkMode">
       </div>
       <div class="setting">
-        <label for="notifications">Benachrichtigungen aktivieren</label>
-        <input type="checkbox" id="notifications" checked>
-      </div>
-      <div class="setting">
-        <label for="language">Sprache</label>
-        <select id="language">
-          <option value="de" selected>Deutsch</option>
-          <option value="en">Englisch</option>
-          <option value="fr">Französisch</option>
+        <label for="bgSelect">Hintergrundbild wählen</label>
+        <select id="bgSelect">
+          <option value="">Standard</option>
+          <option value="images/bg1.jpg">Hintergrund 1</option>
+          <option value="images/bg2.jpg">Hintergrund 2</option>
+          <option value="images/bg3.jpg">Hintergrund 3</option>
         </select>
       </div>
     </section>
 
-    <!-- Karten & Navigation -->
-    <section>
-      <h2>Karten & Navigation</h2>
-      <div class="setting">
-        <label for="showStations">Bahnhöfe anzeigen</label>
-        <input type="checkbox" id="showStations" checked>
-      </div>
-      <div class="setting">
-        <label for="showRoutes">Streckenverlauf anzeigen</label>
-        <input type="checkbox" id="showRoutes" checked>
-      </div>
-      <div class="setting">
-        <label for="defaultMap">Standard-Kartenansicht</label>
-        <select id="defaultMap">
-          <option value="satellite">Satellit</option>
-          <option value="terrain" selected>Gelände</option>
-          <option value="standard">Standard</option>
-        </select>
-      </div>
-    </section>
+    <script>
+      const darkCheckbox = document.getElementById('darkMode');
+      const bgSelect = document.getElementById('bgSelect');
 
-    <!-- Berechnungen & Bahnplanung -->
-    <section>
-      <h2>Bahnplanung</h2>
-      <div class="setting">
-        <label for="autoCalculate">Automatische Berechnung aktivieren</label>
-        <input type="checkbox" id="autoCalculate" checked>
-      </div>
-      <div class="setting">
-        <label for="showTimes">Fahrzeiten anzeigen</label>
-        <input type="checkbox" id="showTimes" checked>
-      </div>
-    </section>
+      // --- Initialisierung beim Laden ---
+      document.addEventListener('DOMContentLoaded', () => {
+        // Darkmode laden
+        if (localStorage.getItem('darkmode') === 'true') {
+          document.body.classList.add('darkmode');
+          darkCheckbox.checked = true;
+        }
+
+        // Background laden
+        const bg = localStorage.getItem('bgImage') || '';
+        if (bg) document.body.style.backgroundImage = `url('${bg}')`;
+        bgSelect.value = bg;
+      });
+
+      // --- Darkmode ändern ---
+      darkCheckbox.addEventListener('change', () => {
+        if (darkCheckbox.checked) {
+          document.body.classList.add('darkmode');
+          localStorage.setItem('darkmode', 'true');
+        } else {
+          document.body.classList.remove('darkmode');
+          localStorage.setItem('darkmode', 'false');
+        }
+      });
+
+      // --- Background ändern ---
+      bgSelect.addEventListener('change', () => {
+        const val = bgSelect.value;
+        if (val) {
+          document.body.style.backgroundImage = `url('${val}')`;
+          localStorage.setItem('bgImage', val);
+        } else {
+          document.body.style.backgroundImage = '';
+          localStorage.removeItem('bgImage');
+        }
+      });
+    </script>
+
+      <!-- Karten & Navigation -->
+      <section>
+        <h2>Karten & Navigation</h2>
+        <div class="setting">
+          <label for="showStations">Bahnhöfe anzeigen</label>
+          <input type="checkbox" id="showStations" checked>
+        </div>
+        <div class="setting">
+          <label for="showRoutes">Streckenverlauf anzeigen</label>
+          <input type="checkbox" id="showRoutes" checked>
+        </div>
+        <div class="setting">
+          <label for="defaultMap">Standard-Kartenansicht</label>
+          <select id="defaultMap">
+            <option value="satellite">Satellit</option>
+            <option value="terrain" selected>Gelände</option>
+            <option value="standard">Standard</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Berechnungen & Bahnplanung -->
+      <section>
+        <h2>Bahnplanung</h2>
+        <div class="setting">
+          <label for="autoCalculate">Automatische Berechnung aktivieren</label>
+          <input type="checkbox" id="autoCalculate" checked>
+        </div>
+        <div class="setting">
+          <label for="showTimes">Fahrzeiten anzeigen</label>
+          <input type="checkbox" id="showTimes" checked>
+        </div>
+      </section>
     </div>
+
+    <section style="box-shadow: blue 0 0 10px;">
+      <h2>Info</h2>
+      <p>Bald gibts hier was einzustellen!</p>
+    </section>
 
     <!-- Hinweis zum Download -->
     <section>
