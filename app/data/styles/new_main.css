@@ -61,6 +61,16 @@
         backdrop-filter: blur(10px);
     }
 
+    .no-btn {
+        background: #ffffff41;
+        padding: 15px 18px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+        box-shadow: black 0 5px 10px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+
     section a {
         padding: 10px;
         background: blue;
