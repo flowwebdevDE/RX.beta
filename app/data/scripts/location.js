@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
             hour: '2-digit',
             minute: '2-digit'
         });
-        locationDisplay.textContent = `${date} - ${time}`;
+
+        locationDisplay.textContent = `${date} • ${time}`;
     }
 
     // Rufe die Funktion sofort auf, um die Zeit anzuzeigen

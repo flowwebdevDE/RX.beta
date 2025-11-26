@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera App</title>
+  <link rel="stylesheet" href="data/styles/kamera.css" />
+</head>
+<body>
+
+<div id="camera-screen">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <button class="icon-btn" id="flashBtn">⚡</button>
+    <button class="icon-btn" id="settingsBtn">⚙️</button>
+  </div>
+
+  <!-- Camera Preview -->
+  <video id="cameraPreview" autoplay playsinline></video>
+
+  <!-- Mode switch -->
+  <div class="mode-switch">
+    <span id="mode-photo" class="active">Foto</span>
+    <span id="mode-video">Video</span>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+
+    <!-- last photo preview -->
+    <img id="lastThumb" class="thumb" />
+
+    <!-- capture button -->
+    <div id="captureBtn" class="shutter"></div>
+    <div id="recordBtn" class="record-btn hidden"></div>
+    <div id="stopBtn" class="stop-btn hidden"></div>
+
+    <!-- switch camera -->
+    <button id="switchBtn" class="icon-btn">🔄</button>
+
+  </div>
+
+</div>
+
+<canvas id="canvas" style="display:none"></canvas>
+<video id="videoResult" controls style="display:none"></video>
+
+<script src="data/scripts/app.js"></script>
+<script src="data/scripts/lock.js"></script>
+</body>
+</html>
