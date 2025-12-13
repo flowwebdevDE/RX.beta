@@ -2,65 +2,63 @@
 <html lang="de">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rail Explorer – Einstellungen</title>
-  <link rel="icon" href="data/images/logos/logo.png" type="image/png">
-  <link rel="stylesheet" href="data/styles/new_main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rail Explorer</title>
+  <link rel="stylesheet" href="data/styles/start.css">
 </head>
 
 <body>
 
-  <header>
-    <a href="index.html" style="background: transparent; padding: 0; margin-right: 0;"><img src="data/images/logos/logo.png" alt="Logo"></a>
-    <h1>Einstellungen</h1>
-    <a href="https://median.co/share/bnazlwp#apk" id="only-android">App aktualisieren</a>
-  </header>
+  <div class="app">
 
-  <main>
-    <!-- Allgemeine Einstellungen -->
-    <section class="no-btn" style="box-shadow: blue 0 5px 10px; margin-top: 105px;">
-      <h2>Info</h2>
-      <p>Bald gibts hier was einzustellen!</p>
-    </section>
+    <!-- Header -->
+    <header class="header">
+      <h1>Rail Explorer</h1>
+      <p>Infos &amp; Einstellungen</p>
+      <a href="https://median.co/share/bnazlwp" class="btn primary-btn" style="position: fixed; right: 20px; top: 30px;">App
+        aktualisieren</a>
+    </header>
 
-    <!-- Hinweis zum Download -->
-    <section class="no-btn">
-      <h2>App-Update</h2>
-      <p>Für die neueste Version der Rail Explorer App für Android klicke auf den Button oben rechts.</p>
-    </section>
+    <!-- Content -->
+    <main class="content">
 
-    <section>
-      <h2>Kontakt</h2>
-      <p>Kontaktiere den Entwickler</p>
-      <a href="kontakt.html">Kontakt</a>
-    </section>
+      <!-- Primary Card -->
+      <div class="card primary">
+        <div class="card-text">
+          <h2>Info</h2>
+          <p>Hier gibts bald was einzustellen!</p>
+        </div>
+      </div>
 
-    <section class="no-btn">
-      <h2>Version</h2>
-      <p>Du nutzt aktuell <strong>Version 3.0<em>beta</em></strong>.</p>
-    </section>
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Version</h2>
+          <p>Du nutzt Version 3.1 beta 13.12.2025</p>
+        </div>
+      </div>
 
-  </main>
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>App-Update</h2>
+          <p>Tippe oben rechts um die Android-App auf die neueste Version zu aktualisieren.</p>
+        </div>
+      </div>
 
-  <script>
-    // Einstellungen speichern und laden
-    document.querySelectorAll('input, select').forEach(el => {
-      if (el.type === 'checkbox') {
-        el.checked = localStorage.getItem(el.id) === 'true' ? true : el.checked;
-      } else {
-        el.value = localStorage.getItem(el.id) || el.value;
-      }
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Kontakt</h2>
+          <p>Kontaktiere den Entwickler</p>
+        </div>
+        <a href="mailto:info@flowwebdesign.de" class="btn primary-btn">Mail senden</a>
+      </div>
 
-      el.addEventListener('change', () => {
-        if (el.type === 'checkbox') {
-          localStorage.setItem(el.id, el.checked);
-        } else {
-          localStorage.setItem(el.id, el.value);
-        }
-      });
-    });
-  </script>
+    </main>
+
+  </div>
 
 </body>
 
