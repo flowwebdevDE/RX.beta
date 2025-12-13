@@ -2,53 +2,69 @@
 <html lang="de">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rail Explorer – Start</title>
-  <link rel="icon" href="data/images/logos/logo.png" type="image/png">
-  <link rel="stylesheet" href="data/styles/new_main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rail Explorer</title>
+  <link rel="stylesheet" href="data/styles/start.css">
 </head>
 
 <body>
 
-  <header>
-    <img src="data/images/logos/logo.png" alt="Logo">
-    <h1>Rail Explorer<br><em style="font-size: 0.6em; color: rgb(180, 180, 180);">Version 3.0</em></h1>
-    <a href="changelog.html" id="only-android">Einstellungen & Infos</a>
-  </header>
+  <div class="app">
 
-  <main>
-    <!-- Allgemeine Einstellungen -->
-    <section style="margin-top: 105px;">
-      <h2>Chat-Bot Fahrzeitenrechner</h2>
-      <p>Berechne Fahrzeiten im übersichtlichen Chat modus.</p>
-      <a href="chat.html">Chat-Bot</a>
-    </section>
+    <!-- Header -->
+    <header class="header">
+      <h1>Willkommen bei<br>Rail Explorer</h1>
+      <p>Fahrzeiten &amp; Betriebsstellen<br>schnell berechnen</p>
+      <a href="changelog.html" class="btn primary-btn" style="position: fixed; right: 20px; top: 30px;">Infos</a>
+    </header>
 
-    <!-- Hinweis zum Download -->
-    <section>
-      <h2>Standart Fahrzeitenrechner</h2>
-      <p>Berechne Fahrzeiten individuell im Fahrzeitenrechner.</p>
-      <a href="main.html">Standart Fahrzeitenrechner</a>
-    </section>
+    <!-- Content -->
+    <main class="content">
 
-    <section>
-      <h2>Betriebstellensuche</h2>
-      <p>Finde Betriebstellen in deiner nähe und nach suche.</p>
-      <a href="finder.html">Betriebstellensuche</a>
-    </section>
+      <!-- Primary Card -->
+      <div class="card primary">
+        <div class="card-icon">💬</div>
+        <div class="card-text">
+          <h2>Chat-Fahrzeitenrechner</h2>
+          <p>Berechne Fahrzeiten im Dialog</p>
+        </div>
+        <a href="chat.html" class="btn primary-btn">Chat starten</a>
+      </div>
 
-    <section style="margin-bottom: 105px;">
-        <h2>Kamera (Beta-Version)</h2>
-        <p>Nehme hier deine Fotos auf ohne die App zu verlassen</p>
-        <a href="kamera.html">Kamera</a>
-    </section>
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <div class="card-text">
+          <h2>Standard Fahrzeitenrechner</h2>
+          <p>Berechne Fahrzeiten individuell</p>
+        </div>
+        <a href="main.html" class="btn primary-btn">Jetzt berechnen</a>
+      </div>
 
-  </main>
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-icon">📍</div>
+        <div class="card-text">
+          <h2>Betriebsstellensuche</h2>
+          <p>Finde Betriebsstellen in deiner Nähe</p>
+        </div>
+        <a href="finder.html" class="btn primary-btn">Betriebsstellen finden</a>
+      </div>
 
-  <footer>
-    &copy; 2025 Rail Explorer
-  </footer>
+      <div class="card">
+        <div class="card-icon"></div>
+        <div class="card-text">
+          <h2>Kamera</h2>
+          <p>Nehme Fotos auf ohne die Rail Explorer App zu verlassen</p>
+        </div>
+        <a href="kamera.html" class="btn primary-btn">Kamera öffnen</a>
+      </div>
+
+    </main>
+
+  </div>
+
 </body>
 
 </html>
