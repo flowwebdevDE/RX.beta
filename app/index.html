@@ -2,10 +2,12 @@
 <html lang="de">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rail Explorer</title>
   <link rel="stylesheet" href="data/styles/start.css">
+  <link rel="stylesheet" href="data/styles/wetter.css">
+  <script src="data/scripts/wetter/wetter.js"></script>
 </head>
 
 <body>
@@ -23,13 +25,14 @@
     <main class="content">
 
       <!-- Primary Card -->
-      <div class="card primary">
-        <div class="card-text">
-          <h2>Wetter</h2>
-          <p>Checke hier das Wetter an deiner Fotostelle</p>
-          <p style="font-size: 0.6em;"><em>Eine native integration der Wetter ansicht ist in Arbeit</em></p>
+      <div class="primary card">
+        <div id="weather-widget" class="weather-widget">
+          <i id="icon" class="wi wi-day-sunny"></i>
+          <div id="temp" class="weather-temp"></div>
+          <div id="text" class="weather-text"></div>
         </div>
-        <a href="https://flowwebdevde.github.io/wetter/" class="btn primary-btn">Wetter anzeigen</a>
+
+
       </div>
 
       <div class="card">
@@ -61,6 +64,7 @@
 
   </div>
 
+  <script src="data/scripts/darkmode.js"></script>
 </body>
 
 </html>
