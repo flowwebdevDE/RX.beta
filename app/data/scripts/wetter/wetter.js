@@ -1,6 +1,6 @@
-console.log("Auto weather loaded");
+console.log("Weather widget loaded");
 
-// --- Wettertext ---
+// --- Mapping Wettercodes zu Text ---
 const weatherText = code => ({
   0: 'Klarer Himmel',
   1: 'Überwiegend klar',
@@ -25,7 +25,7 @@ const weatherText = code => ({
   86: 'Starke Schneeschauer'
 }[code] || 'Unbekannt');
 
-// --- Icons (Weather App Style) ---
+// --- Mapping Wettercodes zu Weather Icons ---
 const iconForCode = c => {
   if (c === 0) return "wi-day-sunny";
   if (c === 1) return "wi-day-sunny-overcast";
@@ -42,41 +42,43 @@ const iconForCode = c => {
   return "wi-na";
 };
 
-// --- Fallback ---
+// --- Fallback, falls Wetter nicht verfügbar ---
 function renderUnavailable() {
-  document.getElementById('weather-widget').style.display = 'flex';
   document.getElementById('icon').className = "wi wi-na";
   document.getElementById('temp').textContent = "–";
   document.getElementById('text').textContent = "Kein Standortzugriff";
 }
 
-// --- Wetter laden ---
+// --- Wetter laden für bestimmte Koordinaten ---
 async function loadWeather(lat, lon) {
   try {
-    const r = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`
-    );
-    const j = await r.json();
-    const cw = j.current_weather;
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
+    const data = await res.json();
+    const cw = data.current_weather;
     if (!cw) return renderUnavailable();
 
-    document.getElementById('weather-widget').style.display = 'flex';
     document.getElementById('icon').className = `wi ${iconForCode(cw.weathercode)}`;
     document.getElementById('temp').textContent = `${Math.round(cw.temperature)}°C`;
     document.getElementById('text').textContent = weatherText(cw.weathercode);
 
-  } catch {
+  } catch (err) {
+    console.error(err);
     renderUnavailable();
   }
 }
 
-// --- Auto-Start ---
-window.addEventListener("load", () => {
+// --- Position abrufen und Wetter updaten ---
+function updateWeather() {
   if (!navigator.geolocation) return renderUnavailable();
 
   navigator.geolocation.getCurrentPosition(
-    p => loadWeather(p.coords.latitude, p.coords.longitude),
-    () => renderUnavailable(),
-    { timeout: 8000 }
+    pos => loadWeather(pos.coords.latitude, pos.coords.longitude),
+    () => renderUnavailable()
   );
+}
+
+// --- Auto-Start und wiederholtes Laden alle 20 Sekunden ---
+window.addEventListener("load", () => {
+  updateWeather(); // einmalig beim Laden
+  setInterval(updateWeather, 20000); // alle 20 Sekunden
 });
