@@ -252,7 +252,7 @@ html, body {
     overflow: hidden;
     width: 100vw;
     height: 100dvh;
-    background: url("../images/bg.jpg");
+    background: linear-gradient(180deg, #0a3d91, #081f3a);
     background-size: cover;
   }
 
