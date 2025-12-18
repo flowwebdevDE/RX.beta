@@ -1,0 +1,30 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css");
+
+.weather-widget {
+  display: flex;
+  align-items: center;
+  gap: 30px;                  
+
+  width: 100%;
+  padding: 8px 12px;
+  box-sizing: border-box;
+}
+
+/* Icon */
+#icon {
+  font-size: 36px;
+  color: #4f46e5;
+  flex-shrink: 0;
+}
+
+/* Temperatur */
+.weather-temp {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Text */
+.weather-text {
+  font-size: 14px;
+  opacity: 0.85;
+}
