@@ -6,241 +6,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Betriebsstellensuche</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 15px;
-            overflow: hidden; /* Verhindert Scrollen des Body */
-            font-family: "Segoe UI", Arial, sans-serif;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+        }
+
+        body {
             background: linear-gradient(180deg, #0a3d91, #081f3a);
-            background-size: cover;
-            backdrop-filter: blur(10px);
             color: white;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding:
+                calc(32px + env(safe-area-inset-top)) 24px 80px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: #f3f4f6;
+            color: #111;
+            margin: -60px 16px 0;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        /* ===== FORM ===== */
+        .form {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overscroll-behavior-y: contain; /* Verhindert "Pull-to-Refresh" */
-            text-align: center;
-        }
-
-        section {
-            background: rgba(0, 0, 0, 0.25);
-            padding: 20px;
-            margin: 15px;
-            border-radius: 25px;
-            min-width: 320px;
-            max-width: 600px;
-            min-height: auto;
-            width: 90%;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .buttons {
-            margin-top: 15px;
-            position: relative;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .search-container {
-            position: relative;
-            display: flex;
-            align-items: center;
+            gap: 12px;
         }
 
         input,
         select,
         button {
-            padding: 0.6rem 1rem;
-            border-radius: 9999px;
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border-radius: 12px;
             border: none;
-            font-weight: bold;
-            cursor: pointer;
+        }
+
+        input,
+        select {
+            background: white;
         }
 
         button {
-            background-color: #ffffff;
-            color: #1e40af;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-top: 8px;
+            padding: 12px 18px;
+            border-radius: 22px;
+            font-size: 15px;
+            font-weight: 500;
+            width: 100%;
+            text-align: center;
+            border: rgba(0, 0, 0, 0.442) 1px solid;
+            cursor: pointer;
+            background: #0a3e91a9;
+            color: white;
         }
 
-        button:hover,
-        select:hover,
-        input:hover {
-            background-color: #e0e7ff;
+        button:active {
+            opacity: 0.9;
         }
 
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
+        /* ===== SEARCH ===== */
+        .search-container {
+            position: relative;
+        }
+
+        #clearSearch {
+            position: absolute;
+            left: 45%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #9ca3af;
+            display: none;
+        }
+
+        /* ===== RESULTS ===== */
+        #status {
+            margin: 14px 0 6px;
+            font-size: 14px;
+            color: #6b7280;
         }
 
         ul {
             list-style: none;
             padding: 0;
-            max-height: 300px;
+            margin: 0;
+            max-height: 280px;
             overflow-y: auto;
-            margin-top: 15px;
         }
 
         li {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            border-radius: 15px;
-            margin-bottom: 5px;
-            cursor: pointer;
+            background: white;
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
         }
-        
-        li:focus {
-            outline: 2px solid #60a5fa;
-            outline-offset: -2px;
-        }
-        li:hover {
-            background: rgba(255, 255, 255, 0.1);
+
+        li:active {
+            background: #e5e7eb;
         }
 
         .ref {
-            font-size: 0.9rem;
-            color: #dbeafe;
+            font-size: 13px;
+            color: #6b7280;
         }
 
-        #status {
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-        
-        /* Lade-Spinner */
-        .loader {
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-left-color: #fff;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Clear-Button für Suche */
-        #clearSearch {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #9ca3af;
-            cursor: pointer;
-            padding: 5px;
-            font-size: 1.2rem;
-            display: none; /* wird per JS angezeigt */
-        }
-
-        /* Popup & Overlay */
+        /* ===== POPUP ===== */
         #popup-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 99;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
             opacity: 0;
-            transition: opacity 0.3s ease;
             pointer-events: none;
         }
 
         #popup {
             position: fixed;
-            top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 20px;
-            border-radius: 20px;
-            min-width: 250px;
-            max-width: 90%;
-            z-index: 100;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            text-align: left;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #popup h2 {
-            margin-top: 0;
-        }
-
-        #popup button {
-            margin-top: 15px;
-            display: block;
+            bottom: 0;
+            transform: translateX(-50%) translateY(100%);
+            background: white;
+            color: #111;
             width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            transition: 0.3s ease;
         }
 
         body.modal-open #popup-overlay {
             opacity: 1;
             pointer-events: auto;
         }
-        body.modal-open #popup {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
 
+        body.modal-open #popup {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
+
 </head>
 
 <body>
 
-    <section>
-    <div id="main-content">
+    <div class="hero">
         <h1>Betriebsstellensuche</h1>
-        <p>Finde Bahnhöfe in Deutschland nach Name oder DS100-Kürzel und entdecke die nächsten Stationen in deiner Nähe.
-        </p>
+        <p>Bahnhöfe nach Name oder DS100-Kürzel finden – oder in deiner Nähe.</p>
+    </div>
 
-        <div class="buttons">
+    <div class="card" id="main-content">
+        <div class="form">
             <select id="searchMode">
                 <option value="name">Name</option>
                 <option value="ref">DS100</option>
             </select>
+
             <div class="search-container">
                 <input id="search" type="text" placeholder="Suchbegriff…">
-                <button id="clearSearch" title="Suche leeren">&times;</button>
+                <button id="clearSearch">×</button>
             </div>
-            <button id="geoBtn">📍 Standort</button>
+
+            <button id="geoBtn">📍 Standort verwenden</button>
         </div>
 
         <p id="status">Lade Bahnhofs-Daten …</p>
         <ul id="results"></ul>
     </div>
-    </section>
 
-    <!-- Popup -->
     <div id="popup-overlay"></div>
-    <div id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-name">
+    <div id="popup">
         <h2 id="popup-name"></h2>
-        <p id="popup-ref"></p>
+        <p style="margin-top: 10px;" id="popup-ref"></p>
         <p id="popup-operator"></p>
         <p id="popup-coords"></p>
-        <button id="popup-close">Schließen</button>
+        <button style="margin-top: 10px;" id="popup-close">Schließen</button>
     </div>
+
     <script>
         // Konstanten für Selektoren und Klassen
         const SEARCH_MODES = {
@@ -272,7 +237,7 @@
 
         // === Hilfsfunktionen ===
         function debounce(func, delay = 300) {
-            return function(...args) {
+            return function (...args) {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {
                     func.apply(this, args);
@@ -338,10 +303,10 @@
                 const li = document.createElement('li');
                 li.innerHTML = `<strong>${name} (${ref})${dist}</strong><br>
                         <span class="ref">${operator} ${network ? `<br>${network}` : ''}</span>`;
-                
+
                 li.setAttribute('role', 'button');
                 li.setAttribute('tabindex', '0');
-                
+
                 const handleSelect = () => {
                     lastFocusedElement = document.activeElement;
                     vibrate();
@@ -362,12 +327,12 @@
         // === Popup anzeigen ===
         function showPopup(station) {
             popupName.textContent = station.tags.name || 'Unbenannt'; popupRef.textContent = `DS100: ${station.tags["railway:ref"] || '–'}`; popupOperator.textContent = `Betreiber: ${station.tags.operator || '–'}`; popupCoords.textContent = station.lat && station.lon ? `Koordinaten: ${station.lat.toFixed(5)}, ${station.lon.toFixed(5)}` : '';
-            
+
             // Schritt 1: Hintergrund für Screenreader ausblenden
             mainContent.setAttribute('aria-hidden', 'true');
-            
+
             document.body.classList.add('modal-open');
-            
+
             // Schritt 2: Fokus direkt in das Popup setzen
             popupClose.focus();
 
@@ -394,7 +359,7 @@
             // Wenn Tab gedrückt wird, verhindern wir das Standardverhalten und der Fokus bleibt.
             e.preventDefault();
         }
-        
+
         // === Suchfunktion (Start-of-Input + Sortierung) ===
         const handleSearch = e => {
             const term = e.target.value.toLowerCase().trim();
@@ -491,12 +456,12 @@
             searchInput.focus();
             handleSearch({ target: searchInput });
         });
-        
+
         // Alle Buttons mit Vibration ausstatten
         document.querySelectorAll('button').forEach(button => {
             button.addEventListener('click', vibrate);
         });
-        
+
         popupOverlay.addEventListener('click', closePopup);
         popupClose.addEventListener('click', closePopup);
 
@@ -517,7 +482,7 @@
         searchInput.addEventListener('input', debounce(handleSearch));
 
     </script>
-<script src="data/scripts/lock.js"></script>
+    <script src="data/scripts/lock.js"></script>
 </body>
 
 </html>
