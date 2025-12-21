@@ -1,0 +1,9 @@
+{
+  "name":"Rail Explorer App",
+  "short_name":"Rail Explorer",
+  "start_url":".",
+  "display":"standalone",
+  "background_color":"#ffffff",
+  "theme_color":"#1976d2",
+  "icons":[{"src":"data/images/logos/logo.png","sizes":"1024x1024","type":"image/png"}]
+}

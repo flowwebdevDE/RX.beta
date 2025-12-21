@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rail Explorer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="data/styles/start.css">
+  <link rel="stylesheet" href="data/styles/wetter.css">
+  <script src="data/scripts/wetter/wetter.js"></script>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <h1>Rail Explorer</h1>
+      <p>Fahrzeiten berechnen &amp;<br>Betriebsstellen schnell finden</p>
+      <a href="changelog.html" class="info-btn primary-btn" style="position: fixed; right: 20px; top: 0;">Infos</a>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- Primary Card -->
+      <div class="primary card">
+        <div class="card-text">
+          <h2>Wetter an deinem Standort</h2>
+          <div id="weather-widget" class="weather-widget">
+            <i id="icon" class="wi wi-na"></i>
+            <div id="temp" class="weather-temp"></div>
+            <div id="text" class="weather-text">Lade Wetterdaten…</div>
+          </div>
+        </div>
+        <a href="wetter/index.html" class="btn primary-btn">Mehr Wetter-Infos</a>
+      </div>
+
+      <div class="card">
+        <div class="card-text">
+          <h2>Chat-Fahrzeitenrechner</h2>
+          <p>Berechne Fahrzeiten im Dialog</p>
+        </div>
+        <a href="chat.html" class="btn primary-btn">Chat starten</a>
+      </div>
+
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Betriebsstellensuche</h2>
+          <p>Finde Betriebsstellen in deiner Nähe</p>
+        </div>
+        <a href="finder.html" class="btn primary-btn">Betriebsstellen finden</a>
+      </div>
+
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Standard Fahrzeitenrechner</h2>
+          <p>Berechne Fahrzeiten individuell</p>
+        </div>
+        <a href="main.html" class="btn primary-btn">Jetzt berechnen</a>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="data/scripts/darkmode.js"></script>
+</body>
+
+</html>
