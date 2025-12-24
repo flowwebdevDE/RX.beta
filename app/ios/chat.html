@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Rail Explorer - Chat Mode</title>
     <link rel="icon" href="data/images/logos/logo.png" type="images/png">
 
@@ -20,9 +20,14 @@
     <!-- Site CSS -->
     <link rel="stylesheet" href="data/styles/ki-mode.css">
 
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
 </head>
 
 <body style="overscroll-behavior-y: contain;">
+
     <!-- 
         overscroll-behavior-y: contain; verhindert das "Pull-to-Refresh"-Verhalten in der Android WebView.
     -->
@@ -69,9 +74,9 @@
                     errorMsg.textContent = 'Keine Internetverbindung. Der Chat-Modus benötigt eine aktive Verbindung.';
                     chatMessages.appendChild(errorMsg);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
-                    
+
                     // Verhindert, dass der eigentliche Sende-Event in ki.js ausgeführt wird.
-                    event.stopImmediatePropagation(); 
+                    event.stopImmediatePropagation();
                 }
             }, true); // 'true' (useCapture) stellt sicher, dass dieser Listener vor anderen läuft.
         }
