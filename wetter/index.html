@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Wetter</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/charts.js"></script>
+    <script src="scripts/day.js"></script>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+
+    <div class="searchContainer">
+        <input id="searchBox" placeholder="Ort suchen..." autocomplete="off">
+        <div id="suggestionsList"></div>
+        <button id="geoBtn">Standort nutzen</button>
+    </div>
+
+    <main>
+
+        <div id="weather" style="display:none">
+            <div class="card">
+                <h2 id="placeName">—</h2>
+                <p id="icon"></p>
+                <h2 id="temp">-</h2>
+                <div id="currentSummary"></div>
+                <div id="details"></div>
+                <div id="specialParamsDashboard"></div>
+            </div>
+
+            <div id="dailyOverview" class="card">
+                <h2>Tagesübersicht</h2>
+                <div id="hourlyForecastGrid"></div>
+            </div>
+
+            <div style="display: none;" id="hourlyChartContainer" class="card"></div>
+
+            <div class="card">
+                <details>
+                    <summary>7-Tage Vorschau anzeigen</summary>
+                    <div id="forecastGrid"></div>
+                </details>
+            </div>
+        </div>
+
+    </main>
+
+    <button id="installBtn" style="display:none;margin-top:12px">📱 App installieren</button>
+    <script src="scripts/app.js"></script>
+
+    <div id="offlineNotice" class="card" style="display:none;margin-top:12px;color:#c33;font-weight:600"></div>
+</body>
+
+</html>

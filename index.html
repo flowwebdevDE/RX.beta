@@ -2,31 +2,88 @@
 <html lang="de">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rail Explorer</title>
-    <link rel="icon" href="data/images/logos/logo.png" type="images/png">
-    <link rel="stylesheet" href="data/web.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rail Explorer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="data/styles/start.css">
+  <link rel="stylesheet" href="data/styles/wetter.css">
+  <script src="data/scripts/wetter/wetter.js"></script>
 </head>
 
 <body>
-    <header>
-        <img src="data/images/logos/logo.png" alt="App Logo" />
+
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <h1>Rail Explorer</h1>
+      <p>Fahrzeiten berechnen &amp;<br>Betriebsstellen schnell finden</p>
     </header>
 
-    <main>
-        <h1>Rail Explorer</h1>
-        <div class="buttons">
-            <a href="chat.html" class="btnX">Chat-Bot Fahrzeitenrechner</a>
-            <a href="main.html" class="btn">Standart Fahrzeitenrechner</a>
-            <a href="finder.html" class="btn">Betriebsstellensuche</a>
-            <a href="https://drive.google.com/drive/u/1/folders/1Ro3e0_hkJlrV1AdtOfQo-kYv1WBydcx3" class="btn">Lade die Rail Explorer Android App</a>
+    <!-- Content -->
+    <main class="content">
+
+      <!-- Primary Card -->
+      <div class="primary card">
+        <div class="card-text">
+          <h2>Wetter an deinem Standort</h2>
+          <div id="weather-widget" class="weather-widget">
+            <i id="icon" class="wi wi-na"></i>
+            <div id="temp" class="weather-temp"></div>
+            <div id="text" class="weather-text">Lade Wetterdaten…</div>
+          </div>
         </div>
+        <a href="wetter/index.html" class="btn primary-btn">Mehr Wetter-Infos</a>
+      </div>
+
+      <div class="card">
+        <div class="card-text">
+          <h2>Chat-Fahrzeitenrechner</h2>
+          <p>Berechne Fahrzeiten im Dialog</p>
+        </div>
+        <a href="chat.html" class="btn primary-btn">Chat starten</a>
+      </div>
+
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Betriebsstellensuche</h2>
+          <p>Finde Betriebsstellen in deiner Nähe</p>
+        </div>
+        <a href="finder.html" class="btn primary-btn">Betriebsstellen finden</a>
+      </div>
+
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Standard Fahrzeitenrechner</h2>
+          <p>Berechne Fahrzeiten individuell</p>
+        </div>
+        <a href="main.html" class="btn primary-btn">Jetzt berechnen</a>
+      </div>
+
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>iPhone und iPad App</h2>
+          <p>Tippe auf teilen und dann auf "Zum Startbildschirm hinzufügen" um die iOS App zu nutzen</p>
+        </div>
+      </div>
+
+      <!-- Secondary Card -->
+      <div class="card">
+        <div class="card-text">
+          <h2>Android App</h2>
+          <p>Lade dir hier die Android App herunter</p>
+        </div>
+        <a href="main.html" class="btn primary-btn">Jetzt herunterladen</a>
+      </div>
     </main>
 
-    <footer>
-        © 2025 Rail Explorer – <a href="changelog.html">Version 2.0.1</a>
-    </footer>
+  </div>
+
+  <script src="data/scripts/darkmode.js"></script>
 </body>
 
 </html>

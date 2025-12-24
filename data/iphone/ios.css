@@ -1,0 +1,10 @@
+    /* Dieses CSS wird per JS nur auf iOS-WebApp gesetzt */
+    body.ios-webapp {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .only-android {
+        display: none;
+    }

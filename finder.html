@@ -5,174 +5,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Betriebsstellensuche</title>
-    <link rel="icon" href="data/images/logos/logo.png" type="images/png">
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 15px;
-            overflow: hidden;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: url("data/images/bg.jpg");
-            background-size: cover;
-            backdrop-filter: blur(10px);
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #0a3d91, #081f3a);
             color: white;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding:
+                calc(32px + env(safe-area-inset-top)) 24px 80px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: #f3f4f6;
+            color: #111;
+            margin: -60px 16px 0;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        /* ===== FORM ===== */
+        .form {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
-
-        section {
-            background: rgba(0, 0, 0, 0.25);
-            padding: 20px;
-            margin: 15px;
-            border-radius: 25px;
-            min-width: 320px;
-            max-width: 600px;
-            min-height: auto;
-            width: 90%;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .buttons {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            gap: 12px;
         }
 
         input,
         select,
         button {
-            padding: 0.6rem 1rem;
-            border-radius: 9999px;
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border-radius: 12px;
             border: none;
-            font-weight: bold;
-            cursor: pointer;
+        }
+
+        input,
+        select {
+            background: white;
         }
 
         button {
-            background-color: white;
-            color: #1e40af;
-            transition: all 0.3s ease;
+            margin-top: 8px;
+            padding: 12px 18px;
+            border-radius: 22px;
+            font-size: 15px;
+            font-weight: 500;
+            width: 100%;
+            text-align: center;
+            border: rgba(0, 0, 0, 0.442) 1px solid;
+            cursor: pointer;
+            background: #0a3e91a9;
+            color: white;
         }
 
-        button:hover,
-        select:hover,
-        input:hover {
-            background-color: #e0e7ff;
+        button:active {
+            opacity: 0.9;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-container {
+            position: relative;
+        }
+
+        /* ===== RESULTS ===== */
+        #status {
+            margin: 14px 0 6px;
+            font-size: 14px;
+            color: #6b7280;
         }
 
         ul {
             list-style: none;
             padding: 0;
-            max-height: 300px;
+            margin: 0;
+            max-height: 280px;
             overflow-y: auto;
-            margin-top: 15px;
         }
 
         li {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            border-radius: 15px;
-            margin-bottom: 5px;
-            cursor: pointer;
+            background: white;
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        li:active {
+            background: #e5e7eb;
         }
 
         .ref {
-            font-size: 0.9rem;
-            color: #dbeafe;
+            font-size: 13px;
+            color: #6b7280;
         }
 
-        #status {
-            margin-top: 10px;
-            font-size: 0.9rem;
+        /* ===== POPUP ===== */
+        #popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
         }
 
-        /* Popup-Details */
         #popup {
             position: fixed;
-            top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 20px;
-            border-radius: 20px;
-            min-width: 250px;
-            max-width: 90%;
-            z-index: 100;
-            transition: transform 0.2s ease;
-            text-align: left;
-        }
-
-        #popup h2 {
-            margin-top: 0;
-        }
-
-        #popup button {
-            margin-top: 15px;
-            display: block;
+            bottom: 0;
+            transform: translateX(-50%) translateY(100%);
+            background: white;
+            color: #111;
             width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            transition: 0.3s ease;
         }
 
-        #popup.show {
-            transform: translate(-50%, -50%) scale(1);
+        body.modal-open #popup-overlay {
+            opacity: 1;
+            pointer-events: auto;
         }
 
+        body.modal-open #popup {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
+
 </head>
 
 <body>
 
-    <section>
+    <div class="hero">
         <h1>Betriebsstellensuche</h1>
-        <p>Finde Bahnhöfe in Deutschland nach Name oder DS100-Kürzel und entdecke die nächsten Stationen in deiner Nähe.
-        </p>
+        <p>Bahnhöfe nach Name oder DS100-Kürzel finden – oder in deiner Nähe.</p>
+    </div>
 
-        <div class="buttons">
+    <div class="card" id="main-content">
+        <div class="form">
             <select id="searchMode">
                 <option value="name">Name</option>
                 <option value="ref">DS100</option>
             </select>
-            <input id="search" type="text" placeholder="Suchbegriff…">
-            <button id="geoBtn">📍 Standort</button>
+
+            <div class="search-container">
+                <input id="search" type="text" placeholder="Suchbegriff…">
+            </div>
+
+            <button id="geoBtn">📍 Standort verwenden</button>
         </div>
 
         <p id="status">Lade Bahnhofs-Daten …</p>
         <ul id="results"></ul>
-    </section>
+    </div>
 
-    <!-- Popup -->
+    <div id="popup-overlay"></div>
     <div id="popup">
         <h2 id="popup-name"></h2>
-        <p id="popup-ref"></p>
+        <p style="margin-top: 10px;" id="popup-ref"></p>
         <p id="popup-operator"></p>
-        <p id="score"></p>
         <p id="popup-coords"></p>
-        <button id="popup-close">Schließen</button>
+        <button style="margin-top: 10px;" id="popup-close">Schließen</button>
     </div>
+
     <script>
+        // Konstanten für Selektoren und Klassen
+        const SEARCH_MODES = {
+            NAME: 'name',
+            REF: 'ref'
+        };
+
         const searchInput = document.getElementById('search');
         const searchMode = document.getElementById('searchMode');
         const geoBtn = document.getElementById('geoBtn');
+        const mainContent = document.getElementById('main-content');
         const resultsList = document.getElementById('results');
         const statusText = document.getElementById('status');
 
         const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
         const popupName = document.getElementById('popup-name');
         const popupRef = document.getElementById('popup-ref');
         const popupOperator = document.getElementById('popup-operator');
@@ -182,6 +218,29 @@
         let stations = [];
         let currentPosition = null;
         let refreshTimer = null;
+        let debounceTimer = null;
+        let lastFocusedElement = null;
+
+        // === Hilfsfunktionen ===
+        function debounce(func, delay = 300) {
+            return function (...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
+        // Haptisches Feedback für Android
+        function vibrate() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50); // 50ms Vibration
+            }
+        }
+
+        function showLoader() {
+            resultsList.innerHTML = '<li><div class="loader"></div></li>';
+        }
 
         // === JSON laden ===
         async function loadStations() {
@@ -210,7 +269,7 @@
         function renderStations(filtered) {
             resultsList.innerHTML = '';
             if (filtered.length === 0) {
-                resultsList.innerHTML = '<li>Keine Treffer</li>';
+                resultsList.innerHTML = '<li>Keine Bahnhöfe gefunden.</li>';
                 return;
             }
 
@@ -229,46 +288,92 @@
 
                 const li = document.createElement('li');
                 li.innerHTML = `<strong>${name} (${ref})${dist}</strong><br>
-                        <span class="ref">${operator} <br>${network}</span>`;
-                li.addEventListener('click', () => showPopup(s));
+                        <span class="ref">${operator} ${network ? `<br>${network}` : ''}</span>`;
+
+                li.setAttribute('role', 'button');
+                li.setAttribute('tabindex', '0');
+
+                const handleSelect = () => {
+                    lastFocusedElement = document.activeElement;
+                    vibrate();
+                    showPopup(s);
+                };
+
+                li.addEventListener('click', handleSelect);
+                li.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSelect();
+                    }
+                });
                 resultsList.appendChild(li);
             }
         }
 
-
         // === Popup anzeigen ===
         function showPopup(station) {
-            popupName.textContent = station.tags.name || 'Unbenannt';
-            popupRef.textContent = `DS100: ${station.tags["railway:ref"] || '–'}`;
-            popupOperator.textContent = `Betreiber: ${station.tags.operator || '–'}`;
-            popupCoords.textContent = station.lat && station.lon ? `Koordinaten: ${station.lat.toFixed(5)}, ${station.lon.toFixed(5)}` : '';
-            popup.classList.add('show');
+            popupName.textContent = station.tags.name || 'Unbenannt'; popupRef.textContent = `DS100: ${station.tags["railway:ref"] || '–'}`; popupOperator.textContent = `Betreiber: ${station.tags.operator || '–'}`; popupCoords.textContent = station.lat && station.lon ? `Koordinaten: ${station.lat.toFixed(5)}, ${station.lon.toFixed(5)}` : '';
+
+            // Schritt 1: Hintergrund für Screenreader ausblenden
+            mainContent.setAttribute('aria-hidden', 'true');
+
+            document.body.classList.add('modal-open');
+
+            // Schritt 2: Fokus direkt in das Popup setzen
+            popupClose.focus();
+
+            // Schritt 3: Die "Focus Trap" aktivieren
+            popup.addEventListener('keydown', trapFocus);
+            document.addEventListener('keydown', handleEscape);
         }
 
-        popupClose.addEventListener('click', () => popup.classList.remove('show'));
+        function closePopup() {
+            document.body.classList.remove('modal-open');
+            mainContent.setAttribute('aria-hidden', 'false');
+            popup.removeEventListener('keydown', trapFocus);
+            document.removeEventListener('keydown', handleEscape);
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        const handleEscape = (e) => e.key === 'Escape' && closePopup();
+
+        function trapFocus(e) {
+            if (e.key !== 'Tab') return;
+            // Im Popup gibt es nur ein fokussierbares Element: den Button
+            // Wenn Tab gedrückt wird, verhindern wir das Standardverhalten und der Fokus bleibt.
+            e.preventDefault();
+        }
 
         // === Suchfunktion (Start-of-Input + Sortierung) ===
-        searchInput.addEventListener('input', e => {
+        const handleSearch = e => {
             const term = e.target.value.toLowerCase().trim();
             const mode = searchMode.value;
-            if (!term) { if (currentPosition) updateNearbyStations(); return; }
+
+            if (!term) {
+                if (currentPosition) {
+                    updateNearbyStations();
+                } else {
+                    resultsList.innerHTML = '';
+                }
+                return;
+            }
 
             let filtered = stations.filter(s => {
-                const value = mode === 'name' ? (s.tags.name || '').toLowerCase() : (s.tags["railway:ref"] || '').toLowerCase();
+                const value = mode === SEARCH_MODES.NAME ? (s.tags.name || '').toLowerCase() : (s.tags["railway:ref"] || '').toLowerCase();
                 return value.startsWith(term);
             });
 
             // Sortierung: exakte Matches oben (falls unterschiedlich lang)
             filtered.sort((a, b) => {
-                const aVal = mode === 'name' ? (a.tags.name || '').toLowerCase() : (a.tags["railway:ref"] || '').toLowerCase();
-                const bVal = mode === 'name' ? (b.tags.name || '').toLowerCase() : (b.tags["railway:ref"] || '').toLowerCase();
-                const aScore = aVal.startsWith(term) ? 1 : 0;
-                const bScore = bVal.startsWith(term) ? 1 : 0;
-                return bScore - aScore;
+                const aVal = (mode === SEARCH_MODES.NAME ? a.tags.name : a.tags["railway:ref"]) || '';
+                const bVal = (mode === SEARCH_MODES.NAME ? b.tags.name : b.tags["railway:ref"]) || '';
+                return aVal.length - bVal.length;
             });
 
             renderStations(filtered);
-        });
+        };
 
         // === Umkreissuche ===
         function updateNearbyStations() {
@@ -289,33 +394,65 @@
         function startGeoTracking() {
             if (!navigator.geolocation) {
                 statusText.textContent = 'Geolocation nicht unterstützt';
+                geoBtn.disabled = true;
                 return;
             }
+
+            showLoader();
+            geoBtn.disabled = true;
+            geoBtn.textContent = 'Suche...';
+            const originalStatus = statusText.textContent;
+            statusText.textContent = 'Standort wird ermittelt...';
+
             navigator.geolocation.getCurrentPosition(
                 pos => {
                     currentPosition = pos.coords;
                     updateNearbyStations();
-                    statusText.textContent = '';
+                    statusText.textContent = originalStatus.startsWith('Geladen:') ? originalStatus : '';
                     if (refreshTimer) clearInterval(refreshTimer);
                     refreshTimer = setInterval(updateNearbyStations, 5 * 60 * 1000);
+                    geoBtn.textContent = '📍 Standort';
+                    geoBtn.disabled = false;
                 },
                 err => {
                     statusText.textContent = 'Standortzugriff verweigert';
+                    geoBtn.textContent = '📍 Standort';
+                    geoBtn.disabled = true; // Keep it disabled if permission is denied
                     console.error(err);
                 }
             );
         }
 
+        // Funktion, um von Android aufgerufen zu werden
+        function updatePositionFromNative(latitude, longitude) {
+            console.log(`Position von Android erhalten: ${latitude}, ${longitude}`);
+            currentPosition = { latitude, longitude };
+            updateNearbyStations();
+            // Deaktiviere Web-Geolocation, wenn native Daten kommen
+            geoBtn.disabled = true;
+            geoBtn.textContent = '📍 Standort (nativ)';
+            if (refreshTimer) clearInterval(refreshTimer);
+        }
+
         geoBtn.addEventListener('click', startGeoTracking);
+
+        // Alle Buttons mit Vibration ausstatten
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', vibrate);
+        });
+
+        popupOverlay.addEventListener('click', closePopup);
+        popupClose.addEventListener('click', closePopup);
 
         // === Start ===
         (async () => {
-            await loadStations();
-            startGeoTracking(); // automatisch
+            await loadStations(); startGeoTracking(); // automatisch
         })();
 
-    </script>
+        searchInput.addEventListener('input', debounce(handleSearch));
 
+    </script>
+    <script src="data/scripts/lock.js"></script>
 </body>
 
 </html>

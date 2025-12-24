@@ -39,7 +39,7 @@
 
  section {
    background: var(--card-bg);
-   border-radius: 1rem;
+   border-radius: 25px;
    box-shadow: var(--shadow);
    padding: 1.8rem 2rem;
    margin-bottom: 2rem;
@@ -109,18 +109,17 @@
  }
 
  footer {
-  background: var(--primary);
-  backdrop-filter: blur(10px);
-  color: white;
+   background: transparent;
+   color: white;
  }
 
  footer a {
-  text-decoration: none;
-  color: antiquewhite;
-  font-weight: bold;
+   text-decoration: none;
+   color: antiquewhite;
+   font-weight: bold;
  }
 
  footer a:hover {
-  text-decoration: underline;
-  color: azure;
+   text-decoration: underline;
+   color: azure;
  }
