@@ -36,6 +36,7 @@ body {
     background: var(--bg-gradient);
     background-repeat: no-repeat;
     color: var(--text-main);
+    min-height: 100vh;
 }
 
 main {
