@@ -315,7 +315,8 @@ body {
     border-radius: 0;
     margin: 0;
     padding: 0.7rem;
-    background: rgba(0, 0, 0, 0);
+    padding-bottom: 35px;
+    background: rgba(0, 0, 0, 0.18);
     backdrop-filter: blur(10px);
     border-top: 1px solid #00000000;
   }
