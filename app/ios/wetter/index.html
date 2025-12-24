@@ -13,22 +13,22 @@
 
 <body>
 
+    <div class="searchContainer">
+        <input id="searchBox" placeholder="Ort suchen..." autocomplete="off">
+        <div id="suggestionsList"></div>
+        <button id="geoBtn">Standort nutzen</button>
+    </div>
 
     <main>
 
         <div id="weather" style="display:none">
             <div class="card">
-                <div style="margin-top: 0; border-radius: 15px; position: relative; padding: 5px; background: rgba(255, 255, 255, 0.383);">
-                    <input id="searchBox" placeholder="Ort suchen..." autocomplete="off">
-                    <div id="suggestionsList"></div>
-                    <button id="geoBtn">Standort nutzen</button>
-                </div>
                 <h2 id="placeName">—</h2>
                 <p id="icon"></p>
                 <h2 id="temp">-</h2>
                 <div id="currentSummary"></div>
                 <div id="details"></div>
-                <div style="display: none;" id="specialParamsDashboard"></div>
+                <div id="specialParamsDashboard"></div>
             </div>
 
             <div id="dailyOverview" class="card">
@@ -41,7 +41,7 @@
             <div class="card">
                 <details>
                     <summary>7-Tage Vorschau anzeigen</summary>
-                <div id="forecastGrid"></div>
+                    <div id="forecastGrid"></div>
                 </details>
             </div>
         </div>

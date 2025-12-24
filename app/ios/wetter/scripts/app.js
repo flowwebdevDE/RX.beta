@@ -99,10 +99,10 @@ function render(data, lat, lon, label) {
 
     let detailsHTML = `Sonnenaufgang: ${sunrise}<br>Sonnenuntergang: ${sunset}`;
 
-    //const nextDayMinTemp = data.daily.temperature_2m_min[1];
-    //if (nextDayMinTemp <= 0) {
-    //    detailsHTML += `<br><br><strong style="padding:10px; background:rgba(0,0,255,0.45); border-radius:25px; color:#fff;">❄️ Frostwarnung: Auto abdecken!</strong>`;
-    //}
+    const nextDayMinTemp = data.daily.temperature_2m_min[1];
+    if (nextDayMinTemp <= 0) {
+        detailsHTML += `<br><br><strong style=" display:none; padding:10px; background:rgba(0,0,255,0.45); border-radius:22px; color:#fff;">Es wird kalt</strong>`;
+    }
 
     document.getElementById('details').innerHTML = detailsHTML;
 
@@ -146,7 +146,7 @@ const Specials = {
             <ul style="list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:10px;">
                 <li style="background:#FFEB3B; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">☀ UV-Index: <strong>${this.getValue(h.uv_index)}</strong></li>
                 <li style="background:#90CAF9; display:none; padding:10px; border-radius:10px; flex:1 1 120px;">🌡 Taupunkt: <strong>${this.getValue(h.dewpoint_2m)}°C</strong></li>
-                <li style="background:#B3E5FC; padding:10px; border-radius:10px; flex:1 1 120px;">🌫 Sicht: <strong>${this.getValue(h.visibility)} m</strong></li>
+                <li style="background:#B3E5FC; padding:10px; border-radius:22px; flex:1 1 120px;">Sichtweite: <strong>${this.getValue(h.visibility)} m</strong></li>
                 <li style="background:#C8E6C9; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">❄ Schneefall: <strong>${this.getValue(h.snowfall)} cm</strong></li>
                 <li style="background:#BDBDBD; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">🏔 Schneehöhe: <strong>${this.getValue(h.snow_height)} cm</strong></li>
                 <li style="background:#FFC107; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">🧭 Luftdruck: <strong>${this.getValue(h.pressure_msl)} hPa</strong></li>

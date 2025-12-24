@@ -93,18 +93,6 @@
             position: relative;
         }
 
-        #clearSearch {
-            position: absolute;
-            left: 45%;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #9ca3af;
-            display: none;
-        }
-
         /* ===== RESULTS ===== */
         #status {
             margin: 14px 0 6px;
@@ -187,7 +175,6 @@
 
             <div class="search-container">
                 <input id="search" type="text" placeholder="Suchbegriff…">
-                <button id="clearSearch">×</button>
             </div>
 
             <button id="geoBtn">📍 Standort verwenden</button>
@@ -217,7 +204,6 @@
         const searchMode = document.getElementById('searchMode');
         const geoBtn = document.getElementById('geoBtn');
         const mainContent = document.getElementById('main-content');
-        const clearSearchBtn = document.getElementById('clearSearch');
         const resultsList = document.getElementById('results');
         const statusText = document.getElementById('status');
 
@@ -364,7 +350,6 @@
         const handleSearch = e => {
             const term = e.target.value.toLowerCase().trim();
             const mode = searchMode.value;
-            clearSearchBtn.style.display = term ? 'block' : 'none';
 
             if (!term) {
                 if (currentPosition) {
@@ -451,12 +436,6 @@
 
         geoBtn.addEventListener('click', startGeoTracking);
 
-        clearSearchBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            searchInput.focus();
-            handleSearch({ target: searchInput });
-        });
-
         // Alle Buttons mit Vibration ausstatten
         document.querySelectorAll('button').forEach(button => {
             button.addEventListener('click', vibrate);
@@ -467,15 +446,6 @@
 
         // === Start ===
         (async () => {
-            // Service Worker registrieren
-            if ('serviceWorker' in navigator) {
-                try {
-                    await navigator.serviceWorker.register('./data/sw.js');
-                    console.log('Service Worker erfolgreich registriert.');
-                } catch (error) {
-                    console.error('Service Worker Registrierung fehlgeschlagen:', error);
-                }
-            }
             await loadStations(); startGeoTracking(); // automatisch
         })();
 
