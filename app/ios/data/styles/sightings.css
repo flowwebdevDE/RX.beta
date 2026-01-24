@@ -17,15 +17,19 @@
     padding: 0;
 }
 
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     display: flex;
     justify-content: center;
-    height: 100vh;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+    height: 100dvh;
+    overflow: hidden;
 }
 
 /* Login Overlay */
@@ -86,25 +90,28 @@ body {
     max-width: 800px;
     background-color: #e5ddd5; /* WhatsApp-like background color base */
     background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    position: relative;
 }
 
 #chat-header {
     padding: 10px 16px;
+    padding-top: max(10px, env(safe-area-inset-top));
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     gap: 15px;
-    height: 60px;
+    min-height: 60px;
+    flex-shrink: 0;
+    z-index: 10;
 }
 
 .back-icon {
-    font-size: 32px;
-    text-decoration: none;
+    display: flex;
+    align-items: center;
     color: var(--accent-color);
-    line-height: 1;
-    padding-bottom: 4px;
+    padding: 5px;
 }
 
 .header-info { flex-grow: 1; }
@@ -112,7 +119,7 @@ body {
 #chat-header p { font-size: 12px; color: var(--secondary-text-color); margin: 0; }
 
 #notify-btn {
-    background: none; border: none; font-size: 20px; cursor: pointer; opacity: 0.5;
+    background: none; border: none; cursor: pointer; opacity: 0.5; color: var(--accent-color); display: flex; align-items: center;
 }
 #notify-btn.active { opacity: 1; }
 
@@ -123,6 +130,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .sighting {
@@ -170,6 +178,8 @@ body {
     background-color: var(--card-background);
     gap: 10px;
     padding-bottom: max(10px, env(safe-area-inset-bottom));
+    flex-shrink: 0;
+    z-index: 10;
 }
 
 #sighting-input {
@@ -202,6 +212,27 @@ body {
     opacity: 0.8;
 }
 
-#send-btn img {
-    filter: brightness(0) invert(1);
+#send-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    margin-right: 2px; /* Optische Korrektur für Papierflieger */
+}
+
+#scroll-bottom-btn {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--card-background);
+    color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
 }

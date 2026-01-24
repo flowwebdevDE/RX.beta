@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('send-btn');
     const statusText = document.getElementById('status-text');
     const notifyBtn = document.getElementById('notify-btn');
+    const scrollBottomBtn = document.getElementById('scroll-bottom-btn');
     
     // Login Elemente
     const loginOverlay = document.getElementById('login-overlay');
@@ -156,6 +157,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners
     sendBtn.addEventListener('click', postSighting);
     input.addEventListener('keypress', (e) => e.key === 'Enter' && postSighting());
+
+    // Scroll-to-Bottom Button Logik
+    messagesContainer.addEventListener('scroll', () => {
+        const isNearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 100;
+        if (isNearBottom) {
+            scrollBottomBtn.classList.add('hidden');
+        } else {
+            scrollBottomBtn.classList.remove('hidden');
+        }
+    });
+
+    scrollBottomBtn.addEventListener('click', () => {
+        messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+    });
 
     function startApp() {
         setupNotifications();
