@@ -696,7 +696,18 @@ document.addEventListener('DOMContentLoaded', () => {
         sightingDiv.appendChild(contentP);
         sightingDiv.appendChild(metaP);
 
-        // Long Press für Optionen Menü
+        // Long Press für Optionen Menü (Mobile Optimierung)
+        let pressTimer;
+
+        sightingDiv.addEventListener('touchstart', () => {
+            pressTimer = setTimeout(() => {
+                showMessageOptions(sighting);
+            }, 500); // 500ms gedrückt halten
+        }, { passive: true });
+
+        sightingDiv.addEventListener('touchend', () => clearTimeout(pressTimer));
+        sightingDiv.addEventListener('touchmove', () => clearTimeout(pressTimer));
+
         sightingDiv.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             showMessageOptions(sighting);
