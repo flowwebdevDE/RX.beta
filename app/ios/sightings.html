@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Rail Explorer - Sichtungsgruppe</title>
+    <link rel="icon" href="data/images/logos/logo.png" type="image/png">
+    <link rel="stylesheet" href="data/styles/sightings.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body style="overscroll-behavior-y: contain;">
+
+    <!-- Login Overlay für Beta-Test -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <img src="data/images/logos/logo.png" alt="Logo" class="login-logo">
+            <h2>Beta Zugang</h2>
+            <p>Bitte gib den Zugangscode ein, um die Sichtungsgruppe zu nutzen.</p>
+            <input type="text" id="access-code" placeholder="Code eingeben" autocomplete="off">
+            <button id="login-btn">Beitreten</button>
+            <p id="login-error" style="display:none; color: red; margin-top: 10px; font-size: 14px;">Falscher Code</p>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div id="chat-container">
+            <div id="chat-header">
+                <a class="back-icon" href="index.html">‹</a>
+                <div class="header-info">
+                    <h1>Sichtungsgruppe</h1>
+                    <p id="status-text">Verbinde...</p>
+                </div>
+                <button id="notify-btn" title="Benachrichtigungen aktivieren">🔔</button>
+            </div>
+            <div id="chat-messages">
+                <!-- Sichtungen werden hier geladen -->
+            </div>
+            <div id="user-input-container">
+                <input type="text" id="sighting-input" placeholder="z.B. ICE 511 in Fulda Richtung Süden">
+                <button id="send-btn"><img src="data/images/send_icon.png" style="width: 25px; height: auto;"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/scripts/sightings.js"></script>
+    <script>
+        // Haptisches Feedback
+        function vibrate() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50); // 50ms Vibration
+            }
+        }
+        document.getElementById('send-btn')?.addEventListener('click', vibrate);
+    </script>
+</body>
+</html>
