@@ -59,37 +59,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 3. App Logic ---
-    let lastKnownCount = 0;
+    let knownIds = new Set();
+    let isFirstLoad = true;
 
     // Funktion zum Abrufen und Anzeigen von Sichtungen
     async function fetchSightings() {
         try {
-            const response = await fetch(API_URL);
+            // userId mitsenden für Online-Status
+            const response = await fetch(`${API_URL}?userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Netzwerk-Antwort war nicht ok.');
             }
-            const sightings = await response.json();
-            statusText.textContent = 'Online';
-
-            messagesContainer.innerHTML = ''; // Leere den Container
-            if (sightings.length === 0) {
-                messagesContainer.innerHTML = '<p class="meta" style="text-align: center;">Noch keine Sichtungen vorhanden. Sei der Erste!</p>';
+            
+            const data = await response.json();
+            let sightings = [];
+            
+            // Neue Struktur verarbeiten ({ messages: [], onlineCount: 1 })
+            if (data.messages) {
+                sightings = data.messages;
+                statusText.textContent = `Online • ${data.onlineCount} Nutzer`;
             } else {
-                sightings.forEach(addSightingToDOM);
+                sightings = data; // Fallback falls Server noch alt ist
+                statusText.textContent = 'Online';
             }
 
-            // Check für neue Nachrichten (Push Simulation)
-            if (lastKnownCount > 0 && sightings.length > lastKnownCount) {
-                const lastMsg = sightings[sightings.length - 1];
-                // Nur benachrichtigen, wenn Nachricht nicht von mir ist
-                if (lastMsg.userId !== userId && Notification.permission === 'granted') {
-                    new Notification("Neue Zugsichtung", { body: lastMsg.text, icon: 'data/images/logos/logo.png' });
+            // Platzhalter entfernen oder anzeigen
+            if (sightings.length > 0) {
+                const placeholder = messagesContainer.querySelector('p.meta');
+                if (placeholder && placeholder.textContent.includes('Noch keine')) {
+                    messagesContainer.innerHTML = '';
                 }
+            } else if (knownIds.size === 0) {
+                messagesContainer.innerHTML = '<p class="meta" style="text-align: center;">Noch keine Sichtungen vorhanden. Sei der Erste!</p>';
+                return;
             }
-            lastKnownCount = sightings.length;
 
-            // Zum neuesten Beitrag scrollen
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            let addedNew = false;
+            sightings.forEach(sighting => {
+                if (!knownIds.has(sighting.id)) {
+                    addSightingToDOM(sighting);
+                    knownIds.add(sighting.id);
+                    addedNew = true;
+
+                    // Notification logic: Nur wenn nicht erster Load und nicht eigene Nachricht
+                    if (!isFirstLoad && sighting.userId !== userId && Notification.permission === 'granted') {
+                        new Notification("Neue Zugsichtung", { body: sighting.text, icon: 'data/images/logos/logo.png' });
+                    }
+                }
+            });
+
+            if (addedNew || isFirstLoad) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            isFirstLoad = false;
         } catch (error) {
             console.error('Fehler beim Abrufen der Sichtungen:', error);
             statusText.textContent = 'Verbindungsproblem...';
@@ -145,8 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const newSighting = await response.json();
-            addSightingToDOM(newSighting); // Füge die neue Sichtung sofort hinzu
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            if (!knownIds.has(newSighting.id)) {
+                addSightingToDOM(newSighting);
+                knownIds.add(newSighting.id);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
             input.value = ''; // Leere das Eingabefeld
         } catch (error) {
             console.error('Fehler beim Senden der Sichtung:', error);
@@ -175,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startApp() {
         setupNotifications();
         fetchSightings();
-        setInterval(fetchSightings, 10000); // Alle 10 Sekunden prüfen
+        setInterval(fetchSightings, 2000); // Alle 2 Sekunden prüfen (Echtzeit-Feeling)
     }
 
     checkAccess(); // Startpunkt

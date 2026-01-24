@@ -50,12 +50,48 @@ const corsHeaders = {
 };
 
 async function getSightings(request, env) {
+  const url = new URL(request.url);
+  const userId = url.searchParams.get('userId');
+
+  // 1. Nachrichten laden
   const sightingsJSON = await env.SIGHTINGS_KV.get('all');
   const sightings = sightingsJSON ? JSON.parse(sightingsJSON) : [];
 
   sightings.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-  return new Response(JSON.stringify(sightings), {
+  // 2. Online-Status Logik
+  let onlineCount = 1;
+  if (userId) {
+    const now = Date.now();
+    let activeUsers = {};
+    try {
+      const activeJSON = await env.SIGHTINGS_KV.get('active_users');
+      if (activeJSON) activeUsers = JSON.parse(activeJSON);
+    } catch (e) {}
+
+    let needsWrite = false;
+    
+    // Nutzer aktualisieren (nur alle 10s schreiben, um KV-Limits zu schonen)
+    if (!activeUsers[userId] || (now - activeUsers[userId] > 10000)) {
+      activeUsers[userId] = now;
+      needsWrite = true;
+    }
+
+    // Inaktive Nutzer entfernen (> 30s keine Aktivität)
+    const threshold = now - 30000;
+    for (const id in activeUsers) {
+      if (activeUsers[id] < threshold) {
+        delete activeUsers[id];
+        needsWrite = true;
+      }
+    }
+    onlineCount = Object.keys(activeUsers).length;
+
+    if (needsWrite) await env.SIGHTINGS_KV.put('active_users', JSON.stringify(activeUsers));
+  }
+
+  // Rückgabe jetzt als Objekt mit Nachrichten UND Anzahl
+  return new Response(JSON.stringify({ messages: sightings, onlineCount }), {
     headers: {
       'Content-Type': 'application/json',
       ...corsHeaders,
