@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. App Logic ---
     let knownIds = new Set();
     let isFirstLoad = true;
+    let lastRenderedDate = null;
 
     // Funktion zum Abrufen und Anzeigen von Sichtungen
     async function fetchSightings() {
@@ -121,6 +122,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funktion zum Hinzufügen einer einzelnen Sichtung zum DOM
     function addSightingToDOM(sighting) {
+        const date = new Date(sighting.timestamp);
+        const dateKey = date.toDateString(); // Eindeutiger String für den Tag (ohne Zeit)
+
+        // Prüfen, ob wir eine Datumstrennlinie brauchen
+        if (lastRenderedDate !== dateKey) {
+            const separator = document.createElement('div');
+            separator.className = 'date-separator';
+            
+            const now = new Date();
+            const yesterday = new Date(now);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (dateKey === now.toDateString()) {
+                separator.textContent = 'Heute';
+            } else if (dateKey === yesterday.toDateString()) {
+                separator.textContent = 'Gestern';
+            } else {
+                separator.textContent = date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
+            
+            messagesContainer.appendChild(separator);
+            lastRenderedDate = dateKey;
+        }
+
         const sightingDiv = document.createElement('div');
         
         // Unterscheidung: Eigene vs. Fremde Nachricht
@@ -134,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const metaP = document.createElement('p');
         metaP.className = 'meta';
         // Formatiere das Datum leserlich
-        const date = new Date(sighting.timestamp);
         metaP.textContent = date.toLocaleString('de-DE', {
             hour: '2-digit',
             minute: '2-digit',

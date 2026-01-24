@@ -133,6 +133,17 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+.date-separator {
+    align-self: center;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    margin: 8px 0;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+
 .sighting {
     padding: 8px 12px;
     border-radius: 16px;
