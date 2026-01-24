@@ -36,6 +36,12 @@ export default {
       if (request.method === 'POST') {
         return postSighting(request, env);
       }
+      if (request.method === 'PUT') {
+        return editSighting(request, env);
+      }
+      if (request.method === 'DELETE') {
+        return deleteSighting(request, env);
+      }
     } catch (err) {
       return new Response(JSON.stringify({ error: err.message }), {
         status: 500,
@@ -53,7 +59,7 @@ export default {
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
@@ -141,7 +147,7 @@ async function getSightings(request, env) {
 }
 
 async function postSighting(request, env) {
-  const { text, userId, groupId } = await request.json();
+  const { text, userId, groupId, replyTo, forwardedFrom } = await request.json();
 
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
     return new Response(JSON.stringify({ error: 'Text fehlt.' }), {
@@ -158,6 +164,8 @@ async function postSighting(request, env) {
     id: Date.now(), 
     text: text.trim(), 
     userId: userId || 'anon', // Speichere die User-ID
+    replyTo: replyTo || null,
+    forwardedFrom: forwardedFrom || null,
     timestamp: new Date().toISOString() 
   };
   sightings.push(newSighting);
@@ -187,4 +195,71 @@ async function postSighting(request, env) {
     status: 201,
     headers: { 'Content-Type': 'application/json', ...corsHeaders },
   });
+}
+
+async function editSighting(request, env) {
+  const { groupId, id, userId, text } = await request.json();
+
+  if (!groupId || !id || !userId || !text) {
+     return new Response(JSON.stringify({ error: 'Daten fehlen.' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+  }
+
+  const storageKey = `sightings_${groupId}`;
+  const sightingsJSON = await env.SIGHTINGS_KV.get(storageKey);
+  let sightings = sightingsJSON ? JSON.parse(sightingsJSON) : [];
+
+  const index = sightings.findIndex(s => String(s.id) === String(id));
+  if (index === -1) return new Response(JSON.stringify({ error: 'Nachricht nicht gefunden' }), { status: 404, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+
+  if (sightings[index].userId !== userId) {
+      return new Response(JSON.stringify({ error: 'Nicht autorisiert' }), { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+  }
+
+  sightings[index].text = text.trim();
+  await env.SIGHTINGS_KV.put(storageKey, JSON.stringify(sightings));
+
+  return new Response(JSON.stringify(sightings[index]), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+}
+
+async function deleteSighting(request, env) {
+  const { groupId, id, userId } = await request.json();
+
+  if (!groupId || !id || !userId) {
+     return new Response(JSON.stringify({ error: 'Daten fehlen.' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+  }
+
+  const storageKey = `sightings_${groupId}`;
+  const sightingsJSON = await env.SIGHTINGS_KV.get(storageKey);
+  let sightings = sightingsJSON ? JSON.parse(sightingsJSON) : [];
+
+  const sighting = sightings.find(s => String(s.id) === String(id));
+  if (!sighting) return new Response(JSON.stringify({ status: 'deleted' }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+
+  if (sighting.userId !== userId) {
+      return new Response(JSON.stringify({ error: 'Nicht autorisiert' }), { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+  }
+
+  sightings = sightings.filter(s => String(s.id) !== String(id));
+  await env.SIGHTINGS_KV.put(storageKey, JSON.stringify(sightings));
+
+  // Update Gruppen-Metadaten (Vorschau aktualisieren)
+  try {
+      const groupsJSON = await env.SIGHTINGS_KV.get('groups');
+      if (groupsJSON) {
+        const groups = JSON.parse(groupsJSON);
+        const idx = groups.findIndex(g => g.id === groupId);
+        if (idx !== -1) {
+           if (sightings.length > 0) {
+               const last = sightings[sightings.length - 1];
+               groups[idx].lastMessage = last.text.substring(0, 50);
+               groups[idx].lastMessageTime = last.timestamp;
+           } else {
+               groups[idx].lastMessage = '';
+           }
+           await env.SIGHTINGS_KV.put('groups', JSON.stringify(groups));
+        }
+      }
+  } catch(e) {}
+
+  return new Response(JSON.stringify({ status: 'deleted' }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
 }

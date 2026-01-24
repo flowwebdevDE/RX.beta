@@ -42,6 +42,26 @@
         </div>
     </div>
 
+    <!-- Message Options Overlay (Bottom Sheet) -->
+    <div id="message-options-overlay" class="hidden">
+        <div class="options-card">
+            <div class="msg-preview-header">
+                <span id="opt-msg-sender"></span>
+                <span id="opt-msg-time"></span>
+            </div>
+            <div id="opt-msg-text" class="msg-preview-text"></div>
+            
+            <div class="options-list">
+                <button id="opt-btn-reply">Antworten</button>
+                <button id="opt-btn-copy">Text kopieren</button>
+                <button id="opt-btn-forward">Weiterleiten</button>
+                <button id="opt-btn-edit" class="hidden">Bearbeiten</button>
+                <button id="opt-btn-delete" class="hidden" style="color: #ff3b30;">Löschen</button>
+                <button id="opt-btn-cancel">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Create Group Overlay -->
     <div id="create-group-overlay" class="hidden">
         <div class="popup-card">
@@ -50,6 +70,31 @@
             <div style="display: flex; gap: 10px;">
                 <button id="cancel-group-btn" style="flex: 1; background: #e4e6eb; color: black; border: none; padding: 12px; border-radius: 10px; font-weight: 600;">Abbrechen</button>
                 <button id="confirm-group-btn" style="flex: 1; background: var(--accent-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600;">Erstellen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forward Overlay -->
+    <div id="forward-overlay" class="hidden">
+        <div class="popup-card" style="max-width: 400px; height: 70vh; display: flex; flex-direction: column; padding: 0;">
+            <div style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Weiterleiten an...</h3>
+                <button id="forward-cancel-btn" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div id="forward-groups-list" style="flex-grow: 1; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- Forward Confirm Overlay -->
+    <div id="forward-confirm-overlay" class="hidden">
+        <div class="popup-card">
+            <h3 style="margin-bottom: 5px;">Nachricht weiterleiten</h3>
+            <p id="forward-target-name" style="color: var(--secondary-text-color); margin-bottom: 15px; font-size: 14px;"></p>
+            <div id="forward-preview-content" class="reply-quote" style="margin-bottom: 15px; text-align: left; background: #f0f2f5; border-left: 3px solid var(--accent-color);"></div>
+            <input type="text" id="forward-comment-input" placeholder="Kommentar hinzufügen (optional)" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
+            <div style="display: flex; gap: 10px;">
+                <button id="forward-confirm-cancel" style="flex: 1; background: #e4e6eb; color: black; border: none; padding: 12px; border-radius: 10px; font-weight: 600;">Abbrechen</button>
+                <button id="forward-confirm-send" style="flex: 1; background: var(--accent-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600;">Senden</button>
             </div>
         </div>
     </div>
@@ -85,6 +130,9 @@
                     <h1 id="chat-title">Lade...</h1>
                     <p id="status-text">Verbinde...</p>
                 </div>
+                <button id="refresh-btn" style="background:none; border:none; cursor:pointer; color: var(--accent-color); margin-right: 5px;" title="Aktualisieren">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                </button>
                 <button id="chat-search-toggle" style="background:none; border:none; cursor:pointer; color: var(--accent-color); margin-right: 5px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
@@ -102,8 +150,19 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             <div id="user-input-container">
-                <input type="text" id="sighting-input" placeholder="z.B. ICE 511 in Fulda Richtung Süden">
-                <button id="send-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+                <div id="reply-preview" class="hidden">
+                    <div class="reply-info">
+                        <span class="reply-label">Antwort an</span>
+                        <span id="reply-preview-sender" class="reply-sender"></span>
+                        <span id="reply-preview-timestamp" class="reply-timestamp"></span>
+                        <span id="reply-preview-text" class="reply-text-content"></span>
+                    </div>
+                    <button id="cancel-reply-btn">✕</button>
+                </div>
+                <div class="input-row">
+                    <input type="text" id="sighting-input" placeholder="z.B. ICE 511 in Fulda Richtung Süden">
+                    <button id="send-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+                </div>
             </div>
         </div>
     </div>
