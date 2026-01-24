@@ -698,15 +698,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Long Press für Optionen Menü (Mobile Optimierung)
         let pressTimer;
+        let startX, startY;
 
-        sightingDiv.addEventListener('touchstart', () => {
+        sightingDiv.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
             pressTimer = setTimeout(() => {
                 showMessageOptions(sighting);
             }, 500); // 500ms gedrückt halten
         }, { passive: true });
 
         sightingDiv.addEventListener('touchend', () => clearTimeout(pressTimer));
-        sightingDiv.addEventListener('touchmove', () => clearTimeout(pressTimer));
+        sightingDiv.addEventListener('touchmove', (e) => {
+            const moveX = e.touches[0].clientX;
+            const moveY = e.touches[0].clientY;
+            // Toleranz für kleine Bewegungen (Wackeln)
+            if (Math.abs(moveX - startX) > 10 || Math.abs(moveY - startY) > 10) {
+                clearTimeout(pressTimer);
+            }
+        }, { passive: true });
 
         sightingDiv.addEventListener('contextmenu', (e) => {
             e.preventDefault();

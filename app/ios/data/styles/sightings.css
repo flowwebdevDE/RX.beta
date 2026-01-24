@@ -239,6 +239,12 @@ body {
     user-select: none;
 }
 
+.sighting * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 /* Eigene Nachrichten */
 .sighting.own {
     align-self: flex-end;
