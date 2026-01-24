@@ -22,6 +22,14 @@ export default {
     }
 
     try {
+      const url = new URL(request.url);
+      
+      // Routing für Gruppen
+      if (url.pathname === '/groups') {
+        if (request.method === 'GET') return getGroups(request, env);
+        if (request.method === 'POST') return createGroup(request, env);
+      }
+
       if (request.method === 'GET') {
         return getSightings(request, env);
       }
@@ -49,12 +57,45 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
+// --- Gruppen Funktionen ---
+
+async function getGroups(request, env) {
+  const groupsJSON = await env.SIGHTINGS_KV.get('groups');
+  const groups = groupsJSON ? JSON.parse(groupsJSON) : [];
+  // Neueste Gruppen zuerst (oder alphabetisch, hier nach Erstellung)
+  groups.sort((a, b) => {
+    const timeA = a.lastMessageTime || a.createdAt;
+    const timeB = b.lastMessageTime || b.createdAt;
+    return new Date(timeB) - new Date(timeA);
+  });
+  return new Response(JSON.stringify(groups), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+}
+
+async function createGroup(request, env) {
+  const { name } = await request.json();
+  if (!name || !name.trim()) return new Response(JSON.stringify({ error: 'Name fehlt' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+
+  const groupsJSON = await env.SIGHTINGS_KV.get('groups');
+  const groups = groupsJSON ? JSON.parse(groupsJSON) : [];
+
+  const newGroup = { id: Date.now().toString(), name: name.trim(), createdAt: new Date().toISOString() };
+  groups.push(newGroup);
+
+  await env.SIGHTINGS_KV.put('groups', JSON.stringify(groups));
+  return new Response(JSON.stringify(newGroup), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+}
+
+
+// --- Sichtungs Funktionen ---
+
 async function getSightings(request, env) {
   const url = new URL(request.url);
   const userId = url.searchParams.get('userId');
+  const groupId = url.searchParams.get('groupId');
 
-  // 1. Nachrichten laden
-  const sightingsJSON = await env.SIGHTINGS_KV.get('all');
+  // 1. Nachrichten laden (pro Gruppe)
+  const storageKey = groupId ? `sightings_${groupId}` : 'all'; // Fallback für alte Version
+  const sightingsJSON = await env.SIGHTINGS_KV.get(storageKey);
   const sightings = sightingsJSON ? JSON.parse(sightingsJSON) : [];
 
   sightings.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
@@ -100,7 +141,7 @@ async function getSightings(request, env) {
 }
 
 async function postSighting(request, env) {
-  const { text, userId } = await request.json();
+  const { text, userId, groupId } = await request.json();
 
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
     return new Response(JSON.stringify({ error: 'Text fehlt.' }), {
@@ -109,7 +150,8 @@ async function postSighting(request, env) {
     });
   }
 
-  const sightingsJSON = await env.SIGHTINGS_KV.get('all');
+  const storageKey = groupId ? `sightings_${groupId}` : 'all';
+  const sightingsJSON = await env.SIGHTINGS_KV.get(storageKey);
   let sightings = sightingsJSON ? JSON.parse(sightingsJSON) : [];
 
   const newSighting = { 
@@ -123,7 +165,23 @@ async function postSighting(request, env) {
   // Begrenzung auf 50 Nachrichten (Beta)
   if (sightings.length > 50) sightings = sightings.slice(-50);
 
-  await env.SIGHTINGS_KV.put('all', JSON.stringify(sightings));
+  await env.SIGHTINGS_KV.put(storageKey, JSON.stringify(sightings));
+
+  // Update Gruppen-Metadaten (Vorschau & Zeitstempel)
+  if (groupId) {
+    try {
+      const groupsJSON = await env.SIGHTINGS_KV.get('groups');
+      if (groupsJSON) {
+        const groups = JSON.parse(groupsJSON);
+        const idx = groups.findIndex(g => g.id === groupId);
+        if (idx !== -1) {
+          groups[idx].lastMessage = text.substring(0, 50);
+          groups[idx].lastMessageTime = newSighting.timestamp;
+          await env.SIGHTINGS_KV.put('groups', JSON.stringify(groups));
+        }
+      }
+    } catch (e) { /* Ignore update errors */ }
+  }
 
   return new Response(JSON.stringify(newSighting), {
     status: 201,
