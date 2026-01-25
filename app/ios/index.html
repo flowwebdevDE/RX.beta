@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rail Explorer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="data/styles/dashboard.css">
+  <link rel="stylesheet" href="data/styles/wetter.css">
+  <script src="data/scripts/wetter/wetter.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <h1>Rail Explorer</h1>
+      <p>Fahrzeiten berechnen &amp;<br>Betriebsstellen schnell finden</p>
+      <a href="changelog.html" class="info-icon" aria-label="Informationen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </a>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+      <div class="dashboard-grid">
+
+        <!-- Wetter (Volle Breite) -->
+        <a href="wetter/index.html" class="card weather-card full-width">
+          <div class="card-content">
+            <h2>Wetter</h2>
+            <div id="weather-widget" class="weather-widget">
+              <i id="icon" class="wi wi-na"></i>
+              <div class="weather-info">
+                <div id="temp" class="weather-temp">--°</div>
+                <div id="text" class="weather-text">Lade...</div>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Sichtungen -->
+        <a href="sightings.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h3>Sichtungen</h3>
+          <p>Live-Meldungen</p>
+        </a>
+
+        <!-- Chat Rechner -->
+        <a href="chat.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Chat-Rechner</h3>
+          <p>Dialog-Modus</p>
+        </a>
+
+        <!-- Betriebsstellen -->
+        <a href="finder.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+          <h3>Suche</h3>
+          <p>Betriebsstellen</p>
+        </a>
+
+        <!-- Standard Rechner -->
+        <a href="main.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h3>Fahrzeiten</h3>
+          <p>Standard</p>
+        </a>
+
+      </div>
+    </main>
+  </div>
+  <script src="data/scripts/darkmode.js"></script>
+</body>
+</html>
