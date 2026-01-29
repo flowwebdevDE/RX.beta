@@ -43,30 +43,60 @@ const iconForCode = c => {
 };
 
 // --- Fallback, falls Wetter nicht verfügbar ---
-function renderUnavailable() {
+function renderUnavailable(msg) {
   const icon = document.getElementById('weather-icon');
   const temp = document.getElementById('weather-temp');
   const text = document.getElementById('weather-text');
   if(icon) icon.className = "wi wi-na";
   if(temp) temp.textContent = "–";
-  if(text) text.textContent = "Kein Standortzugriff";
+  if(text) text.textContent = msg || "Kein Standortzugriff";
 }
 
 // --- Wetter laden für bestimmte Koordinaten ---
 async function loadWeather(lat, lon) {
   console.log(`Wetter-Widget: Lade Wetterdaten für ${lat}, ${lon}`);
   try {
-    const [weatherRes, geoRes] = await Promise.all([
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`),
-        fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&count=1&language=de`)
-    ]);
-
+    // 1. Wetterdaten laden (Kritisch)
+    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
+    if (!weatherRes.ok) throw new Error("Wetter-API Fehler");
     const weatherData = await weatherRes.json();
-    const geoData = await geoRes.json();
     const cw = weatherData.current_weather;
-    const locationName = geoData.results && geoData.results[0] ? geoData.results[0].name : "Mein Standort";
 
-    if (!cw) return renderUnavailable();
+    if (!cw) {
+        renderUnavailable("Keine Daten");
+        return;
+    }
+
+    // 2. Ortsnamen laden (Optional - darf fehlschlagen)
+    let locationName = "Mein Standort";
+    try {
+        // Koordinaten runden für bessere API-Trefferquote
+        const latFixed = Number(lat).toFixed(4);
+        const lonFixed = Number(lon).toFixed(4);
+        
+        // Versuch 1: Open-Meteo
+        const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${latFixed}&longitude=${lonFixed}&count=1&language=de`;
+        const geoRes = await fetch(url).catch(() => null);
+        
+        if (geoRes && geoRes.ok) {
+            const geoData = await geoRes.json();
+            if (geoData.results && geoData.results.length > 0) {
+                locationName = geoData.results[0].name;
+            }
+        } else {
+            // Fallback: BigDataCloud (oft toleranter bei CORS/Limits)
+            console.warn("Open-Meteo Geocoding nicht verfügbar (CORS/Limit), nutze Fallback.");
+            const fallbackUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latFixed}&longitude=${lonFixed}&localityLanguage=de`;
+            const fallbackRes = await fetch(fallbackUrl).catch(() => null);
+            
+            if (fallbackRes && fallbackRes.ok) {
+                const fallbackData = await fallbackRes.json();
+                locationName = fallbackData.city || fallbackData.locality || fallbackData.principalSubdivision || "Mein Standort";
+            }
+        }
+    } catch (e) {
+        console.warn("Wetter-Widget: Netzwerkfehler beim Laden des Ortsnamens", e);
+    }
 
     document.getElementById('weather-icon').className = `wi ${iconForCode(cw.weathercode)}`;
     document.getElementById('weather-temp').textContent = `${Math.round(cw.temperature)}°`;
@@ -75,7 +105,7 @@ async function loadWeather(lat, lon) {
 
   } catch (err) {
     console.error(err);
-    renderUnavailable();
+    renderUnavailable("Verbindungsfehler");
   }
 }
 
@@ -88,19 +118,19 @@ function updateWeather() {
       console.log("Wetter-Widget: Einstellungen geladen", settings);
       if (!settings.locationEnabled) {
           console.log("Wetter-Widget: Standortzugriff in Einstellungen deaktiviert");
-          return renderUnavailable();
+          return renderUnavailable("Standort deaktiviert");
       }
   }
 
   if (!navigator.geolocation) {
       console.log("Wetter-Widget: Geolocation API nicht verfügbar");
-      return renderUnavailable();
+      return renderUnavailable("Standort n.v.");
   }
 
   console.log("Wetter-Widget: Frage Standort ab...");
   navigator.geolocation.getCurrentPosition(
     pos => { console.log("Wetter-Widget: Standort erhalten", pos.coords); loadWeather(pos.coords.latitude, pos.coords.longitude); },
-    err => { console.error("Wetter-Widget: Standort-Fehler", err); renderUnavailable(); }
+    err => { console.error("Wetter-Widget: Standort-Fehler", err); renderUnavailable("Standort verweigert"); }
   );
 }
 
