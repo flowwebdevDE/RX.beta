@@ -97,6 +97,31 @@
         .settings-card-section {
             padding: 20px;
         }
+
+        /* Layout Override für natives Scrolling */
+        html, body {
+            height: auto !important;
+            overflow: auto !important;
+        }
+        .app {
+            height: auto !important;
+        }
+        .content {
+            overflow: visible !important;
+            padding-bottom: max(40px, env(safe-area-inset-bottom));
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        /* Header fixieren */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
     </style>
 </head>
 <body class="no-layout-change">
