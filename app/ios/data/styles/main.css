@@ -79,9 +79,9 @@ nav a:hover {
 .eingabe,
 .ergebnis,
 .hinweis {
-    background: #ffffff5d;
+    background: var(--card-background);
     padding: 10px;
-    border: solid 1px #00000048;
+    border: solid 1px var(--border-color);
     border-radius: 15px;
     margin-bottom: 10px;
 }
@@ -99,15 +99,17 @@ select {
     padding: 8px;
     box-sizing: border-box;
     border: 1px solid #cccccc;
+    border-color: var(--border-color);
     border-radius: 15px;
     font-size: 1rem;
-    background: #ffffff5c;
+    background: var(--background-color);
+    color: var(--text-color);
 }
 
 input[type=text]:hover,
 input[type=number]:hover,
 select:hover {
-    border: 1px solid black;
+    border: 1px solid var(--accent-color);
 }
 
 button {
@@ -141,7 +143,7 @@ table {
 th,
 td {
     padding: 6px 8px;
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid var(--border-color);
     text-align: left;
     font-size: 0.9rem;
 }
@@ -152,7 +154,8 @@ td {
 }
 
 .autocomplete-list {
-    background: rgba(246, 246, 246, 0.494);
+    background: var(--card-background);
+    color: var(--text-color);
     border-radius: 8px;
     max-height: 200px;
     overflow: auto;
@@ -167,7 +170,7 @@ td {
 }
 
 .autocomplete-item:hover {
-    background: #f0f4ff;
+    background: var(--border-color);
 }
 
 .btn {

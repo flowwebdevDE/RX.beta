@@ -3,28 +3,43 @@
 .weather-widget {
   display: flex;
   align-items: center;
-  gap: 30px;                  
-
+  justify-content: space-between;
   width: 100%;
-  padding: 8px 12px;
+  padding: 0;
   box-sizing: border-box;
 }
 
-/* Icon */
-#icon {
-  font-size: 36px;
-  color: #4f46e5;
-  flex-shrink: 0;
+.weather-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-/* Temperatur */
-.weather-temp {
-  font-size: 22px;
-  font-weight: 700;
+#weather-location {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
 }
 
-/* Text */
-.weather-text {
+#weather-text {
   font-size: 14px;
   opacity: 0.85;
+  margin: 0;
+}
+
+.weather-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#weather-icon {
+  font-size: 32px;
+  width: 40px;
+  text-align: center;
+}
+
+#weather-temp {
+  font-size: 32px;
+  font-weight: 300;
 }

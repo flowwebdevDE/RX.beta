@@ -16,7 +16,9 @@ const weatherText = code => {
 function wrap(x) { return `<svg class="icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${x}</svg>`; }
 
 const sun = () => wrap(`<circle cx="32" cy="32" r="14" fill="#FFDD57"/>`);
+const moon = () => wrap(`<path d="M38 16a14 14 0 1 0 0 28 14 14 0 0 1 0-28z" fill="#FFDD57"/>`);
 const partly = () => wrap(`<circle cx="22" cy="22" r="10" fill="#FFDD57"/><path d="M18 44h28a10 10 0 0 0 0-20 16 16 0 0 0-30 6 10 10 0 0 0 2 14z" fill="#ddd"/>`);
+const partlyMoon = () => wrap(`<path d="M28 12a10 10 0 1 0 0 20 10 10 0 0 1 0-20z" fill="#FFDD57"/><path d="M18 44h28a10 10 0 0 0 0-20 16 16 0 0 0-30 6 10 10 0 0 0 2 14z" fill="#ddd"/>`);
 const cloud = () => wrap(`<path d="M20 44h28a10 10 0 0 0 0-20 16 16 0 0 0-30 6 10 10 0 0 0 2 14z" fill="#ddd"/>`);
 const fog = () => wrap(`<rect x="10" y="26" width="44" height="6" rx="3" fill="#ccc"/>
                         <rect x="8" y="34" width="48" height="6" rx="3" fill="#cccccc96"/>
@@ -34,9 +36,16 @@ const snow = () => wrap(`<g stroke="#88c" stroke-width="3" stroke-linecap="round
                           <line x1="22" y1="42" x2="42" y2="22"/>
                           </g>`);
 
-const iconForCode = c => {
-    if (c === 0) return sun();
-    if (c <= 2) return partly();
+const uvIcon = () => wrap(`<circle cx="32" cy="32" r="14" fill="none" stroke="currentColor" stroke-width="4"/><path d="M32 4v8m0 40v8m26-26h-8M6 32h8m18.4-18.4l-5.6 5.6m-28.4 28.4l-5.6 5.6m0-28.4l5.6 5.6m28.4 28.4l-5.6-5.6" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`);
+const dropIcon = () => wrap(`<path d="M32 6c0 0-18 20-18 28a18 18 0 0 0 36 0c0-8-18-28-18-28z" fill="currentColor"/>`);
+const eyeIcon = () => wrap(`<path d="M4 32s10-20 28-20 28 20 28 20-10 20-28 20S4 32 4 32z" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="currentColor"/>`);
+const snowIconSmall = () => wrap(`<path d="M32 4v56M4 32h56M12 12l40 40M12 52L52 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`);
+const mountainIcon = () => wrap(`<path d="M32 8l-24 44h48L32 8z" fill="none" stroke="currentColor" stroke-width="4"/><path d="M32 8l8 16h-16l8-16z" fill="currentColor"/>`);
+const gaugeIcon = () => wrap(`<circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="4"/><path d="M32 32l14-14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`);
+
+const iconForCode = (c, night) => {
+    if (c === 0) return night ? moon() : sun();
+    if (c <= 2) return night ? partlyMoon() : partly();
     if (c === 3) return cloud();
     if (c >= 45 && c <= 48) return fog();
     if ((c >= 51 && c <= 67) || (c >= 80 && c <= 86)) return rain();
@@ -97,19 +106,21 @@ function render(data, lat, lon, label) {
     const sunrise = data.daily.sunrise[0].split("T")[1];
     const sunset = data.daily.sunset[0].split("T")[1];
 
-    let detailsHTML = `Sonnenaufgang: ${sunrise}<br>Sonnenuntergang: ${sunset}`;
-
-    const nextDayMinTemp = data.daily.temperature_2m_min[1];
-    if (nextDayMinTemp <= 0) {
-        detailsHTML += `<br><br><strong style=" display:none; padding:10px; background:rgba(0,0,255,0.45); border-radius:22px; color:#fff;">Es wird kalt</strong>`;
-    }
-
-    document.getElementById('details').innerHTML = detailsHTML;
+    // Details als Grid-Items für das neue Layout
+    document.getElementById('details').innerHTML = `
+        <div>
+            <div style="font-size:12px; opacity:0.7; margin-bottom:4px;">Aufgang</div>
+            ${sunrise}
+        </div>
+        <div>
+            <div style="font-size:12px; opacity:0.7; margin-bottom:4px;">Untergang</div>
+            ${sunset}
+        </div>
+    `;
 
     const grid = document.getElementById('forecastGrid'); 
     grid.innerHTML = '';
-    grid.style.display = 'flex';
-    grid.style.overflowX = 'auto';
+    grid.removeAttribute('style'); // WICHTIG: Inline-Styles entfernen, damit CSS greift
 
     for (let i = 0; i < data.daily.time.length; i++) {
         const day = document.createElement('div'); 
@@ -144,12 +155,12 @@ const Specials = {
         const h = data.hourly || {};
         const html = `
             <ul style="list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:10px;">
-                <li style="background:#FFEB3B; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">☀ UV-Index: <strong>${this.getValue(h.uv_index)}</strong></li>
-                <li style="background:#90CAF9; display:none; padding:10px; border-radius:10px; flex:1 1 120px;">🌡 Taupunkt: <strong>${this.getValue(h.dewpoint_2m)}°C</strong></li>
-                <li style="background:#B3E5FC; padding:10px; border-radius:22px; flex:1 1 120px;">Sichtweite: <strong>${this.getValue(h.visibility)} m</strong></li>
-                <li style="background:#C8E6C9; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">❄ Schneefall: <strong>${this.getValue(h.snowfall)} cm</strong></li>
-                <li style="background:#BDBDBD; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">🏔 Schneehöhe: <strong>${this.getValue(h.snow_height)} cm</strong></li>
-                <li style="background:#FFC107; display:none;  padding:10px; border-radius:10px; flex:1 1 120px;">🧭 Luftdruck: <strong>${this.getValue(h.pressure_msl)} hPa</strong></li>
+                <li style="display:none;">${uvIcon()} UV-Index <strong>${this.getValue(h.uv_index)}</strong></li>
+                <li style="display:none;">${dropIcon()} Taupunkt <strong>${this.getValue(h.dewpoint_2m)}°C</strong></li>
+                <li>${eyeIcon()} Sichtweite <strong>${this.getValue(h.visibility)} m</strong></li>
+                <li style="display:none;">${snowIconSmall()} Schneefall <strong>${this.getValue(h.snowfall)} cm</strong></li>
+                <li style="display:none;">${mountainIcon()} Schneehöhe <strong>${this.getValue(h.snow_height)} cm</strong></li>
+                <li style="display:none;">${gaugeIcon()} Luftdruck <strong>${this.getValue(h.pressure_msl)} hPa</strong></li>
             </ul>
         `;
         const container = document.getElementById("specialParamsDashboard");

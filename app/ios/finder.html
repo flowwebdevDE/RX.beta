@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Betriebsstellensuche</title>
     <link rel="stylesheet" href="data/styles/dashboard.css">
+    <link rel="stylesheet" href="data/styles/global-theme.css">
     <style>
         /* ===== FORM ===== */
         .form {
@@ -66,14 +67,15 @@
         }
 
         li {
-            background: #f9f9f9;
+            background: var(--card-background);
+            color: var(--text-color);
             padding: 14px;
             border-radius: 12px;
             margin-bottom: 8px;
         }
 
         li:active {
-            background: #e5e7eb;
+            background: var(--border-color);
         }
 
         .ref {
@@ -359,6 +361,13 @@
 
         // === Standort automatisch abfragen ===
         function startGeoTracking() {
+            if (window.getSettings) {
+                const settings = window.getSettings();
+                if (!settings.locationEnabled) {
+                    statusText.textContent = 'Standortzugriff in Einstellungen deaktiviert.';
+                    return;
+                }
+            }
             if (!navigator.geolocation) {
                 statusText.textContent = 'Geolocation nicht unterstützt';
                 geoBtn.disabled = true;
@@ -413,13 +422,21 @@
 
         // === Start ===
         (async () => {
-            await loadStations(); startGeoTracking(); // automatisch
+            await loadStations(); 
+            // Check settings before auto-starting
+            if (window.getSettings) {
+                const settings = window.getSettings();
+                if (settings.locationEnabled) {
+                    startGeoTracking();
+                }
+            }
         })();
 
         searchInput.addEventListener('input', debounce(handleSearch));
 
     </script>
     <script src="data/scripts/lock.js"></script>
+    <script src="data/scripts/theme-manager.js"></script>
 </body>
 
 </html>

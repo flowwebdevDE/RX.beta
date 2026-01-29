@@ -50,12 +50,10 @@ async function renderDailyOverview(lat, lon, sunriseStr, sunsetStr) {
         hourDiv.className = 'hour';
 
         hourDiv.innerHTML = `
-            <div><strong>${hourStr}</strong></div>
-            <div>${iconForCode(code, night)}</div>
-            <div>${weatherText(code)}</div>
-            <div>${temp}°C</div>
-            <div>Wind: ${wind} km/h</div>
-            <div>${rain} mm</div>
+            <strong>${hourStr}</strong>
+            ${iconForCode(code, night)}
+            <div style="font-weight:600; font-size: 16px; margin-bottom: 2px;">${Math.round(temp)}°</div>
+            <div style="font-size:11px; color: var(--secondary-text-color); min-height: 14px;">${rain > 0 ? rain + ' mm' : ''}</div>
         `;
 
         grid.appendChild(hourDiv);
