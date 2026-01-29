@@ -117,6 +117,31 @@
         body.modal-open #popup {
             transform: translateX(-50%) translateY(0);
         }
+
+        /* ===== MODE POPUP ===== */
+        #mode-popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none; z-index: 200; transition: opacity 0.3s;
+        }
+        #mode-popup {
+            position: fixed; left: 50%; bottom: 0; transform: translateX(-50%) translateY(100%);
+            background: var(--card-background); color: var(--text-color); width: 100%; max-width: 500px;
+            padding: 20px; border-radius: 20px 20px 0 0; transition: transform 0.3s ease; z-index: 201;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            display: flex; flex-direction: column;
+        }
+        body.mode-open #mode-popup-overlay { opacity: 1; pointer-events: auto; }
+        body.mode-open #mode-popup { transform: translateX(-50%) translateY(0); }
+
+        .mode-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .mode-btn {
+            background: var(--background-color); color: var(--text-color); padding: 16px; border-radius: 12px;
+            text-align: left; display: flex; justify-content: space-between; align-items: center; font-weight: 500;
+            border: 1px solid transparent; margin-top: 0;
+        }
+        .mode-btn:active { background: var(--border-color); }
+        .mode-btn.active { border-color: var(--accent-color); color: var(--accent-color); background: var(--card-background); }
+        .mode-btn .check-icon { opacity: 0; }
+        .mode-btn.active .check-icon { opacity: 1; }
     </style>
 
 </head>
@@ -135,10 +160,10 @@
         <main class="content" id="main-content">
             <div class="card">
                 <div class="form">
-                    <select id="searchMode">
-                        <option value="name">Name</option>
-                        <option value="ref">DS100</option>
-                    </select>
+                    <button id="searchModeBtn" style="text-align: left; display: flex; justify-content: space-between; align-items: center; background: var(--background-color); color: var(--text-color); border: 1px solid var(--border-color);">
+                        <span id="searchModeLabel">Suche nach: Name</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
         
                     <div class="search-container">
                         <input id="search" type="text" placeholder="Suchbegriff…">
@@ -162,6 +187,23 @@
         <button style="margin-top: 10px;" id="popup-close">Schließen</button>
     </div>
 
+    <!-- Mode Selection Popup -->
+    <div id="mode-popup-overlay"></div>
+    <div id="mode-popup">
+        <h3>Suchart wählen</h3>
+        <div class="mode-list">
+            <button class="mode-btn active" data-value="name">
+                <span>Name</span>
+                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+            <button class="mode-btn" data-value="ref">
+                <span>DS100 / Kürzel</span>
+                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+        </div>
+        <button id="mode-popup-close" style="margin-top: 15px; background: var(--button-secondary-bg); color: var(--button-secondary-text);">Abbrechen</button>
+    </div>
+
     <script>
         // Konstanten für Selektoren und Klassen
         const SEARCH_MODES = {
@@ -170,7 +212,6 @@
         };
 
         const searchInput = document.getElementById('search');
-        const searchMode = document.getElementById('searchMode');
         const geoBtn = document.getElementById('geoBtn');
         const mainContent = document.getElementById('main-content');
         const resultsList = document.getElementById('results');
@@ -184,11 +225,46 @@
         const popupCoords = document.getElementById('popup-coords');
         const popupClose = document.getElementById('popup-close');
 
+        // Mode Popup Elements
+        const searchModeBtn = document.getElementById('searchModeBtn');
+        const searchModeLabel = document.getElementById('searchModeLabel');
+        const modePopup = document.getElementById('mode-popup');
+        const modePopupOverlay = document.getElementById('mode-popup-overlay');
+        const modePopupClose = document.getElementById('mode-popup-close');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+
         let stations = [];
         let currentPosition = null;
         let refreshTimer = null;
         let debounceTimer = null;
         let lastFocusedElement = null;
+        let currentSearchMode = SEARCH_MODES.NAME;
+
+        // === Mode Selection Logic ===
+        function openModePopup() {
+            document.body.classList.add('mode-open');
+        }
+        function closeModePopup() {
+            document.body.classList.remove('mode-open');
+        }
+
+        searchModeBtn.addEventListener('click', openModePopup);
+        modePopupOverlay.addEventListener('click', closeModePopup);
+        modePopupClose.addEventListener('click', closeModePopup);
+
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSearchMode = btn.dataset.value;
+                // UI Update
+                modeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                searchModeLabel.textContent = `Suche nach: ${btn.querySelector('span').textContent}`;
+                
+                closeModePopup();
+                // Trigger search update
+                handleSearch({ target: searchInput });
+            });
+        });
 
         // === Hilfsfunktionen ===
         function debounce(func, delay = 300) {
@@ -318,7 +394,7 @@
         // === Suchfunktion (Start-of-Input + Sortierung) ===
         const handleSearch = e => {
             const term = e.target.value.toLowerCase().trim();
-            const mode = searchMode.value;
+            const mode = currentSearchMode;
 
             if (!term) {
                 if (currentPosition) {

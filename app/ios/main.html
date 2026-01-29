@@ -28,70 +28,73 @@
 
 </head>
 
-<body style="overflow: hidden;">
-  <div id="app" style="height: 100%;">
-    <div id="left">
-      <header class="header" style="padding-top: max(20px, env(safe-area-inset-top)); background: transparent;">
-        <a href="index.html" class="back-icon" style="position: relative; top: 0; left: 0; margin-bottom: 10px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-            <span style="margin-left: 5px; font-weight: 500;">Zurück</span>
-        </a>
-        <h1>Fahrzeiten</h1>
-        <p>Route berechnen</p>
-      </header>
-      <div class="field">
-        <label for="from">Startbahnhof</label>
-        <input id="from" type="text" placeholder="Bahnhof suchen" autocomplete="off">
-        <div id="from-list" class="autocomplete-list" style="display:none"></div>
-      </div>
+<body>
+  <div class="app">
+    <header class="header">
+      <a href="index.html" class="back-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </a>
+      <h1>Fahrzeiten</h1>
+      <p>Route berechnen</p>
+    </header>
 
-      <div class="field">
-        <label for="to">Zielbahnhof</label>
-        <input id="to" type="text" placeholder="Bahnhof suchen" autocomplete="off">
-        <div id="to-list" class="autocomplete-list" style="display:none"></div>
-      </div>
-      <button class="btn" id="calc">Route berechnen</button>
-      <button id="clear">Zurücksetzen</button>
-      <hr>
-      <details>
-
-        <summary>Mehr anzeigen
-          <hr>
-        </summary>
-        <div class="field">
-          <label for="via">Wegpunkte (optional)</label>
-          <input id="via" type="text" placeholder="Bahnhof suchen" autocomplete="off">
-          <div id="via-list" class="autocomplete-list" style="display:none"></div>
-          <div id="via-list" class="autocomplete-list"></div>
-          <button id="add-via" class="btn-via" type="button">+ Wegpunkt hinzufügen</button>
-
-          <div id="via-tags"></div> <!-- Anzeige der gewählten Zwischenstopps -->
-
+    <main class="content">
+      <!-- Eingabe Card -->
+      <div class="card">
+        <div class="form-group">
+          <label for="from">Start</label>
+          <div class="input-wrapper">
+            <input id="from" type="text" placeholder="Startbahnhof" autocomplete="off">
+            <div id="from-list" class="autocomplete-list"></div>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="vmax">Zug V<sub>max</sub> (km/h)</label>
-          <input id="vmax" type="number" min="10" max="300" value="120">
-          <div class="hint">Mindestens 10 km/h, Maximal 300 km/h</div>
+        <div class="form-group">
+          <label for="to">Ziel</label>
+          <div class="input-wrapper">
+            <input id="to" type="text" placeholder="Zielbahnhof" autocomplete="off">
+            <div id="to-list" class="autocomplete-list"></div>
+          </div>
         </div>
-        <hr>
-      </details>
-      <div id="results">
+
+        <details class="options-details">
+          <summary>Optionen & Zwischenhalte</summary>
+          <div class="options-content">
+            <div class="form-group">
+              <label for="via">Via</label>
+              <div class="input-wrapper">
+                <input id="via" type="text" placeholder="Zwischenhalt hinzufügen" autocomplete="off">
+                <div id="via-list" class="autocomplete-list"></div>
+              </div>
+              <button id="add-via" class="btn-secondary small-btn" type="button">+ Hinzufügen</button>
+              <div id="via-tags" class="tags-container"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="vmax">V<sub>max</sub> (km/h)</label>
+              <input id="vmax" type="number" min="10" max="300" value="120">
+            </div>
+          </div>
+        </details>
+
+        <div class="action-buttons">
+          <button id="clear" class="btn-secondary">Reset</button>
+          <button id="calc" class="btn-primary">Berechnen</button>
+        </div>
+      </div>
+
+      <!-- Ergebnisse Card (Initial versteckt) -->
+      <div class="card" id="results-card" style="display: none;">
         <h3>Ergebnis</h3>
-        <div id="summary" class="small">Keine Route berechnet.</div>
+        <div id="summary" class="result-summary"></div>
         <div id="table-wrap"></div>
       </div>
-      <hr style="display: none;">
-      <details style="display: none;">
-        <summary>Infos anzeigen</summary>
-        <div class="small">Hinweis: Diese App verwendet die öffentliche Overpass-API.<br>
-          <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> | <a href="changelog.html">Version
-              3.0</a>
-          </p>
-        </div>
-      </details>
-    </div>
-    <div id="map"></div>
+
+      <!-- Map Card -->
+      <div class="card map-card">
+        <div id="map"></div>
+      </div>
+    </main>
   </div>
 
   <!-- libs -->
@@ -109,6 +112,19 @@
     // Alle Buttons mit Vibration ausstatten
     document.querySelectorAll('button').forEach(button => {
       button.addEventListener('click', vibrate);
+    });
+
+    // Ergebnis-Card anzeigen wenn berechnet wird
+    document.getElementById('calc').addEventListener('click', () => {
+        document.getElementById('results-card').style.display = 'flex';
+        // Scroll to results
+        setTimeout(() => {
+            document.getElementById('results-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    });
+
+    document.getElementById('clear').addEventListener('click', () => {
+        document.getElementById('results-card').style.display = 'none';
     });
 
     // Funktion, um von Android aufgerufen zu werden, um die Karte zu zentrieren oder Marker zu setzen
