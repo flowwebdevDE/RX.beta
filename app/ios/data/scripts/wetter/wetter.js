@@ -70,32 +70,51 @@ async function loadWeather(lat, lon) {
     // 2. Ortsnamen laden (Optional - darf fehlschlagen)
     let locationName = "Mein Standort";
     try {
-        // Koordinaten runden für bessere API-Trefferquote
         const latFixed = Number(lat).toFixed(4);
         const lonFixed = Number(lon).toFixed(4);
         
-        // Versuch 1: Open-Meteo
-        const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${latFixed}&longitude=${lonFixed}&count=1&language=de`;
-        const geoRes = await fetch(url).catch(() => null);
-        
-        if (geoRes && geoRes.ok) {
-            const geoData = await geoRes.json();
-            if (geoData.results && geoData.results.length > 0) {
-                locationName = geoData.results[0].name;
+        // Liste der Geocoding-Dienste (Priorität: Open-Meteo -> BigDataCloud -> Nominatim)
+        const providers = [
+            {
+                name: 'Open-Meteo',
+                url: `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${latFixed}&longitude=${lonFixed}&count=1&language=de`,
+                parse: async (r) => (await r.json()).results?.[0]?.name
+            },
+            {
+                name: 'BigDataCloud',
+                url: `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latFixed}&longitude=${lonFixed}&localityLanguage=de`,
+                parse: async (r) => {
+                    const d = await r.json();
+                    return d.city || d.locality || d.principalSubdivision;
+                }
+            },
+            {
+                name: 'Nominatim',
+                url: `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latFixed}&lon=${lonFixed}&zoom=10&accept-language=de`,
+                parse: async (r) => {
+                    const d = await r.json();
+                    return d.address?.city || d.address?.town || d.address?.village || d.display_name?.split(',')[0];
+                }
             }
-        } else {
-            // Fallback: BigDataCloud (oft toleranter bei CORS/Limits)
-            console.warn("Open-Meteo Geocoding nicht verfügbar (CORS/Limit), nutze Fallback.");
-            const fallbackUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latFixed}&longitude=${lonFixed}&localityLanguage=de`;
-            const fallbackRes = await fetch(fallbackUrl).catch(() => null);
-            
-            if (fallbackRes && fallbackRes.ok) {
-                const fallbackData = await fallbackRes.json();
-                locationName = fallbackData.city || fallbackData.locality || fallbackData.principalSubdivision || "Mein Standort";
+        ];
+
+        for (const provider of providers) {
+            try {
+                const res = await fetch(provider.url).catch(() => null);
+                if (res && res.ok) {
+                    const name = await provider.parse(res);
+                    if (name) {
+                        locationName = name;
+                        console.log(`Wetter-Widget: Ortsname geladen via ${provider.name}: ${name}`);
+                        break; // Erfolg -> Abbruch der Schleife
+                    }
+                }
+            } catch (e) {
+                console.warn(`Wetter-Widget: ${provider.name} fehlgeschlagen`, e);
             }
         }
     } catch (e) {
-        console.warn("Wetter-Widget: Netzwerkfehler beim Laden des Ortsnamens", e);
+        console.warn("Wetter-Widget: Fehler im Geocoding-Block", e);
     }
 
     document.getElementById('weather-icon').className = `wi ${iconForCode(cw.weathercode)}`;
