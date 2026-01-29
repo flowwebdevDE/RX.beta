@@ -30,6 +30,7 @@ body {
     justify-content: center;
     height: 100%;
     overflow: hidden;
+    overscroll-behavior: none; /* Verhindert Rubber-Banding des Bodys */
 }
 
 /* Login Overlay */
