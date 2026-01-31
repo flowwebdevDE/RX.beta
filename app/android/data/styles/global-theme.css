@@ -67,7 +67,7 @@ body.dark-mode .group-item:active {
 
 /* Force apply variables to standard elements */
 body {
-    background-color: var(--background-color);
+    background-color: #000000;
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
 }

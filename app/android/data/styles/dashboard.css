@@ -20,7 +20,7 @@ html, body {
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-    background-color: var(--bg-color);
+    background-color: #000000; /* Statusbar Hintergrund */
     color: var(--text-color);
     -webkit-font-smoothing: antialiased;
 }
@@ -28,7 +28,10 @@ body {
 .app {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 30px); /* Platz für Statusbar lassen */
+    margin-top: 30px; /* Statusbar Höhe */
+    border-radius: 24px 24px 0 0; /* Abrundung oben */
+    background-color: var(--bg-color);
     overflow: hidden; /* Verhindert, dass der Container den Body aufspannt */
 }
 
@@ -37,7 +40,7 @@ body {
     padding: 20px 24px 16px;
     background: var(--bg-color);
     position: relative;
-    padding-top: max(20px, env(safe-area-inset-top)); /* iOS Safe Area */
+    padding-top: 20px;
 }
 
 .header h1 {
@@ -55,7 +58,7 @@ body {
 
 .info-icon {
     position: absolute;
-    top: max(40px, env(safe-area-inset-top));
+    top: 40px;
     right: 20px;
     color: var(--text-secondary);
     padding: 8px;
