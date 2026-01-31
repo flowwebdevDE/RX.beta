@@ -37,7 +37,7 @@
             padding: 16px;
             border-radius: 12px;
         }
-        /* iOS Toggle Switch */
+        /* iOS Toggle Switch Style */
         .switch {
             position: relative;
             display: inline-block;
@@ -79,33 +79,17 @@
         .accent-btn { display: flex; flex-direction: column; align-items: center; padding: 16px; border-radius: 12px; background: var(--card-background); cursor: pointer; border: 2px solid transparent; }
         .accent-btn.active { border-color: var(--accent-color); background: var(--background-color); }
 
-        /* Neue Gruppen-Styles */
         .settings-card {
             background: var(--card-background);
             border-radius: 12px;
             margin-bottom: 24px;
             overflow: hidden;
         }
-        .settings-card .toggle-row {
-            background: transparent;
-        }
-        .settings-card .divider {
-            height: 1px;
-            background: var(--border-color);
-            margin-left: 15px;
-        }
-        .settings-card-section {
-            padding: 20px;
-        }
-
-        /* Genug Platz unten lassen, damit man alles sieht */
-        .content {
-            padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
-        }
-
-        h3 {
-            margin-bottom: 10px;
-        }
+        .settings-card .toggle-row { background: transparent; }
+        .settings-card .divider { height: 1px; background: var(--border-color); margin-left: 15px; }
+        .settings-card-section { padding: 20px; }
+        .content { padding-bottom: 40px !important; }
+        h3 { margin-bottom: 10px; }
     </style>
 </head>
 <body class="no-layout-change" style="position: fixed; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none;">
@@ -127,10 +111,7 @@
             <div class="settings-card">
                 <div class="toggle-row">
                     <span>Dunkelmodus</span>
-                    <label class="switch">
-                        <input type="checkbox" id="darkmode-toggle">
-                        <span class="slider"></span>
-                    </label>
+                    <label class="switch"><input type="checkbox" id="darkmode-toggle"><span class="slider"></span></label>
                 </div>
                 <div class="divider"></div>
                 <div class="settings-card-section">
@@ -140,10 +121,12 @@
                         <div class="theme-btn" onclick="selectDesign('list')" id="btn-list">Liste</div>
                         <div class="theme-btn" onclick="selectDesign('tiles')" id="btn-tiles">Kacheln</div>
                         <div class="theme-btn" onclick="selectDesign('focus')" id="btn-focus">Fokus</div>
+                        <!-- Pink Mode Button -->
+                        <div class="theme-btn" onclick="selectDesign('pink')" id="btn-pink" style="grid-column: 1 / -1; border: 2px solid #e91e63; color: #e91e63; background: linear-gradient(45deg, #fff0f5, #fce4ec); font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">💖 Pink Mode 💖</div>
                     </div>
                 </div>
-                <div class="divider"></div>
-                <div class="settings-card-section">
+                <div class="divider" id="accent-divider"></div>
+                <div class="settings-card-section" id="accent-section">
                     <h4 style="margin-bottom: 15px; font-weight: normal; color: var(--secondary-text-color);">Akzentfarbe</h4>
                     <div class="accent-grid">
                         <div class="accent-btn" onclick="selectAccent('blue')" id="acc-blue"><span class="color-dot" style="background:#0a3d91"></span>Blau</div>
@@ -158,21 +141,9 @@
 
             <h3>Funktionen</h3>
             <div class="settings-card">
-                <div class="toggle-row">
-                    <span>Standortzugriff</span>
-                    <label class="switch">
-                        <input type="checkbox" id="location-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+                <div class="toggle-row"><span>Standortzugriff</span><label class="switch"><input type="checkbox" id="location-toggle"><span class="slider"></span></label></div>
                 <div class="divider"></div>
-                <div class="toggle-row">
-                    <span>Wetter-Vorschau</span>
-                    <label class="switch">
-                        <input type="checkbox" id="weather-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+                <div class="toggle-row"><span>Wetter-Vorschau</span><label class="switch"><input type="checkbox" id="weather-toggle"><span class="slider"></span></label></div>
             </div>
         </main>
     </div>
@@ -186,37 +157,17 @@
         updateActiveBtn(settings.design);
         updateActiveAccent(settings.accent);
 
-        document.getElementById('darkmode-toggle').addEventListener('change', (e) => {
-            setDarkMode(e.target.checked);
-        });
+        document.getElementById('darkmode-toggle').addEventListener('change', (e) => setDarkMode(e.target.checked));
+        document.getElementById('location-toggle').addEventListener('change', (e) => setFeature('location', e.target.checked));
+        document.getElementById('weather-toggle').addEventListener('change', (e) => setFeature('weather', e.target.checked));
+        document.getElementById('username-input').addEventListener('input', (e) => setUsername(e.target.value));
 
-        document.getElementById('location-toggle').addEventListener('change', (e) => {
-            setFeature('location', e.target.checked);
-        });
-
-        document.getElementById('weather-toggle').addEventListener('change', (e) => {
-            setFeature('weather', e.target.checked);
-        });
-
-        document.getElementById('username-input').addEventListener('input', (e) => {
-            setUsername(e.target.value);
-        });
-
-        function selectDesign(design) {
-            setDesign(design);
-            updateActiveBtn(design);
-        }
-
+        function selectDesign(design) { setDesign(design); updateActiveBtn(design); }
         function updateActiveBtn(design) {
             document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + design).classList.add('active');
         }
-
-        function selectAccent(color) {
-            setAccent(color);
-            updateActiveAccent(color);
-        }
-
+        function selectAccent(color) { setAccent(color); updateActiveAccent(color); }
         function updateActiveAccent(color) {
             document.querySelectorAll('.accent-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('acc-' + color).classList.add('active');

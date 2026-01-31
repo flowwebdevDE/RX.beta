@@ -242,6 +242,170 @@ body.design-focus .nav-card .icon-box {
     margin-bottom: 15px;
 }
 
+/* 5. Pink Mode (Special Layout) */
+body.design-pink {
+    --card-radius: 35px;
+    --background-color: #ffe0f0; /* Soft Pink Background */
+    --bg-color: #ffe0f0;
+    --card-background: #fff0f6; /* Very light pink card */
+    --text-color: #880e4f; /* Deep Pink Text */
+    --secondary-text-color: #c2185b;
+    --accent-color: #d81b60;
+    --accent-bg: #ffc1e3;
+    --border-color: #f8bbd0;
+    --button-secondary-bg: #ffc1e3;
+    --button-secondary-text: #880e4f;
+    
+    /* Chat Colors */
+    --own-msg-bg: #ec407a;
+    --own-msg-text: #ffffff;
+    --other-msg-bg: #ffffff;
+}
+
+/* Pink Mode Specific Overrides */
+body.design-pink .app {
+    background: linear-gradient(-45deg, #ffe0f0, #ffc1e3, #f8bbd0, #fce4ec);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body.design-pink .header {
+    background: transparent !important;
+}
+
+body.design-pink .header h1 {
+    color: #d81b60;
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.5), 0 0 10px rgba(233, 30, 99, 0.2);
+    animation: sparkle 3s infinite ease-in-out;
+    font-style: italic;
+}
+
+body.design-pink .dashboard-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 15px !important;
+    padding-bottom: 0 !important;
+}
+
+body.design-pink .nav-card {
+    text-align: center;
+    border: 3px solid #f48fb1;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    padding: 15px;
+    box-shadow: 0 10px 25px rgba(233, 30, 99, 0.15);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Verspielte Rotation & Floating für Kacheln */
+@keyframes floatOdd {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-6px) rotate(-2deg); }
+}
+@keyframes floatEven {
+    0%, 100% { transform: translateY(0) rotate(3deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+body.design-pink .nav-card:nth-child(odd) { animation: floatOdd 5s ease-in-out infinite; }
+body.design-pink .nav-card:nth-child(even) { animation: floatEven 5s ease-in-out infinite; animation-delay: 2.5s; }
+
+/* Wetterkarte gerade lassen */
+body.design-pink .weather-card { transform: rotate(0deg) !important; margin-bottom: 10px; }
+
+body.design-pink .nav-card:active {
+    transform: scale(0.95) !important;
+    animation: none !important;
+}
+
+body.design-pink .nav-card .icon-box {
+    background: linear-gradient(135deg, #ff80ab, #ec407a) !important;
+    color: white !important;
+    border-radius: 50%;
+    width: 65px; height: 65px;
+    margin: 0 auto 15px auto;
+    box-shadow: 0 5px 15px rgba(236, 64, 122, 0.4);
+    animation: iconPulse 3s infinite ease-in-out;
+    border: 4px solid white;
+}
+
+body.design-pink .nav-card h3 {
+    color: #880e4f;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Pink Inputs */
+body.design-pink input, 
+body.design-pink select {
+    background-color: white !important;
+    border: 2px solid #f06292 !important;
+    color: #880e4f !important;
+    box-shadow: 0 4px 10px rgba(240, 98, 146, 0.1);
+}
+
+body.design-pink input:focus {
+    border-color: #c2185b !important;
+    transform: translateY(-2px);
+}
+
+/* Pink Weather Card */
+body.design-pink .weather-card {
+    background: linear-gradient(135deg, #f06292, #ad1457) !important;
+    border: none !important;
+    box-shadow: 0 10px 20px rgba(173, 20, 87, 0.3);
+}
+
+/* Pink Chat View */
+body.design-pink #chat-view {
+    background-image: radial-gradient(circle at center, #fff0f5 0%, #f8bbd0 100%) !important;
+}
+
+/* Pink Settings Card */
+body.design-pink .settings-card {
+    border: 3px solid #f48fb1;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(233, 30, 99, 0.15);
+}
+
+body.design-pink .theme-btn.active,
+body.design-pink .accent-btn.active {
+    box-shadow: 0 0 15px rgba(216, 27, 96, 0.4);
+    border-color: #f06292;
+    background: white;
+}
+
+/* Pink KI Chat Container */
+body.design-pink #chat-container {
+    background-image: radial-gradient(circle at center, #fff0f5 0%, #f8bbd0 100%) !important;
+}
+
+/* Animation Keyframes */
+@keyframes sparkle {
+    0%, 100% { text-shadow: 2px 2px 0px rgba(255,255,255,0.5); }
+    50% { text-shadow: 2px 2px 15px rgba(255, 193, 227, 0.8), 0 0 10px #ff80ab; }
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Hide accent selection in Pink Mode */
+body.design-pink #accent-section,
+body.design-pink #accent-divider {
+    display: none !important;
+}
+
 /* =========================================
    LOADING ANIMATIONS & SKELETONS
    ========================================= */

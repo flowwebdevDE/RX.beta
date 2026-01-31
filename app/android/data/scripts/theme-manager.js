@@ -15,9 +15,9 @@
 
         const body = document.body;
         // Alte Design-Klassen entfernen
-        body.classList.remove('design-standard', 'design-list', 'design-tiles', 'design-focus');
+        body.classList.remove('design-standard', 'design-list', 'design-tiles', 'design-focus', 'design-pink');
         // Neues Design setzen
-        if (!body.classList.contains('no-layout-change')) {
+        if (!body.classList.contains('no-layout-change') || design === 'pink') {
             body.classList.add('design-' + design);
         }
 
