@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rail Explorer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="data/styles/dashboard.css">
+  <link rel="stylesheet" href="data/styles/wetter.css">
+  <link rel="stylesheet" href="data/styles/global-theme.css">
+  <script src="data/scripts/wetter/wetter.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <!-- Startscreen / Splash Screen -->
+  <div id="splash-screen" style="position: fixed; inset: 0; background: var(--background-color); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
+    <img src="data/images/logos/logo.png" alt="Logo" style="width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;">
+    <h1 style="font-size: 24px; margin-bottom: 30px; color: var(--text-color); font-weight: 700;">Rail Explorer</h1>
+    <div style="width: 200px; height: 4px; background: rgba(128,128,128,0.2); border-radius: 2px; overflow: hidden;">
+      <div id="splash-progress" style="width: 0%; height: 100%; background: var(--accent-color); transition: width 2s linear;"></div>
+    </div>
+    <p id="splash-greeting" style="margin-top: 20px; color: var(--accent-color); font-weight: 500; min-height: 20px;"></p>
+  </div>
+
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <h1>Rail Explorer</h1>
+      <p>Fahrzeiten berechnen &amp;<br>Betriebsstellen schnell finden</p>
+      <a href="settings.html" class="info-icon" aria-label="Einstellungen" style="right: 65px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </a>
+      <a href="changelog.html" class="info-icon" aria-label="Informationen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </a>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+      <div class="dashboard-grid">
+
+        <!-- Wetter (Volle Breite) -->
+        <a href="wetter/index.html" class="card weather-card full-width" id="weather-card-link">
+          <div class="weather-widget">
+            <div class="weather-left">
+              <h2 id="weather-location">Wetter</h2>
+              <p id="weather-text"><span class="skeleton" style="width: 80px; height: 14px;"></span></p>
+            </div>
+            <div class="weather-right">
+              <i id="weather-icon" class="wi wi-na"></i>
+              <span id="weather-temp"><span class="skeleton" style="width: 30px; height: 24px;"></span></span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Sichtungen -->
+        <a href="sightings.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h3>Sichtungen</h3>
+          <p>Live-Meldungen</p>
+        </a>
+
+        <!-- Chat Rechner -->
+        <a href="chat.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Chat-Rechner</h3>
+          <p>Dialog-Modus</p>
+        </a>
+
+        <!-- Betriebsstellen -->
+        <a href="finder.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+          <h3>Suche</h3>
+          <p>Betriebsstellen</p>
+        </a>
+
+        <!-- Standard Rechner -->
+        <a href="main.html" class="card nav-card">
+          <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h3>Fahrzeiten</h3>
+          <p>Standard</p>
+        </a>
+
+      </div>
+    </main>
+  </div>
+  <script src="data/scripts/theme-manager.js"></script>
+  <script>
+    window.addEventListener('rx-settings-changed', (e) => {
+        const { weatherEnabled, locationEnabled } = e.detail;
+        const weatherCard = document.getElementById('weather-card-link');
+        if (!weatherCard) return;
+
+        // Wenn Standort oder Wetter deaktiviert ist -> Normale Kachel anzeigen
+        const showSimple = !locationEnabled || !weatherEnabled;
+        
+        // Prüfen, ob wir den Zustand ändern müssen (vermeidet unnötiges Neuschreiben des DOMs)
+        const isCurrentlySimple = weatherCard.classList.contains('nav-card') && !weatherCard.classList.contains('weather-card');
+
+        if (showSimple && !isCurrentlySimple) {
+            // Umwandeln in normale Kachel
+            weatherCard.className = 'card nav-card';
+            weatherCard.innerHTML = `
+                <div class="icon-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <h3>Wetter</h3>
+                <p>Vorhersage</p>
+            `;
+        } else if (!showSimple && isCurrentlySimple) {
+            // Zurück zum Widget
+            weatherCard.className = 'card weather-card full-width';
+            weatherCard.innerHTML = `
+                <div class="weather-widget">
+                    <div class="weather-left">
+                      <h2 id="weather-location">Wetter</h2>
+                      <p id="weather-text">Lade...</p>
+                    </div>
+                    <div class="weather-right">
+                      <i id="weather-icon" class="wi wi-na"></i>
+                      <span id="weather-temp">--°</span>
+                    </div>
+                </div>
+            `;
+            // Wetter neu laden triggern
+            if (window.updateWeather) window.updateWeather();
+        }
+    });
+
+    // Startscreen-Logik
+    document.addEventListener('DOMContentLoaded', () => {
+        const settings = getSettings();
+        const hasGreeted = sessionStorage.getItem('rx_greeted');
+        const splash = document.getElementById('splash-screen');
+        const progress = document.getElementById('splash-progress');
+        const greeting = document.getElementById('splash-greeting');
+
+        if (!hasGreeted) {
+            if (settings.username) {
+                greeting.textContent = `Hallo, ${settings.username}`;
+            }
+            splash.style.display = 'flex';
+            // Animation starten (kurzer Timeout für CSS Transition)
+            setTimeout(() => { progress.style.width = '100%'; }, 50);
+
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+                sessionStorage.setItem('rx_greeted', 'true');
+            }, 2050); // 2 Sekunden + Puffer
+        }
+    });
+  </script>
+</body>
+</html>

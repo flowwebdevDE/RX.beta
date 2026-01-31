@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betriebsstellensuche</title>
+    <link rel="stylesheet" href="data/styles/dashboard.css">
+    <link rel="stylesheet" href="data/styles/global-theme.css">
+    <style>
+        /* ===== FORM ===== */
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: none;
+        }
+
+        input,
+        select {
+            background: #f2f2f7;
+        }
+
+        button {
+            margin-top: 8px;
+            padding: 12px 18px;
+            border-radius: 22px;
+            font-size: 15px;
+            font-weight: 500;
+            width: 100%;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            background: var(--accent-color);
+            color: white;
+        }
+
+        button:active {
+            opacity: 0.9;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-container {
+            position: relative;
+        }
+
+        /* ===== RESULTS ===== */
+        #status {
+            margin: 14px 0 6px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background: var(--card-background);
+            color: var(--text-color);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        li:active {
+            background: var(--border-color);
+        }
+
+        .ref {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* ===== POPUP ===== */
+        #popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #popup {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%) translateY(100%);
+            background: var(--card-background);
+            color: var(--text-color);
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            transition: 0.3s ease;
+            z-index: 101;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+        }
+
+        body.modal-open #popup-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.modal-open #popup {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== MODE POPUP ===== */
+        #mode-popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none; z-index: 200; transition: opacity 0.3s;
+        }
+        #mode-popup {
+            position: fixed; left: 50%; bottom: 0; transform: translateX(-50%) translateY(100%);
+            background: var(--card-background); color: var(--text-color); width: 100%; max-width: 500px;
+            padding: 20px; border-radius: 20px 20px 0 0; transition: transform 0.3s ease; z-index: 201;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            display: flex; flex-direction: column;
+        }
+        body.mode-open #mode-popup-overlay { opacity: 1; pointer-events: auto; }
+        body.mode-open #mode-popup { transform: translateX(-50%) translateY(0); }
+
+        .mode-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .mode-btn {
+            background: var(--background-color); color: var(--text-color); padding: 16px; border-radius: 12px;
+            text-align: left; display: flex; justify-content: space-between; align-items: center; font-weight: 500;
+            border: 1px solid transparent; margin-top: 0;
+        }
+        .mode-btn:active { background: var(--border-color); }
+        .mode-btn.active { border-color: var(--accent-color); color: var(--accent-color); background: var(--card-background); }
+        .mode-btn .check-icon { opacity: 0; }
+        .mode-btn.active .check-icon { opacity: 1; }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="app">
+        <header class="header">
+            <a href="index.html" class="back-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </a>
+            <h1>Suche</h1>
+            <p>Betriebsstellen finden</p>
+        </header>
+
+        <main class="content" id="main-content">
+            <div class="card">
+                <div class="form">
+                    <button id="searchModeBtn" style="text-align: left; display: flex; justify-content: space-between; align-items: center; background: var(--background-color); color: var(--text-color); border: 1px solid var(--border-color);">
+                        <span id="searchModeLabel">Suche nach: Name</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+        
+                    <div class="search-container">
+                        <input id="search" type="text" placeholder="Suchbegriff…">
+                    </div>
+        
+                    <button id="geoBtn">📍 Standort verwenden</button>
+                </div>
+        
+                <p id="status">Lade Bahnhofs-Daten …</p>
+                <ul id="results"></ul>
+            </div>
+        </main>
+    </div>
+
+    <div id="popup-overlay"></div>
+    <div id="popup">
+        <h2 id="popup-name"></h2>
+        <p style="margin-top: 10px;" id="popup-ref"></p>
+        <p id="popup-operator"></p>
+        <p id="popup-coords"></p>
+        <button style="margin-top: 10px;" id="popup-close">Schließen</button>
+    </div>
+
+    <!-- Mode Selection Popup -->
+    <div id="mode-popup-overlay"></div>
+    <div id="mode-popup">
+        <h3>Suchart wählen</h3>
+        <div class="mode-list">
+            <button class="mode-btn active" data-value="name">
+                <span>Name</span>
+                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+            <button class="mode-btn" data-value="ref">
+                <span>DS100 / Kürzel</span>
+                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+        </div>
+        <button id="mode-popup-close" style="margin-top: 15px; background: var(--button-secondary-bg); color: var(--button-secondary-text);">Abbrechen</button>
+    </div>
+
+    <script>
+        // Konstanten für Selektoren und Klassen
+        const SEARCH_MODES = {
+            NAME: 'name',
+            REF: 'ref'
+        };
+
+        const searchInput = document.getElementById('search');
+        const geoBtn = document.getElementById('geoBtn');
+        const mainContent = document.getElementById('main-content');
+        const resultsList = document.getElementById('results');
+        const statusText = document.getElementById('status');
+
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popupName = document.getElementById('popup-name');
+        const popupRef = document.getElementById('popup-ref');
+        const popupOperator = document.getElementById('popup-operator');
+        const popupCoords = document.getElementById('popup-coords');
+        const popupClose = document.getElementById('popup-close');
+
+        // Mode Popup Elements
+        const searchModeBtn = document.getElementById('searchModeBtn');
+        const searchModeLabel = document.getElementById('searchModeLabel');
+        const modePopup = document.getElementById('mode-popup');
+        const modePopupOverlay = document.getElementById('mode-popup-overlay');
+        const modePopupClose = document.getElementById('mode-popup-close');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+
+        let stations = [];
+        let currentPosition = null;
+        let refreshTimer = null;
+        let debounceTimer = null;
+        let lastFocusedElement = null;
+        let currentSearchMode = SEARCH_MODES.NAME;
+
+        // === Mode Selection Logic ===
+        function openModePopup() {
+            document.body.classList.add('mode-open');
+        }
+        function closeModePopup() {
+            document.body.classList.remove('mode-open');
+        }
+
+        searchModeBtn.addEventListener('click', openModePopup);
+        modePopupOverlay.addEventListener('click', closeModePopup);
+        modePopupClose.addEventListener('click', closeModePopup);
+
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSearchMode = btn.dataset.value;
+                // UI Update
+                modeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                searchModeLabel.textContent = `Suche nach: ${btn.querySelector('span').textContent}`;
+                
+                closeModePopup();
+                // Trigger search update
+                handleSearch({ target: searchInput });
+            });
+        });
+
+        // === Hilfsfunktionen ===
+        function debounce(func, delay = 300) {
+            return function (...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
+        // Haptisches Feedback für Android
+        function vibrate() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50); // 50ms Vibration
+            }
+        }
+
+        function showLoader() {
+            resultsList.innerHTML = Array(6).fill(0).map(() => `
+                <li>
+                    <div class="skeleton" style="width: 50%; height: 18px; margin-bottom: 6px;"></div>
+                    <div class="skeleton" style="width: 30%; height: 14px;"></div>
+                </li>
+            `).join('');
+        }
+
+        // === JSON laden ===
+        async function loadStations() {
+            try {
+                const res = await fetch('./data/DE_stations.json');
+                const data = await res.json();
+                stations = data.elements || [];
+                statusText.textContent = `Geladen: ${stations.length} Bahnhöfe`;
+            } catch (err) {
+                statusText.textContent = 'Fehler beim Laden der Daten';
+                console.error(err);
+            }
+        }
+
+        // === Distanzberechnung ===
+        function distance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // === Render Stations (Liste inkl. Operator + Network) ===
+        function renderStations(filtered) {
+            resultsList.innerHTML = '';
+            if (filtered.length === 0) {
+                resultsList.innerHTML = '<li>Keine Bahnhöfe gefunden.</li>';
+                return;
+            }
+
+            for (const s of filtered.slice(0, 100)) {
+                const name = s.tags.name || 'Unbenannt';
+                const ref = s.tags["railway:ref"] ? s.tags["railway:ref"].toUpperCase() : '–';
+                const operator = s.tags.operator || '';
+                const network = s.tags.network || '';
+
+                let dist = '';
+                if (currentPosition && s.lat && s.lon) {
+                    dist = ` (${distance(currentPosition.latitude, currentPosition.longitude, s.lat, s.lon).toFixed(1)} km)`;
+                } else if (s.distance) {
+                    dist = ` (${s.distance.toFixed(1)} km)`;
+                }
+
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${name} (${ref})${dist}</strong><br>
+                        <span class="ref">${operator} ${network ? `<br>${network}` : ''}</span>`;
+
+                li.setAttribute('role', 'button');
+                li.setAttribute('tabindex', '0');
+
+                const handleSelect = () => {
+                    lastFocusedElement = document.activeElement;
+                    vibrate();
+                    showPopup(s);
+                };
+
+                li.addEventListener('click', handleSelect);
+                li.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSelect();
+                    }
+                });
+                resultsList.appendChild(li);
+            }
+        }
+
+        // === Popup anzeigen ===
+        function showPopup(station) {
+            popupName.textContent = station.tags.name || 'Unbenannt'; popupRef.textContent = `DS100: ${station.tags["railway:ref"] || '–'}`; popupOperator.textContent = `Betreiber: ${station.tags.operator || '–'}`; popupCoords.textContent = station.lat && station.lon ? `Koordinaten: ${station.lat.toFixed(5)}, ${station.lon.toFixed(5)}` : '';
+
+            // Schritt 1: Hintergrund für Screenreader ausblenden
+            mainContent.setAttribute('aria-hidden', 'true');
+
+            document.body.classList.add('modal-open');
+
+            // Schritt 2: Fokus direkt in das Popup setzen
+            popupClose.focus();
+
+            // Schritt 3: Die "Focus Trap" aktivieren
+            popup.addEventListener('keydown', trapFocus);
+            document.addEventListener('keydown', handleEscape);
+        }
+
+        function closePopup() {
+            document.body.classList.remove('modal-open');
+            mainContent.setAttribute('aria-hidden', 'false');
+            popup.removeEventListener('keydown', trapFocus);
+            document.removeEventListener('keydown', handleEscape);
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        const handleEscape = (e) => e.key === 'Escape' && closePopup();
+
+        function trapFocus(e) {
+            if (e.key !== 'Tab') return;
+            // Im Popup gibt es nur ein fokussierbares Element: den Button
+            // Wenn Tab gedrückt wird, verhindern wir das Standardverhalten und der Fokus bleibt.
+            e.preventDefault();
+        }
+
+        // === Suchfunktion (Start-of-Input + Sortierung) ===
+        const handleSearch = e => {
+            const term = e.target.value.toLowerCase().trim();
+            const mode = currentSearchMode;
+
+            if (!term) {
+                if (currentPosition) {
+                    updateNearbyStations();
+                } else {
+                    resultsList.innerHTML = '';
+                }
+                return;
+            }
+
+            let filtered = stations.filter(s => {
+                const value = mode === SEARCH_MODES.NAME ? (s.tags.name || '').toLowerCase() : (s.tags["railway:ref"] || '').toLowerCase();
+                return value.startsWith(term);
+            });
+
+            // Sortierung: exakte Matches oben (falls unterschiedlich lang)
+            filtered.sort((a, b) => {
+                const aVal = (mode === SEARCH_MODES.NAME ? a.tags.name : a.tags["railway:ref"]) || '';
+                const bVal = (mode === SEARCH_MODES.NAME ? b.tags.name : b.tags["railway:ref"]) || '';
+                return aVal.length - bVal.length;
+            });
+
+            renderStations(filtered);
+        };
+
+        // === Umkreissuche ===
+        function updateNearbyStations() {
+            if (!currentPosition) return;
+            const { latitude, longitude } = currentPosition;
+            const nearby = stations
+                .map(s => {
+                    if (!s.lat || !s.lon) return null;
+                    const dist = distance(latitude, longitude, s.lat, s.lon);
+                    return { ...s, distance: dist };
+                })
+                .filter(s => s && s.distance <= 10)
+                .sort((a, b) => a.distance - b.distance);
+            renderStations(nearby);
+        }
+
+        // === Standort automatisch abfragen ===
+        function startGeoTracking() {
+            if (window.getSettings) {
+                const settings = window.getSettings();
+                if (!settings.locationEnabled) {
+                    statusText.textContent = 'Standortzugriff in Einstellungen deaktiviert.';
+                    return;
+                }
+            }
+            if (!navigator.geolocation) {
+                statusText.textContent = 'Geolocation nicht unterstützt';
+                geoBtn.disabled = true;
+                return;
+            }
+
+            showLoader();
+            geoBtn.disabled = true;
+            geoBtn.textContent = 'Suche...';
+            const originalStatus = statusText.textContent;
+            statusText.textContent = 'Standort wird ermittelt...';
+
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    currentPosition = pos.coords;
+                    updateNearbyStations();
+                    statusText.textContent = originalStatus.startsWith('Geladen:') ? originalStatus : '';
+                    if (refreshTimer) clearInterval(refreshTimer);
+                    refreshTimer = setInterval(updateNearbyStations, 5 * 60 * 1000);
+                    geoBtn.textContent = '📍 Standort';
+                    geoBtn.disabled = false;
+                },
+                err => {
+                    statusText.textContent = 'Standortzugriff verweigert';
+                    geoBtn.textContent = '📍 Standort';
+                    geoBtn.disabled = true; // Keep it disabled if permission is denied
+                    console.error(err);
+                }
+            );
+        }
+
+        // Funktion, um von Android aufgerufen zu werden
+        function updatePositionFromNative(latitude, longitude) {
+            console.log(`Position von Android erhalten: ${latitude}, ${longitude}`);
+            currentPosition = { latitude, longitude };
+            updateNearbyStations();
+            // Deaktiviere Web-Geolocation, wenn native Daten kommen
+            geoBtn.disabled = true;
+            geoBtn.textContent = '📍 Standort (nativ)';
+            if (refreshTimer) clearInterval(refreshTimer);
+        }
+
+        geoBtn.addEventListener('click', startGeoTracking);
+
+        // Alle Buttons mit Vibration ausstatten
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', vibrate);
+        });
+
+        popupOverlay.addEventListener('click', closePopup);
+        popupClose.addEventListener('click', closePopup);
+
+        // === Start ===
+        (async () => {
+            await loadStations(); 
+            // Check settings before auto-starting
+            if (window.getSettings) {
+                const settings = window.getSettings();
+                if (settings.locationEnabled) {
+                    startGeoTracking();
+                }
+            }
+        })();
+
+        searchInput.addEventListener('input', debounce(handleSearch));
+
+    </script>
+    <script src="data/scripts/lock.js"></script>
+    <script src="data/scripts/theme-manager.js"></script>
+</body>
+
+</html>

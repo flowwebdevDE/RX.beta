@@ -1,0 +1,294 @@
+/* Global Theme Variables & Overrides */
+:root {
+    /* Default Colors (Blue / Rail Explorer) */
+    --accent-color: #0a3d91;
+    --background-color: #f2f2f7;
+    --card-background: #ffffff;
+    --text-color: #000000;
+    --secondary-text-color: #6b7280;
+    --border-color: #e5e5ea;
+    --button-secondary-bg: #e4e6eb;
+    --button-secondary-text: #000000;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    --background-color: #000000;
+    --bg-color: #000000; /* Fix für Header Hintergrund in dashboard.css */
+    --card-background: #1c1c1e; /* iOS secondary system background */
+    --text-color: #f5f5f7; /* Softeres Weiß, iOS-ähnlich */
+    --secondary-text-color: #8d8d92; /* iOS secondary label color */
+    --border-color: #38383a;
+    --button-secondary-bg: #2c2c2e;
+    --button-secondary-text: #ffffff;
+    background-image: none !important; /* Hintergrundbild entfernen im Dark Mode */
+
+    /* Overrides für Sichtungen (sightings.css) */
+    --own-msg-bg: var(--accent-color);
+    --other-msg-bg: #2c2c2e; /* iOS tertiary system background */
+}
+
+/* Dark Mode Overrides für spezifische Elemente */
+body.dark-mode #chat-view { /* Gilt für sightings.html */
+    background-image: none !important;
+    background-color: var(--background-color) !important;
+}
+
+body.dark-mode #reply-preview,
+body.dark-mode .options-card,
+body.dark-mode .login-card {
+    background-color: #1c1c1e !important;
+}
+body.dark-mode .options-list button {
+    background: #2c2c2e !important;
+}
+body.dark-mode #chat-header {
+    background-color: var(--card-background) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+/* Dark Mode Fixes für Listen und Tabellen (Finder, Main) */
+body.dark-mode li,
+body.dark-mode .group-item,
+body.dark-mode .autocomplete-list,
+body.dark-mode .eingabe,
+body.dark-mode .ergebnis,
+body.dark-mode .hinweis {
+    background-color: var(--card-background) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .autocomplete-item:hover,
+body.dark-mode li:active,
+body.dark-mode .group-item:active {
+    background-color: var(--border-color) !important;
+}
+
+/* Force apply variables to standard elements */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.card, .nav-card, .popup-card, .options-card {
+    background-color: var(--card-background) !important;
+    color: var(--text-color) !important;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, .ref, a {
+    color: var(--text-color);
+}
+
+.secondary, .ref, .group-time, .group-preview, #status {
+    color: var(--secondary-text-color) !important;
+}
+
+/* Weather Card Text Color Override */
+.weather-card, .weather-card * {
+    color: white !important;
+}
+
+/* Inputs */
+input, select, textarea {
+    background: rgba(118, 118, 128, 0.12) !important;
+    color: var(--text-color) !important;
+}
+
+body.dark-mode input, 
+body.dark-mode select {
+    background: rgba(118, 118, 128, 0.24) !important;
+}
+
+/* Spezifische Input Overrides für Dark Mode */
+body.dark-mode #sighting-input,
+body.dark-mode #group-search-input,
+body.dark-mode #chat-search-input,
+body.dark-mode #user-input /* für ki-mode.css */ {
+    background-color: #2c2c2e !important;
+    border-color: transparent !important;
+}
+body.dark-mode .home-btn { /* für ki-mode.css */
+    background-color: rgba(28, 28, 30, 0.8) !important;
+}
+
+/* =========================================
+   AKZENTFARBEN
+   ========================================= */
+/* Definition von --accent-bg für transparente Hintergründe */
+:root { --accent-bg: rgba(10, 61, 145, 0.15); }
+
+body.accent-blue { --accent-color: #0a3d91; --accent-bg: rgba(10, 61, 145, 0.15); }
+body.accent-red { --accent-color: #ec0016; --accent-bg: rgba(236, 0, 22, 0.15); } /* DB Rot */
+body.accent-green { --accent-color: #27ae60; --accent-bg: rgba(39, 174, 96, 0.15); } /* Flixtrain Grün */
+body.accent-orange { --accent-color: #e67e22; --accent-bg: rgba(230, 126, 34, 0.15); }
+body.accent-purple { --accent-color: #8e44ad; --accent-bg: rgba(142, 68, 173, 0.15); }
+body.accent-pink { --accent-color: #e91e63; --accent-bg: rgba(233, 30, 99, 0.15); }
+
+/* Begrüßungs-Overlay */
+#greeting-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--background-color);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease-out, visibility 0.6s;
+}
+
+/* =========================================
+   LAYOUT DESIGNS (Anordnungen)
+   ========================================= */
+
+/* Global Radius Variable (Default) */
+:root {
+    --card-radius: 18px;
+}
+
+/* Apply radius globally */
+.card, .nav-card, .weather-card, input, select, button, .popup-card {
+    border-radius: var(--card-radius) !important;
+}
+
+/* 1. Standard (Grid 2 Spalten) */
+body.design-standard {
+    --card-radius: 18px;
+}
+
+/* MEHR AKZENTFARBE für nicht-standard Layouts */
+body:not(.design-standard) .nav-card .icon-box {
+    background-color: var(--accent-color) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px var(--accent-bg);
+}
+
+/* 2. Liste (1 Spalte, kompakt) */
+body.design-list {
+    --card-radius: 12px;
+}
+body.design-list .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+}
+body.design-list .nav-card {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 15px;
+    min-height: auto;
+}
+body.design-list .nav-card .icon-box {
+    margin-bottom: 0;
+    margin-right: 15px;
+    width: 32px; height: 32px;
+}
+body.design-list .nav-card p {
+    display: none; /* Beschreibung ausblenden für kompakte Liste */
+}
+
+/* 3. Kacheln (3 Spalten, minimalistisch) */
+body.design-tiles {
+    --card-radius: 12px;
+}
+body.design-tiles .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+}
+body.design-tiles .nav-card {
+    padding: 10px;
+    aspect-ratio: 1;
+    justify-content: center;
+    align-items: center;
+}
+body.design-tiles .nav-card .icon-box {
+    margin-bottom: 5px;
+    background: transparent;
+    width: auto; height: auto;
+}
+body.design-tiles .nav-card h3 {
+    font-size: 11px;
+    text-align: center;
+    margin: 0;
+}
+body.design-tiles .nav-card p {
+    display: none;
+}
+body.design-tiles .weather-card {
+    grid-column: 1 / -1; /* Wetter bleibt volle Breite */
+    aspect-ratio: auto;
+}
+
+/* 4. Fokus (Große Karten) */
+body.design-focus {
+    --card-radius: 24px;
+}
+body.design-focus .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+}
+body.design-focus .nav-card {
+    padding: 30px;
+    align-items: center;
+    text-align: center;
+}
+body.design-focus .nav-card h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+body.design-focus .nav-card .icon-box {
+    width: 50px; height: 50px;
+    margin-bottom: 15px;
+}
+
+/* =========================================
+   LOADING ANIMATIONS & SKELETONS
+   ========================================= */
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton {
+    background: var(--border-color);
+    background: linear-gradient(90deg, var(--border-color) 0%, var(--background-color) 50%, var(--border-color) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+    color: transparent !important;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* Typing Indicator (Chat) */
+.typing-indicator span {
+    display: inline-block; width: 6px; height: 6px; background-color: var(--secondary-text-color);
+    border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 2px;
+}
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+/* =========================================
+   PAGE TRANSITIONS
+   ========================================= */
+
+.app, #main-content {
+    animation: page-enter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    will-change: transform, opacity;
+}
+
+.page-exit {
+    animation: page-exit 0.2s ease-in forwards !important;
+}
+
+@keyframes page-enter {
+    from { opacity: 0; transform: translateY(10px) scale(0.99); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes page-exit {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.98); }
+}

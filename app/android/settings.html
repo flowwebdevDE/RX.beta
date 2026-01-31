@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Einstellungen</title>
+    <link rel="stylesheet" href="data/styles/dashboard.css">
+    <link rel="stylesheet" href="data/styles/global-theme.css">
+    <style>
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .theme-btn {
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--card-background);
+            color: var(--text-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+        .theme-btn.active {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: var(--background-color);
+        }
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-radius: 12px;
+        }
+        /* iOS Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        /* Color Dots */
+        .color-dot {
+            width: 24px; height: 24px; border-radius: 50%; display: inline-block; margin-bottom: 5px;
+        }
+        .accent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+        .accent-btn { display: flex; flex-direction: column; align-items: center; padding: 16px; border-radius: 12px; background: var(--card-background); cursor: pointer; border: 2px solid transparent; }
+        .accent-btn.active { border-color: var(--accent-color); background: var(--background-color); }
+
+        /* Neue Gruppen-Styles */
+        .settings-card {
+            background: var(--card-background);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .settings-card .toggle-row {
+            background: transparent;
+        }
+        .settings-card .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin-left: 15px;
+        }
+        .settings-card-section {
+            padding: 20px;
+        }
+
+        /* Genug Platz unten lassen, damit man alles sieht */
+        .content {
+            padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="no-layout-change" style="position: fixed; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none;">
+    <div class="app">
+        <header class="header">
+            <a href="index.html" class="back-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </a>
+            <h1>Einstellungen</h1>
+            <p>App anpassen</p>
+        </header>
+        <main class="content">
+            <h3>Profil</h3>
+            <div class="settings-card">
+                <input type="text" id="username-input" placeholder="Dein Name (für Begrüßung)" style="width: 100%; background: transparent; border: none; padding: 16px; font-size: 16px;">
+            </div>
+
+            <h3>Erscheinungsbild</h3>
+            <div class="settings-card">
+                <div class="toggle-row">
+                    <span>Dunkelmodus</span>
+                    <label class="switch">
+                        <input type="checkbox" id="darkmode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="divider"></div>
+                <div class="settings-card-section">
+                    <h4 style="margin-bottom: 15px; font-weight: normal; color: var(--secondary-text-color);">Layout</h4>
+                    <div class="theme-grid">
+                        <div class="theme-btn" onclick="selectDesign('standard')" id="btn-standard">Standard</div>
+                        <div class="theme-btn" onclick="selectDesign('list')" id="btn-list">Liste</div>
+                        <div class="theme-btn" onclick="selectDesign('tiles')" id="btn-tiles">Kacheln</div>
+                        <div class="theme-btn" onclick="selectDesign('focus')" id="btn-focus">Fokus</div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="settings-card-section">
+                    <h4 style="margin-bottom: 15px; font-weight: normal; color: var(--secondary-text-color);">Akzentfarbe</h4>
+                    <div class="accent-grid">
+                        <div class="accent-btn" onclick="selectAccent('blue')" id="acc-blue"><span class="color-dot" style="background:#0a3d91"></span>Blau</div>
+                        <div class="accent-btn" onclick="selectAccent('red')" id="acc-red"><span class="color-dot" style="background:#ec0016"></span>Rot</div>
+                        <div class="accent-btn" onclick="selectAccent('green')" id="acc-green"><span class="color-dot" style="background:#27ae60"></span>Grün</div>
+                        <div class="accent-btn" onclick="selectAccent('orange')" id="acc-orange"><span class="color-dot" style="background:#e67e22"></span>Orange</div>
+                        <div class="accent-btn" onclick="selectAccent('purple')" id="acc-purple"><span class="color-dot" style="background:#8e44ad"></span>Lila</div>
+                        <div class="accent-btn" onclick="selectAccent('pink')" id="acc-pink"><span class="color-dot" style="background:#e91e63"></span>Pink</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Funktionen</h3>
+            <div class="settings-card">
+                <div class="toggle-row">
+                    <span>Standortzugriff</span>
+                    <label class="switch">
+                        <input type="checkbox" id="location-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="divider"></div>
+                <div class="toggle-row">
+                    <span>Wetter-Vorschau</span>
+                    <label class="switch">
+                        <input type="checkbox" id="weather-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="data/scripts/theme-manager.js"></script>
+    <script>
+        const settings = getSettings();
+        document.getElementById('darkmode-toggle').checked = settings.darkMode;
+        document.getElementById('location-toggle').checked = settings.locationEnabled;
+        document.getElementById('weather-toggle').checked = settings.weatherEnabled;
+        document.getElementById('username-input').value = settings.username;
+        updateActiveBtn(settings.design);
+        updateActiveAccent(settings.accent);
+
+        document.getElementById('darkmode-toggle').addEventListener('change', (e) => {
+            setDarkMode(e.target.checked);
+        });
+
+        document.getElementById('location-toggle').addEventListener('change', (e) => {
+            setFeature('location', e.target.checked);
+        });
+
+        document.getElementById('weather-toggle').addEventListener('change', (e) => {
+            setFeature('weather', e.target.checked);
+        });
+
+        document.getElementById('username-input').addEventListener('input', (e) => {
+            setUsername(e.target.value);
+        });
+
+        function selectDesign(design) {
+            setDesign(design);
+            updateActiveBtn(design);
+        }
+
+        function updateActiveBtn(design) {
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + design).classList.add('active');
+        }
+
+        function selectAccent(color) {
+            setAccent(color);
+            updateActiveAccent(color);
+        }
+
+        function updateActiveAccent(color) {
+            document.querySelectorAll('.accent-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('acc-' + color).classList.add('active');
+        }
+    </script>
+</body>
+</html>

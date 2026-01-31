@@ -1,0 +1,435 @@
+/* main.css - Fahrzeitenrechner Styles */
+
+/* Cards Spacing */
+.card {
+    margin-bottom: 24px;
+}
+
+/* Formular Elemente */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    margin-left: 4px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 16px;
+    border: 1px solid transparent;
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: var(--card-background);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+}
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.btn-primary {
+    flex: 2;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    flex: 1;
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: none;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.btn-secondary:active {
+    transform: scale(0.98);
+}
+
+.small-btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    margin-top: 12px;
+    width: auto;
+    display: inline-block;
+    border-radius: 12px;
+}
+
+/* Options Details */
+.options-details {
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--background-color);
+}
+
+.options-details summary {
+    padding: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color);
+}
+.options-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.options-details summary::after {
+    content: '+';
+    font-weight: bold;
+    color: var(--accent-color);
+    font-size: 18px;
+}
+
+.options-details[open] summary::after {
+    content: '−';
+}
+
+.options-content {
+    padding: 16px;
+    padding-top: 0;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-background);
+}
+
+/* Map Card */
+.map-card {
+    padding: 0;
+    overflow: hidden;
+    height: 350px; /* Feste Höhe für die Karte */
+    border-radius: 24px !important;
+    margin-top: 0;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    border-radius: 15px; /* Parent .map-card handles radius */
+}
+
+/* Autocomplete */
+.autocomplete-list {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    margin-top: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+}
+
+.autocomplete-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    font-size: 15px;
+}
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover { background: var(--background-color); }
+
+/* Tags */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.via-tag {
+    background: var(--accent-color);
+    color: white;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.via-tag.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+/* Results */
+.result-summary {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 20px;
+    text-align: left;
+    font-weight: normal;
+    color: inherit;
+    font-size: inherit;
+}
+
+.summary-box {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--accent-bg);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.summary-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--secondary-text-color);
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.summary-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent-color);
+}
+
+.summary-value small {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.summary-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--text-color);
+    opacity: 0.1;
+}
+
+/* Timeline View (Node-Edge-Node) */
+.timeline-view {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.station-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2; /* Über der Linie */
+}
+
+.station-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    background: var(--card-background);
+    flex-shrink: 0;
+    margin-left: 4px; /* Zentrierung */
+}
+
+.station-dot.start, .station-dot.end {
+    background: var(--accent-color);
+}
+
+.station-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.connection-row {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    padding: 20px 0;
+}
+
+.connection-line {
+    position: absolute;
+    left: 11px; /* (16px dot / 2) + 4px margin - 1px width */
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.connection-card {
+    flex-grow: 1;
+    margin-left: 36px; /* Platz für Linie */
+    background: var(--background-color);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.connection-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.connection-card:active {
+    transform: scale(0.98);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat .label {
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.stat .val {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Profile Details */
+.profile-details {
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+}
+
+.profile-details summary {
+    font-size: 13px;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-weight: 500;
+    outline: none;
+}
+
+.profile-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-color);
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+.profile-row:last-child { border-bottom: none; }
+
+/* New: Track Input Layout */
+.row-inputs {
+    display: flex;
+    gap: 12px;
+}
+.station-input-wrapper {
+    flex-grow: 1;
+    position: relative;
+}
+.track-input {
+    width: 70px !important;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* New: Platform Badge in Timeline */
+.station-platform {
+    display: inline-block;
+    font-size: 12px;
+    background: var(--button-secondary-bg);
+    color: var(--text-color);
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-left: 8px;
+    vertical-align: middle;
+    border: 1px solid var(--border-color);
+}
+
+/* Custom Map Markers - Zuglaufkarten Style (Station Dots) */
+.map-pin {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-sizing: border-box;
+    background: var(--card-background);
+    border: 4px solid var(--accent-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    transition: transform 0.2s;
+}
+
+.map-pin:active { transform: scale(1.2); }
+.map-pin span { display: none; } /* Inneren Punkt ausblenden */
+
+.map-pin.start {
+    background: #2ecc71;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #2ecc71, 0 4px 8px rgba(0,0,0,0.3);
+}
+.map-pin.end {
+    background: #e74c3c;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #e74c3c, 0 4px 8px rgba(0,0,0,0.3);
+}
+.map-pin.via {
+    background: white;
+    border: 4px solid var(--accent-color);
+}
