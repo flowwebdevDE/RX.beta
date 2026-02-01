@@ -7,7 +7,12 @@
     const USERNAME_KEY = 'rx_username';
 
     function applySettings() {
-        const design = localStorage.getItem(DESIGN_KEY) || 'standard';
+        const isTablet = window.innerWidth >= 768;
+        let design = localStorage.getItem(DESIGN_KEY);
+        
+        if (!design) {
+             design = isTablet ? 'tablet' : 'standard';
+        }
         const darkMode = localStorage.getItem(DARKMODE_KEY) === 'true';
         const weatherEnabled = localStorage.getItem(FEAT_WEATHER_KEY) !== 'false'; // Standard: an
         const locationEnabled = localStorage.getItem(FEAT_LOCATION_KEY) !== 'false'; // Standard: an
@@ -15,9 +20,9 @@
 
         const body = document.body;
         // Alte Design-Klassen entfernen
-        body.classList.remove('design-standard', 'design-list', 'design-tiles', 'design-focus');
+        body.classList.remove('design-standard', 'design-list', 'design-tiles', 'design-focus', 'design-pink', 'design-tablet');
         // Neues Design setzen
-        if (!body.classList.contains('no-layout-change')) {
+        if (!body.classList.contains('no-layout-change') || design === 'pink' || design === 'tablet') {
             body.classList.add('design-' + design);
         }
 
