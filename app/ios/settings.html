@@ -3,113 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Einstellungen</title>
     <link rel="stylesheet" href="data/styles/dashboard.css">
     <link rel="stylesheet" href="data/styles/global-theme.css">
     <style>
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-top: 12px;
-        }
-        .theme-btn {
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            text-align: center;
-            font-weight: 600;
-            cursor: pointer;
+        /* Modern Settings List Style */
+        .settings-group {
             background: var(--card-background);
-            color: var(--text-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: 0.2s;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        .theme-btn.active {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            background: var(--background-color);
-        }
-        .toggle-row {
+        .settings-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 16px;
-            border-radius: 12px;
-        }
-        /* iOS Toggle Switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 30px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        input:checked + .slider {
-            background-color: var(--accent-color);
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-        /* Color Dots */
-        .color-dot {
-            width: 24px; height: 24px; border-radius: 50%; display: inline-block; margin-bottom: 5px;
-        }
-        .accent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
-        .accent-btn { display: flex; flex-direction: column; align-items: center; padding: 16px; border-radius: 12px; background: var(--card-background); cursor: pointer; border: 2px solid transparent; }
-        .accent-btn.active { border-color: var(--accent-color); background: var(--background-color); }
-
-        /* Neue Gruppen-Styles */
-        .settings-card {
             background: var(--card-background);
-            border-radius: 12px;
-            margin-bottom: 24px;
-            overflow: hidden;
+            transition: background-color 0.2s;
+            min-height: 56px;
+            cursor: default;
         }
-        .settings-card .toggle-row {
-            background: transparent;
-        }
-        .settings-card .divider {
+        .settings-item.is-button { cursor: pointer; }
+        .settings-item.is-button:active { background-color: var(--border-color); }
+        
+        .settings-divider {
             height: 1px;
-            background: var(--border-color);
-            margin-left: 15px;
-        }
-        .settings-card-section {
-            padding: 20px;
-        }
-
-        /* Genug Platz unten lassen, damit man alles sieht */
-        .content {
-            padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
-        }
-
-        h3 {
-            margin-bottom: 10px;
+            background-color: var(--border-color);
+            margin-left: 16px;
         }
         
-        /* Hide Tablet Button on Mobile */
+        .settings-label { font-size: 16px; font-weight: 500; color: var(--text-color); }
+        .settings-input {
+            border: none; text-align: right;
+            font-size: 16px; color: var(--text-color); width: 180px;
+            padding: 8px 12px; margin-left: auto; font-family: inherit;
+        }
+        .settings-input:focus { outline: none; opacity: 0.7; }
+        .settings-input::placeholder { color: var(--secondary-text-color); opacity: 0.5; }
+        
+        .settings-value-row { display: flex; align-items: center; gap: 8px; color: var(--secondary-text-color); font-size: 16px; }
+        .chevron { opacity: 0.3; width: 20px; height: 20px; }
+        
+        /* Icons in Settings */
+        .settings-icon { width: 22px; height: 22px; color: var(--accent-color); margin-right: 12px; flex-shrink: 0; }
+        .settings-label-wrap { display: flex; align-items: center; flex: 1; }
+        
+        /* Pink Mode Icon Special */
+        .icon-pink { color: #e91e63; filter: drop-shadow(0 2px 4px rgba(233, 30, 99, 0.3)); }
+
+        /* Switch */
+        .switch { position: relative; display: inline-block; width: 50px; height: 30px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e9e9ea; transition: .3s; border-radius: 34px; }
+        body.dark-mode .slider { background-color: #39393d; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Popups */
+        .popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
+        }
+        .popup-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .popup-content {
+            position: fixed; left: 50%; bottom: 0; transform: translateX(-50%) translateY(100%);
+            width: 100%; max-width: 600px;
+            background: var(--card-background);
+            border-radius: 24px 24px 0 0;
+            padding: 24px; padding-bottom: max(24px, env(safe-area-inset-bottom));
+            z-index: 1001; transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            display: flex; flex-direction: column; gap: 20px;
+            max-height: 85vh; overflow-y: auto;
+        }
+        .popup-overlay.active .popup-content { transform: translateX(-50%) translateY(0); }
+        
+        .popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .popup-title { font-size: 20px; font-weight: 700; margin: 0; }
+        .popup-close { background: var(--button-secondary-bg); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-color); }
+
+        /* Grid for Layout/Accent */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .selection-item {
+            background: var(--background-color); padding: 16px; border-radius: 16px;
+            text-align: center; cursor: pointer; border: 2px solid transparent;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            font-weight: 600; font-size: 15px;
+        }
+        .selection-item.active { border-color: var(--accent-color); background: var(--card-background); color: var(--accent-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; display: block; }
+        
+        h3 { margin: 20px 0 10px 8px; font-size: 14px; text-transform: uppercase; color: var(--secondary-text-color); letter-spacing: 0.5px; }
+
         @media (max-width: 767px) {
             #btn-tablet { display: none !important; }
+        }
+
+        @media (min-width: 768px) {
+            .popup-content { 
+                bottom: 50%; transform: translate(-50%, 50%) scale(0.95); 
+                border-radius: 24px; opacity: 0; pointer-events: none;
+            }
+            .popup-overlay.active .popup-content { 
+                transform: translate(-50%, 50%) scale(1); opacity: 1; pointer-events: auto;
+            }
         }
     </style>
 </head>
@@ -123,110 +127,444 @@
             <p>App anpassen</p>
         </header>
         <main class="content">
-            <h3>Profil</h3>
-            <div class="settings-card">
-                <input type="text" id="username-input" placeholder="Dein Name (für Begrüßung)" style="width: 100%; background: transparent; border: none; padding: 16px; font-size: 16px;">
-            </div>
-
-            <h3>Erscheinungsbild</h3>
-            <div class="settings-card">
-                <div class="toggle-row">
-                    <span>Dunkelmodus</span>
-                    <label class="switch">
-                        <input type="checkbox" id="darkmode-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="divider"></div>
-                <div class="settings-card-section">
-                    <h4 style="margin-bottom: 15px; font-weight: normal; color: var(--secondary-text-color);">Layout</h4>
-                    <div class="theme-grid">
-                        <div class="theme-btn" onclick="selectDesign('standard')" id="btn-standard">Standard</div>
-                        <div class="theme-btn" onclick="selectDesign('list')" id="btn-list">Liste</div>
-                        <div class="theme-btn" onclick="selectDesign('tiles')" id="btn-tiles">Kacheln</div>
-                        <div class="theme-btn" onclick="selectDesign('focus')" id="btn-focus">Fokus</div>
-                        <div class="theme-btn" onclick="selectDesign('tablet')" id="btn-tablet" style="grid-column: 1 / -1;">Tablet-Modus</div>
+            
+            <h3>Allgemein</h3>
+            <div class="settings-group">
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span class="settings-label">Name</span>
                     </div>
+                    <input type="text" id="username-input" class="settings-input" placeholder="Dein Name">
                 </div>
-                <div class="divider"></div>
-                <div class="settings-card-section">
-                    <h4 style="margin-bottom: 15px; font-weight: normal; color: var(--secondary-text-color);">Akzentfarbe</h4>
-                    <div class="accent-grid">
-                        <div class="accent-btn" onclick="selectAccent('blue')" id="acc-blue"><span class="color-dot" style="background:#0a3d91"></span>Blau</div>
-                        <div class="accent-btn" onclick="selectAccent('red')" id="acc-red"><span class="color-dot" style="background:#ec0016"></span>Rot</div>
-                        <div class="accent-btn" onclick="selectAccent('green')" id="acc-green"><span class="color-dot" style="background:#27ae60"></span>Grün</div>
-                        <div class="accent-btn" onclick="selectAccent('orange')" id="acc-orange"><span class="color-dot" style="background:#e67e22"></span>Orange</div>
-                        <div class="accent-btn" onclick="selectAccent('purple')" id="acc-purple"><span class="color-dot" style="background:#8e44ad"></span>Lila</div>
-                        <div class="accent-btn" onclick="selectAccent('pink')" id="acc-pink"><span class="color-dot" style="background:#e91e63"></span>Pink</div>
+                <div class="settings-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span class="settings-label">Standortzugriff</span>
                     </div>
+                    <label class="switch"><input type="checkbox" id="location-toggle"><span class="slider"></span></label>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                        <span class="settings-label">Wetter-Vorschau</span>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="weather-toggle"><span class="slider"></span></label>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="settings-label">Benachrichtigungen</span>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="notifications-toggle"><span class="slider"></span></label>
                 </div>
             </div>
 
-            <h3>Funktionen</h3>
-            <div class="settings-card">
-                <div class="toggle-row">
-                    <span>Standortzugriff</span>
-                    <label class="switch">
-                        <input type="checkbox" id="location-toggle">
-                        <span class="slider"></span>
-                    </label>
+            <h3>Design</h3>
+            <div class="settings-group">
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <span class="settings-label">Dunkelmodus</span>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="darkmode-toggle"><span class="slider"></span></label>
                 </div>
-                <div class="divider"></div>
-                <div class="toggle-row">
-                    <span>Wetter-Vorschau</span>
-                    <label class="switch">
-                        <input type="checkbox" id="weather-toggle">
-                        <span class="slider"></span>
-                    </label>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" id="layout-row" onclick="openPopup('layout-popup')">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                        <span class="settings-label">Layout</span>
+                    </div>
+                    <div class="settings-value-row">
+                        <span id="layout-preview">Standard</span>
+                        <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        <span class="settings-label">3D Tiefe</span>
+                    </div>
+                    <input type="range" id="depth-slider" min="0" max="20" step="1" style="width: 120px; accent-color: var(--accent-color);">
+                </div>
+                <div class="settings-divider" id="accent-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span class="settings-label">Eckenradius</span>
+                    </div>
+                    <input type="range" id="radius-slider" min="0" max="40" step="1" style="width: 120px; accent-color: var(--accent-color);">
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                        <span class="settings-label">Schriftart</span>
+                    </div>
+                    <select id="font-select" class="settings-input" style="width: auto; padding-right: 0;">
+                        <option value="">System (Standard)</option>
+                        <option value="'Merriweather', serif">Serif</option>
+                        <option value="'JetBrains Mono', monospace">Mono</option>
+                        <option value="'Varela Round', sans-serif">Rund</option>
+                        <option value="'Courier New', monospace">Retro</option>
+                    </select>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="document.getElementById('bg-upload').click()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span class="settings-label">Hintergrundbild</span>
+                    </div>
+                    <span class="settings-value-row" id="bg-status">Wählen</span>
+                </div>
+                <div class="settings-item is-button" id="bg-reset-row" onclick="resetCustomWallpaper()" style="display: none;">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" style="color: #ff3b30;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        <span class="settings-label" style="color: #ff3b30;">Hintergrund entfernen</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" id="accent-row" onclick="openPopup('accent-popup')">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="10.5" r="2.5"></circle><circle cx="8.5" cy="7.5" r="2.5"></circle><circle cx="6.5" cy="12.5" r="2.5"></circle><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                        <span class="settings-label">Akzentfarbe</span>
+                    </div>
+                    <div class="settings-value-row">
+                        <span id="accent-preview">Blau</span>
+                        <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon icon-pink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span class="settings-label">Pink Mode</span>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="pinkmode-toggle"><span class="slider"></span></label>
+                </div>
+            </div>
+            <input type="file" id="bg-upload" accept="image/*" style="display: none;">
+
+            <h3>System</h3>
+            <div class="settings-group">
+                <div style="display: none;" id="launcher-settings-placeholder"></div>
+                <div class="settings-item is-button" id="update-check-btn" onclick="checkForOTAUpdates()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span class="settings-label">Nach Updates suchen</span>
+                    </div>
+                    <span style="color: var(--secondary-text-color); font-size: 14px;">v<span class="app-version"></span></span>
+                </div>
+            </div>
+
+            <!-- Developer Section (Hidden by default) -->
+            <h3 style="display: none;" id="dev-header">Entwickler</h3>
+            <div class="settings-group" style="display: none;" id="dev-group">
+                <div class="settings-item is-button" onclick="showDevConsole()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"></path><path d="M12 19h8"></path></svg>
+                        <span class="settings-label">Fehlerkonsole</span>
+                    </div>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="showLocalStorage()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span class="settings-label">Speicher inspizieren</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="showNotification('Test-Nachricht', 'Das ist eine Benachrichtigung von oben!', null)">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="settings-label">Benachrichtigung testen</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="testSplash()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        <span class="settings-label">Splash Screen testen</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="simulateUpdate()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span class="settings-label">Update simulieren</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="showDeviceInfo()">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                        <span class="settings-label">Geräte-Infos</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="resetApp()" style="color: #ff3b30;">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" style="color: #ff3b30;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span class="settings-label">App zurücksetzen</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="resetUpdates()" style="color: #ff9500;">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" style="color: #ff9500;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        <span class="settings-label">Updates löschen (Speicher)</span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-item is-button" onclick="setDevMode(false)">
+                    <div class="settings-label-wrap">
+                        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        <span class="settings-label">Dev-Modus deaktivieren</span>
+                    </div>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- Popups -->
+    <div id="popup-overlay" class="popup-overlay"></div>
+
+    <!-- Layout Popup -->
+    <div id="layout-popup" class="popup-content">
+        <div class="popup-header">
+            <h2 class="popup-title">Layout wählen</h2>
+            <button class="popup-close" onclick="closeAllPopups()">✕</button>
+        </div>
+        <div class="selection-grid">
+            <div class="selection-item" onclick="selectDesign('standard')" id="btn-standard">Standard</div>
+            <div class="selection-item" onclick="selectDesign('list')" id="btn-list">Liste</div>
+            <div class="selection-item" onclick="selectDesign('tiles')" id="btn-tiles">Kacheln</div>
+            <div class="selection-item" onclick="selectDesign('focus')" id="btn-focus">Fokus</div>
+            <div class="selection-item" onclick="selectDesign('glass')" id="btn-glass">Glass</div>
+            <div class="selection-item" onclick="selectDesign('bubble')" id="btn-bubble">Bubble</div>
+            <div class="selection-item" onclick="selectDesign('tablet')" id="btn-tablet" style="grid-column: 1 / -1;">Tablet (Breit)</div>
+        </div>
+    </div>
+
+    <!-- Accent Popup -->
+    <div id="accent-popup" class="popup-content">
+        <div class="popup-header">
+            <h2 class="popup-title">Akzentfarbe</h2>
+            <button class="popup-close" onclick="closeAllPopups()">✕</button>
+        </div>
+        <div class="selection-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="selection-item" onclick="selectAccent('blue')" id="acc-blue"><span class="color-dot" style="background:#0a3d91"></span>Blau</div>
+            <div class="selection-item" onclick="selectAccent('red')" id="acc-red"><span class="color-dot" style="background:#ec0016"></span>Rot</div>
+            <div class="selection-item" onclick="selectAccent('green')" id="acc-green"><span class="color-dot" style="background:#27ae60"></span>Grün</div>
+            <div class="selection-item" onclick="selectAccent('orange')" id="acc-orange"><span class="color-dot" style="background:#e67e22"></span>Orange</div>
+            <div class="selection-item" onclick="selectAccent('purple')" id="acc-purple"><span class="color-dot" style="background:#8e44ad"></span>Lila</div>
+            <div class="selection-item" onclick="selectAccent('pink')" id="acc-pink"><span class="color-dot" style="background:#e91e63"></span>Pink</div>
+            <div class="selection-item" onclick="selectAccent('teal')" id="acc-teal"><span class="color-dot" style="background:#009688"></span>Türkis</div>
+            <div class="selection-item" onclick="selectAccent('yellow')" id="acc-yellow"><span class="color-dot" style="background:#fbc02d"></span>Gelb</div>
+            <div class="selection-item" onclick="selectAccent('indigo')" id="acc-indigo"><span class="color-dot" style="background:#3f51b5"></span>Indigo</div>
+            <div class="selection-item" onclick="selectAccent('brown')" id="acc-brown"><span class="color-dot" style="background:#795548"></span>Braun</div>
+        </div>
+    </div>
+
+    <!-- Generic Message Popup -->
+    <div id="message-popup" class="popup-content" style="max-height: auto;">
+        <div class="popup-header">
+            <h2 class="popup-title" id="msg-title">Nachricht</h2>
+            <button class="popup-close" onclick="closeAllPopups()">✕</button>
+        </div>
+        <p id="msg-body" style="font-size: 16px; line-height: 1.5; color: var(--text-color); margin: 10px 0 20px 0; white-space: pre-wrap;"></p>
+        <div id="msg-actions" style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="msg-action-btn" style="width: 100%; padding: 16px; background: var(--accent-color); color: white; border: none; border-radius: 14px; font-weight: 600; font-size: 16px; display: none;">Aktion</button>
+            <button id="msg-close-btn" onclick="closeAllPopups()" style="width: 100%; padding: 16px; background: var(--button-secondary-bg); color: var(--text-color); border: none; border-radius: 14px; font-weight: 600; font-size: 16px;">Schließen</button>
+        </div>
+    </div>
+
     <script src="data/scripts/theme-manager.js"></script>
     <script>
         const settings = getSettings();
-        document.getElementById('darkmode-toggle').checked = settings.darkMode;
-        document.getElementById('location-toggle').checked = settings.locationEnabled;
-        document.getElementById('weather-toggle').checked = settings.weatherEnabled;
-        document.getElementById('username-input').value = settings.username;
+        
+        // Helper für sicheren Zugriff (verhindert Abstürze bei fehlenden IDs)
+        const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
+        const setValue = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+        const addListener = (id, event, cb) => { const el = document.getElementById(id); if(el) el.addEventListener(event, cb); };
+
+        setChecked('darkmode-toggle', settings.darkMode);
+        setChecked('pinkmode-toggle', settings.pinkMode);
+        setChecked('location-toggle', settings.locationEnabled);
+        setChecked('weather-toggle', settings.weatherEnabled);
+        setChecked('notifications-toggle', settings.notificationsEnabled);
+        setValue('username-input', settings.username);
+        setValue('depth-slider', settings.depth);
+        setValue('radius-slider', settings.customRadius || 18); // Default fallback
+        setValue('font-select', settings.customFont || '');
+        
+        // Wallpaper UI State
+        if(settings.customWallpaper) {
+            document.getElementById('bg-status').textContent = 'Gesetzt';
+            document.getElementById('bg-reset-row').style.display = 'flex';
+        }
+        
+        // Dev Mode Initial State
+        const devHeader = document.getElementById('dev-header');
+        const devGroup = document.getElementById('dev-group');
+        if (settings.devMode) {
+            devHeader.style.display = 'block';
+            devGroup.style.display = 'block';
+        }
+        
         updateActiveBtn(settings.design);
         updateActiveAccent(settings.accent);
 
-        document.getElementById('darkmode-toggle').addEventListener('change', (e) => {
-            setDarkMode(e.target.checked);
+        addListener('darkmode-toggle', 'change', (e) => setDarkMode(e.target.checked));
+        addListener('pinkmode-toggle', 'change', (e) => setPinkMode(e.target.checked));
+        addListener('location-toggle', 'change', (e) => setFeature('location', e.target.checked));
+        addListener('weather-toggle', 'change', (e) => setFeature('weather', e.target.checked));
+        addListener('notifications-toggle', 'change', (e) => setFeature('notifications', e.target.checked));
+        addListener('username-input', 'input', (e) => setUsername(e.target.value));
+        addListener('depth-slider', 'input', (e) => set3DDepth(e.target.value));
+        addListener('radius-slider', 'input', (e) => setCustomRadius(e.target.value));
+        addListener('font-select', 'change', (e) => setCustomFont(e.target.value));
+
+        // Wallpaper Upload
+        document.getElementById('bg-upload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        setCustomWallpaper(evt.target.result);
+                        document.getElementById('bg-status').textContent = 'Gesetzt';
+                    } catch(err) {
+                        alert('Bild ist zu groß für den Speicher. Bitte ein kleineres Bild wählen.');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
-        document.getElementById('location-toggle').addEventListener('change', (e) => {
-            setFeature('location', e.target.checked);
-        });
-
-        document.getElementById('weather-toggle').addEventListener('change', (e) => {
-            setFeature('weather', e.target.checked);
-        });
-
-        document.getElementById('username-input').addEventListener('input', (e) => {
-            setUsername(e.target.value);
-        });
-
-        function selectDesign(design) {
-            setDesign(design);
-            updateActiveBtn(design);
+        // Popup Logic
+        const overlay = document.getElementById('popup-overlay');
+        
+        function openPopup(id) {
+            overlay.classList.add('active');
+            document.getElementById(id).style.transform = 'translateX(-50%) translateY(0)';
+            // Special handling for tablet mode in CSS media query
         }
 
+        function closeAllPopups() {
+            overlay.classList.remove('active');
+            document.querySelectorAll('.popup-content').forEach(el => {
+                el.style.transform = ''; // Reset to CSS default (hidden)
+            });
+        }
+
+        overlay.addEventListener('click', closeAllPopups);
+
+        // Global Popup Handler for theme-manager.js
+        window.showAppPopup = function(title, message, actionText, actionCallback) {
+            document.getElementById('msg-title').textContent = title;
+            document.getElementById('msg-body').textContent = message;
+            
+            const actionBtn = document.getElementById('msg-action-btn');
+            const closeBtn = document.getElementById('msg-close-btn');
+            
+            if (actionText && actionCallback) {
+                actionBtn.textContent = actionText;
+                actionBtn.style.display = 'block';
+                actionBtn.onclick = () => { actionCallback(); closeAllPopups(); };
+                closeBtn.textContent = 'Abbrechen';
+                closeBtn.style.display = 'block';
+            } else {
+                actionBtn.style.display = 'none';
+                closeBtn.textContent = 'OK'; // Fallback zu OK wenn keine Aktion
+            }
+            openPopup('message-popup');
+        };
+
+        function selectDesign(design) { 
+            setDesign(design); 
+            updateActiveBtn(design); 
+            setTimeout(closeAllPopups, 150); // Auto close
+        }
         function updateActiveBtn(design) {
-            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + design).classList.add('active');
-        }
+            document.querySelectorAll('.selection-item').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById('btn-' + design);
+            if(btn) btn.classList.add('active');
+            
+            // Update Preview Text
+            const map = { 'standard': 'Standard', 'list': 'Liste', 'tiles': 'Kacheln', 'focus': 'Fokus', 'tablet': 'Tablet', 'glass': 'Glass', 'bubble': 'Bubble' };
+            const preview = document.getElementById('layout-preview');
+            if(preview) preview.textContent = map[design] || 'Standard';
 
-        function selectAccent(color) {
-            setAccent(color);
-            updateActiveAccent(color);
+            // Hide layout/accent selection in pink mode
+            const pinkModeOn = getSettings().pinkMode;
+            const layoutRow = document.getElementById('layout-row');
+            const accentRow = document.getElementById('accent-row');
+            const accentDivider = document.getElementById('accent-divider');
+            
+            if (layoutRow) layoutRow.style.display = pinkModeOn ? 'none' : '';
+            if (accentRow) accentRow.style.display = pinkModeOn ? 'none' : '';
+            if (accentDivider) accentDivider.style.display = pinkModeOn ? 'none' : '';
         }
-
+        function selectAccent(color) { 
+            setAccent(color); 
+            updateActiveAccent(color); 
+            setTimeout(closeAllPopups, 150); // Auto close
+        }
         function updateActiveAccent(color) {
-            document.querySelectorAll('.accent-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('acc-' + color).classList.add('active');
+            document.querySelectorAll('.selection-item').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById('acc-' + color);
+            if(btn) btn.classList.add('active');
+            
+            // Update Preview Text
+            const map = { 'blue': 'Blau', 'red': 'Rot', 'green': 'Grün', 'orange': 'Orange', 'purple': 'Lila', 'pink': 'Pink', 'teal': 'Türkis', 'yellow': 'Gelb', 'indigo': 'Indigo', 'brown': 'Braun' };
+            const preview = document.getElementById('accent-preview');
+            if(preview) preview.textContent = map[color] || 'Blau';
         }
+
+        // UI aktualisieren, wenn sich Einstellungen (z.B. durch Pink Mode) ändern
+        window.addEventListener('rx-settings-changed', (e) => {
+            setChecked('darkmode-toggle', e.detail.darkMode);
+            setChecked('pinkmode-toggle', e.detail.pinkMode);
+            updateActiveBtn(e.detail.design);
+            updateActiveAccent(e.detail.accent);
+            setValue('depth-slider', e.detail.depth);
+            setValue('radius-slider', e.detail.customRadius || 18);
+            setValue('font-select', e.detail.customFont || '');
+            
+            if(e.detail.customWallpaper) {
+                document.getElementById('bg-status').textContent = 'Gesetzt';
+                document.getElementById('bg-reset-row').style.display = 'flex';
+            } else {
+                document.getElementById('bg-status').textContent = 'Wählen';
+                document.getElementById('bg-reset-row').style.display = 'none';
+            }
+            
+            // Dev Mode Toggle
+            if (devHeader && devGroup) {
+                const display = e.detail.devMode ? 'block' : 'none';
+                devHeader.style.display = display;
+                devGroup.style.display = display;
+            }
+        });
+
+        // Entwicklermodus aktivieren (7x auf "Einstellungen" tippen)
+        let devTapCount = 0;
+        document.querySelector('.header h1').addEventListener('click', () => {
+            devTapCount++;
+            if (devTapCount >= 7) {
+                devTapCount = 0;
+                const newStatus = !getSettings().devMode;
+                setDevMode(newStatus);
+                if (window.showAppPopup) window.showAppPopup('Entwicklermodus', newStatus ? 'Aktiviert' : 'Deaktiviert');
+            }
+        });
     </script>
 </body>
 </html>

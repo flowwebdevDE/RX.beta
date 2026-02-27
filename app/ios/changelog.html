@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>Rail Explorer</title>
   <link rel="stylesheet" href="data/styles/dashboard.css">
   <link rel="stylesheet" href="data/styles/global-theme.css">
@@ -18,7 +20,7 @@
       <a href="index.html" class="back-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </a>
-      <h1>Rail Explorer</h1>
+      <h1>Rail Explorer +</h1>
       <p>Infos &amp; Changelog</p>
     </header>
 
@@ -27,15 +29,20 @@
       <div class="dashboard-grid">
         <div class="card nav-card full-width">
           <h3>Version</h3>
-          <p>Du nutzt <strong>Version 3.20260131 beta</strong> für iOS</p>
+          <p>Du nutzt <strong>Version <span class="app-version"></span></strong> für Android</p>
         </div>
 
         <div class="card nav-card full-width">
+          <h3>Nutzer-Status</h3>
+          <p>Du bist <strong>Premium-Member</strong></p>
+        </div>
+
+        <div style="display: none;" class="card nav-card full-width">
           <h3>App-Update</h3>
           <p>Du musst nix tun, die App ist immer automatisch auf dem neuesten Stand</p>
         </div>
 
-        <a href="https://median.co/share/pwxqrdx#apk" class="card nav-card full-width">
+        <a style="display: none;" href="https://median.co/share/pwxqrdx#apk" class="card nav-card full-width">
           <h3>Android-App</h3>
           <p>Hier kannst du die Android-App herunterladen</p>
         </a>

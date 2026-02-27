@@ -9,6 +9,8 @@
     --border-color: #e5e5ea;
     --button-secondary-bg: #e4e6eb;
     --button-secondary-text: #000000;
+    --font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    --splash-bg: var(--background-color);
 }
 
 /* Dark Mode */
@@ -67,9 +69,12 @@ body.dark-mode .group-item:active {
 
 /* Force apply variables to standard elements */
 body {
-    background-color: var(--background-color);
+    background-color: #000000;
     color: var(--text-color);
+    font-family: var(--font-family) !important;
     transition: background-color 0.3s, color 0.3s;
+    user-select: none; /* Verhindert Textauswahl (App-Feeling) */
+    -webkit-user-select: none;
 }
 
 .card, .nav-card, .popup-card, .options-card {
@@ -94,6 +99,8 @@ h1, h2, h3, h4, h5, h6, p, span, .ref, a {
 input, select, textarea {
     background: rgba(118, 118, 128, 0.12) !important;
     color: var(--text-color) !important;
+    user-select: text; /* Eingabefelder müssen auswählbar bleiben */
+    -webkit-user-select: text;
 }
 
 body.dark-mode input, 
@@ -125,6 +132,10 @@ body.accent-green { --accent-color: #27ae60; --accent-bg: rgba(39, 174, 96, 0.15
 body.accent-orange { --accent-color: #e67e22; --accent-bg: rgba(230, 126, 34, 0.15); }
 body.accent-purple { --accent-color: #8e44ad; --accent-bg: rgba(142, 68, 173, 0.15); }
 body.accent-pink { --accent-color: #e91e63; --accent-bg: rgba(233, 30, 99, 0.15); }
+body.accent-teal { --accent-color: #009688; --accent-bg: rgba(0, 150, 136, 0.15); }
+body.accent-yellow { --accent-color: #fbc02d; --accent-bg: rgba(251, 192, 45, 0.15); }
+body.accent-indigo { --accent-color: #3f51b5; --accent-bg: rgba(63, 81, 181, 0.15); }
+body.accent-brown { --accent-color: #795548; --accent-bg: rgba(121, 85, 72, 0.15); }
 
 /* Begrüßungs-Overlay */
 #greeting-overlay {
@@ -240,6 +251,113 @@ body.design-focus .nav-card h3 {
 body.design-focus .nav-card .icon-box {
     width: 50px; height: 50px;
     margin-bottom: 15px;
+}
+
+/* 6. Glass Theme (Glassmorphism) */
+body.design-glass {
+    --card-radius: 24px;
+    --background-color: transparent; /* Damit Gradient durchscheint */
+    --card-background: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(255, 255, 255, 0.4);
+    --splash-bg: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+/* Fix für Mobile: Pseudo-Element statt background-attachment: fixed */
+body.design-glass::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    z-index: -1;
+}
+body.design-glass .app {
+    background: transparent;
+}
+body.design-glass.dark-mode .app {
+    background: transparent;
+}
+body.design-glass.dark-mode::before {
+    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+}
+body.design-glass.dark-mode {
+    --card-background: rgba(30, 30, 30, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --splash-bg: linear-gradient(135deg, #232526 0%, #414345 100%);
+}
+body.design-glass .card, 
+body.design-glass .nav-card, 
+body.design-glass .popup-card,
+body.design-glass .settings-group,
+body.design-glass .weather-main-card,
+body.design-glass #popup,
+body.design-glass #mode-popup,
+body.design-glass .control-center-grid,
+body.design-glass .search-overlay,
+body.design-glass .header,
+body.design-glass .popup-content,
+body.design-glass .options-card,
+body.design-glass .login-card {
+    background-color: var(--card-background) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+/* Glass Header Special */
+body.design-glass .header {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0 0 var(--card-radius) var(--card-radius);
+    margin-bottom: 10px;
+}
+body.design-glass.dark-mode .header {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Glass Inputs */
+body.design-glass input, 
+body.design-glass select, 
+body.design-glass textarea,
+body.design-glass .cc-button {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(4px);
+}
+body.design-glass.dark-mode input,
+body.design-glass.dark-mode select {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 7. Bubble Theme (Round & Bouncy) */
+body.design-bubble {
+    --card-radius: 28px;
+}
+body.design-bubble .dashboard-grid {
+    gap: 20px !important;
+}
+
+/* Bouncy Effect für alle interaktiven Elemente */
+body.design-bubble .nav-card,
+body.design-bubble .card,
+body.design-bubble button,
+body.design-bubble .btn-primary,
+body.design-bubble .btn-secondary,
+body.design-bubble .form-btn,
+body.design-bubble .cc-button,
+body.design-bubble .settings-item.is-button {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08), 0 6px 6px rgba(0,0,0,0.1);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s;
+}
+
+body.design-bubble .nav-card:active,
+body.design-bubble button:active,
+body.design-bubble .btn-primary:active,
+body.design-bubble .btn-secondary:active,
+body.design-bubble .form-btn:active,
+body.design-bubble .cc-button:active,
+body.design-bubble .settings-item.is-button:active {
+    transform: scale(0.92);
 }
 
 /* 5. Tablet Layout (Sidebar Redesign) */
@@ -477,6 +595,260 @@ body.design-tablet .content:has(.settings-card) h3 {
     margin-bottom: 15px;
 }
 
+/* --- Tablet Popups & Overlays --- */
+body.design-tablet #message-options-overlay,
+body.design-tablet #forward-overlay,
+body.design-tablet #create-group-overlay,
+body.design-tablet #custom-popup-overlay,
+body.design-tablet #login-overlay,
+body.design-tablet #confirm-overlay,
+body.design-tablet #forward-confirm-overlay,
+body.design-tablet #popup-overlay {
+    align-items: center !important; /* Zentriert statt unten (für Bottom Sheets) */
+    justify-content: center !important;
+    backdrop-filter: blur(15px) !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+body.design-tablet .popup-card,
+body.design-tablet .login-card,
+body.design-tablet .options-card,
+body.design-tablet #popup {
+    max-width: 480px !important;
+    width: 100% !important;
+    min-width: 320px;
+    border-radius: 28px !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25) !important;
+    margin: auto;
+    animation: popupScale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    border: 1px solid var(--border-color);
+}
+
+/* Reset für Finder Popup Positionierung */
+body.design-tablet #popup {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+body.design-tablet .options-card::before {
+    display: none !important; /* Handle für Bottom Sheet ausblenden */
+}
+
+/* 5. Pink Mode (Special Layout) */
+body.design-pink {
+    --card-radius: 35px;
+    --background-color: #ffe0f0; /* Soft Pink Background */
+    --bg-color: #ffe0f0;
+    --card-background: #fff0f6; /* Very light pink card */
+    --text-color: #880e4f; /* Deep Pink Text */
+    --secondary-text-color: #c2185b;
+    --accent-color: #d81b60;
+    --accent-bg: #ffc1e3;
+    --border-color: #f8bbd0;
+    --button-secondary-bg: #ffc1e3;
+    --button-secondary-text: #880e4f;
+    
+    /* Chat Colors */
+    --own-msg-bg: #ec407a;
+    --own-msg-text: #ffffff;
+    --other-msg-bg: #ffffff;
+}
+
+/* Pink Mode Specific Overrides */
+body.design-pink .app {
+    background: linear-gradient(-45deg, #ffe0f0, #ffc1e3, #f8bbd0, #fce4ec);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+/* Pink Dark Mode */
+body.design-pink.dark-mode {
+    --background-color: #1a000d;
+    --bg-color: #1a000d;
+    --card-background: #2c1a24;
+    --text-color: #fce4ec;
+    --secondary-text-color: #f48fb1;
+    --accent-color: #ff80ab;
+    --accent-bg: rgba(255, 128, 171, 0.15);
+    --border-color: #5c1a3a;
+    --button-secondary-bg: #5c1a3a;
+    --button-secondary-text: #fce4ec;
+
+    --own-msg-bg: #ff80ab;
+    --own-msg-text: #000000;
+    --other-msg-bg: #2c1a24;
+}
+
+body.design-pink.dark-mode .app {
+    background: linear-gradient(-45deg, #2c1a24, #5c1a3a, #880e4f, #2c1a24);
+    background-size: 400% 400%;
+}
+
+body.design-pink.dark-mode .header h1 {
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+}
+
+body.design-pink.dark-mode .nav-card,
+body.design-pink.dark-mode .settings-card,
+body.design-pink.dark-mode .settings-group {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body.design-pink .header {
+    background: transparent !important;
+}
+
+body.design-pink.dark-mode .nav-card .icon-box {
+    border-color: #2c1a24;
+}
+
+body.design-pink .header h1 {
+    color: #d81b60;
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.5), 0 0 10px rgba(233, 30, 99, 0.2);
+    animation: sparkle 3s infinite ease-in-out;
+    font-style: italic;
+}
+
+body.design-pink .dashboard-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 15px !important;
+    padding-bottom: 0 !important;
+}
+
+body.design-pink .nav-card {
+    text-align: center;
+    border: 3px solid #f48fb1;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    padding: 15px;
+    box-shadow: 0 10px 25px rgba(233, 30, 99, 0.15);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+body.design-pink.dark-mode .nav-card h3 {
+    color: var(--text-color);
+}
+
+/* Verspielte Rotation & Floating für Kacheln */
+@keyframes floatOdd {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-6px) rotate(-2deg); }
+}
+@keyframes floatEven {
+    0%, 100% { transform: translateY(0) rotate(3deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+body.design-pink .nav-card:nth-child(odd) { animation: floatOdd 5s ease-in-out infinite; }
+body.design-pink .nav-card:nth-child(even) { animation: floatEven 5s ease-in-out infinite; animation-delay: 2.5s; }
+
+/* Wetterkarte gerade lassen */
+body.design-pink .weather-card { transform: rotate(0deg) !important; margin-bottom: 10px; }
+
+body.design-pink .nav-card:active {
+    transform: scale(0.95) !important;
+    animation: none !important;
+}
+
+body.design-pink .nav-card .icon-box {
+    background: linear-gradient(135deg, #ff80ab, #ec407a) !important;
+    color: white !important;
+    border-radius: 50%;
+    width: 65px; height: 65px;
+    margin: 0 auto 15px auto;
+    box-shadow: 0 5px 15px rgba(236, 64, 122, 0.4);
+    animation: iconPulse 3s infinite ease-in-out;
+    border: 4px solid white;
+}
+
+body.design-pink.dark-mode input, 
+body.design-pink.dark-mode select {
+    background-color: var(--card-background) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+body.design-pink .nav-card h3 {
+    color: #880e4f;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Pink Inputs */
+body.design-pink input, 
+body.design-pink select {
+    background-color: white !important;
+    border: 2px solid #f06292 !important;
+    color: #880e4f !important;
+    box-shadow: 0 4px 10px rgba(240, 98, 146, 0.1);
+}
+
+body.design-pink input:focus {
+    border-color: #c2185b !important;
+    transform: translateY(-2px);
+}
+
+/* Pink Weather Card */
+body.design-pink .weather-card {
+    background: linear-gradient(135deg, #f06292, #ad1457) !important;
+    border: none !important;
+    box-shadow: 0 10px 20px rgba(173, 20, 87, 0.3);
+}
+
+/* Pink Chat View */
+body.design-pink #chat-view {
+    background-image: radial-gradient(circle at center, #fff0f5 0%, #f8bbd0 100%) !important;
+}
+
+body.design-pink.dark-mode #chat-view,
+body.design-pink.dark-mode #chat-container {
+    background-image: radial-gradient(circle at center, #2c1a24 0%, #1a000d 100%) !important;
+}
+
+/* Pink Settings Card */
+body.design-pink .settings-card,
+body.design-pink .settings-group {
+    border: 3px solid #f48fb1;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(233, 30, 99, 0.15);
+}
+
+body.design-pink .theme-btn.active,
+body.design-pink .accent-btn.active {
+    box-shadow: 0 0 15px rgba(216, 27, 96, 0.4);
+    border-color: #f06292;
+    background: white;
+}
+
+/* Animation Keyframes */
+@keyframes sparkle {
+    0%, 100% { text-shadow: 2px 2px 0px rgba(255,255,255,0.5); }
+    50% { text-shadow: 2px 2px 15px rgba(255, 193, 227, 0.8), 0 0 10px #ff80ab; }
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Hide accent selection in Pink Mode */
+body.design-pink #accent-section,
+body.design-pink #accent-divider {
+    display: none !important;
+}
+
 /* =========================================
    LOADING ANIMATIONS & SKELETONS
    ========================================= */
@@ -526,4 +898,163 @@ body.design-tablet .content:has(.settings-card) h3 {
 @keyframes page-exit {
     from { opacity: 1; transform: scale(1); }
     to { opacity: 0; transform: scale(0.98); }
+}
+
+@keyframes popupScale {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* =========================================
+   STATUS BAR NOTIFICATION (Dynamic Slide)
+   ========================================= */
+#status-notification {
+    position: fixed;
+    top: 40px; left: 10px; right: 10px;
+    background: #000000; /* Matcht die Statusbar */
+    color: white;
+    z-index: 20000; /* Über allem anderen */
+    padding: 18px 24px;
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transform: translateY(-150%);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy Effekt */
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    pointer-events: none;
+}
+
+#status-notification.visible {
+    transform: translateY(0);
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+#status-notification .sn-icon {
+    color: var(--accent-color);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+#status-notification .sn-icon svg { width: 28px; height: 28px; }
+
+#status-notification .sn-content {
+    flex: 1;
+}
+#status-notification .sn-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+#status-notification .sn-message {
+    font-size: 13px;
+    opacity: 0.8;
+    line-height: 1.3;
+}
+
+/* Pink Mode Override */
+body.design-pink #status-notification {
+    background: #000000;
+    color: #fce4ec;
+}
+body.design-pink #status-notification .sn-icon {
+    color: #fce4ec;
+}
+
+/* Glass Mode Override - Ensure it stays black/opaque */
+body.design-glass #status-notification {
+    background: #000000 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.spinning {
+    animation: spin 1s linear infinite;
+    transform-origin: center;
+}
+
+/* Progress Bar in Notification */
+#status-notification .sn-progress {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+    display: none;
+}
+#status-notification .sn-progress-bar {
+    height: 100%;
+    background: var(--accent-color);
+    width: 0%;
+    transition: width 0.2s linear;
+}
+body.design-pink #status-notification .sn-progress-bar {
+    background: #fce4ec;
+}
+
+/* =========================================
+   GLOBAL OVERLAY BACKDROP BLUR
+   ========================================= */
+#popup-overlay,
+#mode-popup-overlay,
+#custom-popup-overlay,
+#confirm-overlay,
+#message-options-overlay,
+#create-group-overlay,
+#forward-overlay,
+#forward-confirm-overlay,
+#login-overlay {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* =========================================
+   MODERN 3D EFFECT (Global Layer)
+   ========================================= */
+body.enable-3d-effect {
+    --depth-base: calc(var(--depth-value) * 1px);
+}
+
+body.enable-3d-effect .card,
+body.enable-3d-effect .nav-card,
+body.enable-3d-effect .popup-card,
+body.enable-3d-effect .settings-group,
+body.enable-3d-effect .weather-main-card,
+body.enable-3d-effect .cc-button,
+body.enable-3d-effect button,
+body.enable-3d-effect .btn-primary,
+body.enable-3d-effect .btn-secondary,
+body.enable-3d-effect .form-btn {
+    /* Dynamic Shadow based on depth slider */
+    box-shadow: 
+        0 calc(var(--depth-base) * 0.5) calc(var(--depth-base)) rgba(0,0,0,0.12), /* Soft drop shadow */
+        0 calc(var(--depth-base) * 0.2) calc(var(--depth-base) * 0.3) rgba(0,0,0,0.08), /* Harder closer shadow */
+        inset 0 1px 0 rgba(255,255,255,0.4); /* Top highlight for bevel */
+    
+    transform: translateY(calc(var(--depth-base) * -0.2));
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s;
+    z-index: 1;
+}
+
+/* Dark mode adjustments for 3D */
+body.enable-3d-effect.dark-mode .card,
+body.enable-3d-effect.dark-mode .nav-card,
+body.enable-3d-effect.dark-mode .settings-group {
+    box-shadow: 
+        0 calc(var(--depth-base) * 0.5) calc(var(--depth-base)) rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+/* Active state (Pressing down) - overrides other active states */
+body.enable-3d-effect .nav-card:active,
+body.enable-3d-effect button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }

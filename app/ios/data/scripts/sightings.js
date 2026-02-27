@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Deine Cloudflare Worker URL (funktioniert jetzt direkt ohne Unterpfad)
     const API_URL = 'https://sichtungen.red-dawn-bec6.workers.dev/';
-    const ACCESS_CODE = 'preview'; // Der Code für den Zugang
+    const ACCESS_CODE = 'premium'; // Der Code für den Zugang
 
     // --- 1. User ID & Login Logic ---
     let userId = localStorage.getItem('rx_user_id');
@@ -111,8 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Custom Popup Logic ---
     function showPopup(msg) {
-        popupMessage.textContent = msg;
-        customPopupOverlay.classList.remove('hidden');
+        if (window.showNotification) {
+            window.showNotification('Info', msg);
+        } else {
+            popupMessage.textContent = msg;
+            customPopupOverlay.classList.remove('hidden');
+        }
     }
 
     popupCloseBtn.addEventListener('click', () => {

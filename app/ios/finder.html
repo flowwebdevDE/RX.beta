@@ -4,60 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Betriebsstellensuche</title>
     <link rel="stylesheet" href="data/styles/dashboard.css">
     <link rel="stylesheet" href="data/styles/global-theme.css">
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
     <style>
-        /* ===== FORM ===== */
-        .form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* ===== FORM (Redesigned) ===== */
+        .form { display: flex; flex-direction: column; gap: 16px; }
+        .form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-btn {
+            padding: 12px; font-size: 15px; border-radius: 12px; border: none;
+            font-weight: 600; text-align: center; cursor: pointer;
+            background: var(--button-secondary-bg); color: var(--button-secondary-text);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: background-color 0.2s;
         }
-
-        input,
-        select,
-        button {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 16px;
-            border-radius: 12px;
-            border: none;
-        }
-
-        input,
-        select {
-            background: #f2f2f7;
-        }
-
-        button {
-            margin-top: 8px;
-            padding: 12px 18px;
-            border-radius: 22px;
-            font-size: 15px;
-            font-weight: 500;
-            width: 100%;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            background: var(--accent-color);
-            color: white;
-        }
-
-        button:active {
-            opacity: 0.9;
-        }
+        .form-btn:active { background: var(--border-color); }
 
         /* ===== SEARCH ===== */
         .search-container {
             position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            color: var(--secondary-text-color);
+            pointer-events: none;
+        }
+        #search {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            font-size: 17px;
+            border-radius: 14px;
+            border: none;
         }
 
         /* ===== RESULTS ===== */
         #status {
-            margin: 14px 0 6px;
+            margin: 18px 0 8px;
             font-size: 14px;
-            color: #6b7280;
+            color: var(--secondary-text-color);
+            padding: 0 4px;
         }
 
         ul {
@@ -69,18 +62,74 @@
         li {
             background: var(--card-background);
             color: var(--text-color);
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 8px;
+            padding: 12px 16px;
+            border-radius: var(--card-radius);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            border: 1px solid transparent;
         }
 
         li:active {
             background: var(--border-color);
+            transform: scale(0.98);
         }
 
-        .ref {
+        .result-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--background-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            flex-shrink: 0;
+        }
+
+        .result-content {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .result-title {
+            font-weight: 600;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-subtitle {
             font-size: 13px;
-            color: #6b7280;
+            color: var(--secondary-text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .result-dist {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-color);
+            background: var(--accent-bg);
+            padding: 2px 6px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+        
+        .chevron-icon {
+            color: var(--secondary-text-color);
+            opacity: 0.3;
         }
 
         /* ===== POPUP ===== */
@@ -91,6 +140,8 @@
             opacity: 0;
             pointer-events: none;
             z-index: 100;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
         #popup {
@@ -103,7 +154,7 @@
             width: 100%;
             max-width: 500px;
             padding: 20px;
-            border-radius: 20px 20px 0 0;
+            border-radius: var(--card-radius) var(--card-radius) 0 0;
             transition: 0.3s ease;
             z-index: 101;
             padding-bottom: max(20px, env(safe-area-inset-bottom));
@@ -121,11 +172,13 @@
         /* ===== MODE POPUP ===== */
         #mode-popup-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none; z-index: 200; transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         #mode-popup {
             position: fixed; left: 50%; bottom: 0; transform: translateX(-50%) translateY(100%);
             background: var(--card-background); color: var(--text-color); width: 100%; max-width: 500px;
-            padding: 20px; border-radius: 20px 20px 0 0; transition: transform 0.3s ease; z-index: 201;
+            padding: 20px; border-radius: var(--card-radius) var(--card-radius) 0 0; transition: transform 0.3s ease; z-index: 201;
             padding-bottom: max(20px, env(safe-area-inset-bottom));
             display: flex; flex-direction: column;
         }
@@ -134,7 +187,7 @@
 
         .mode-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .mode-btn {
-            background: var(--background-color); color: var(--text-color); padding: 16px; border-radius: 12px;
+            background: var(--background-color); color: var(--text-color); padding: 16px; border-radius: var(--card-radius);
             text-align: left; display: flex; justify-content: space-between; align-items: center; font-weight: 500;
             border: 1px solid transparent; margin-top: 0;
         }
@@ -142,6 +195,64 @@
         .mode-btn.active { border-color: var(--accent-color); color: var(--accent-color); background: var(--card-background); }
         .mode-btn .check-icon { opacity: 0; }
         .mode-btn.active .check-icon { opacity: 1; }
+
+        /* Map in Popup */
+        #popup-map {
+            height: 180px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 12px;
+            background: #eee;
+            display: none; /* Initial hidden */
+        }
+        /* Dark Mode Support for Map Tiles */
+        body.dark-mode #popup-map .leaflet-tile-pane {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        /* Popup Redesign */
+        .popup-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .badge { display: inline-block; background: var(--accent-color); color: white; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-top: 5px; }
+        .icon-btn { background: none; border: none; font-size: 24px; color: var(--secondary-text-color); padding: 5px; cursor: pointer; line-height: 1; width: auto; margin: 0; }
+        
+        .popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .info-box { background: var(--background-color); padding: 10px; border-radius: 10px; display: flex; flex-direction: column; min-width: 0; }
+        .info-box .label { font-size: 11px; text-transform: uppercase; color: var(--secondary-text-color); font-weight: 600; margin-bottom: 2px; }
+        .info-box .value { font-size: 14px; font-weight: 500; white-space: normal; word-break: break-word; }
+        
+        .popup-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .popup-actions button { margin: 0; }
+        
+        #popup-map { border-radius: 16px; height: 160px; margin-top: 0; }
+
+        /* Button Classes */
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            flex: 1;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:active { opacity: 0.8; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-secondary {
+            background: var(--button-secondary-bg);
+            color: var(--button-secondary-text);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-secondary:active { background: var(--border-color); }
     </style>
 
 </head>
@@ -160,16 +271,20 @@
         <main class="content" id="main-content">
             <div class="card">
                 <div class="form">
-                    <button id="searchModeBtn" style="text-align: left; display: flex; justify-content: space-between; align-items: center; background: var(--background-color); color: var(--text-color); border: 1px solid var(--border-color);">
-                        <span id="searchModeLabel">Suche nach: Name</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
-        
                     <div class="search-container">
-                        <input id="search" type="text" placeholder="Suchbegriff…">
+                        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="search" type="text" placeholder="Suche...">
                     </div>
-        
-                    <button id="geoBtn">📍 Standort verwenden</button>
+                    <div class="form-actions">
+                        <button id="searchModeBtn" class="form-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                            <span id="searchModeLabel">Name</span>
+                        </button>
+                        <button id="geoBtn" class="form-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line></svg>
+                            <span>Umkreis</span>
+                        </button>
+                    </div>
                 </div>
         
                 <p id="status">Lade Bahnhofs-Daten …</p>
@@ -180,11 +295,31 @@
 
     <div id="popup-overlay"></div>
     <div id="popup">
-        <h2 id="popup-name"></h2>
-        <p style="margin-top: 10px;" id="popup-ref"></p>
-        <p id="popup-operator"></p>
-        <p id="popup-coords"></p>
-        <button style="margin-top: 10px;" id="popup-close">Schließen</button>
+        <div class="popup-header">
+            <div style="flex: 1; padding-right: 10px;">
+                <h2 id="popup-name" style="margin: 0; font-size: 22px; line-height: 1.2;"></h2>
+                <span id="popup-ref" class="badge"></span>
+            </div>
+            <button id="popup-close-icon" class="icon-btn">✕</button>
+        </div>
+        <div class="popup-grid">
+            <div class="info-box">
+                <span class="label">Betreiber</span>
+                <span id="popup-operator" class="value"></span>
+            </div>
+            <div class="info-box">
+                <span class="label">Entfernung / Koord.</span>
+                <span id="popup-dist" class="value"></span>
+            </div>
+        </div>
+        <div id="popup-map"></div>
+        <div class="popup-actions">
+            <button id="btn-maps" class="btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                Route
+            </button>
+            <button id="popup-close" class="btn-secondary">Schließen</button>
+        </div>
     </div>
 
     <!-- Mode Selection Popup -->
@@ -201,7 +336,7 @@
                 <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </button>
         </div>
-        <button id="mode-popup-close" style="margin-top: 15px; background: var(--button-secondary-bg); color: var(--button-secondary-text);">Abbrechen</button>
+        <button id="mode-popup-close" class="btn-secondary" style="margin-top: 15px;">Abbrechen</button>
     </div>
 
     <script>
@@ -222,8 +357,14 @@
         const popupName = document.getElementById('popup-name');
         const popupRef = document.getElementById('popup-ref');
         const popupOperator = document.getElementById('popup-operator');
-        const popupCoords = document.getElementById('popup-coords');
+        const popupDist = document.getElementById('popup-dist');
         const popupClose = document.getElementById('popup-close');
+        const popupCloseIcon = document.getElementById('popup-close-icon');
+        const btnMaps = document.getElementById('btn-maps');
+
+        let popupMap = null;
+        let mapMarker = null;
+        let userMarker = null;
 
         // Mode Popup Elements
         const searchModeBtn = document.getElementById('searchModeBtn');
@@ -258,7 +399,7 @@
                 // UI Update
                 modeBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                searchModeLabel.textContent = `Suche nach: ${btn.querySelector('span').textContent}`;
+                searchModeLabel.textContent = btn.querySelector('span').textContent;
                 
                 closeModePopup();
                 // Trigger search update
@@ -319,26 +460,40 @@
         function renderStations(filtered) {
             resultsList.innerHTML = '';
             if (filtered.length === 0) {
-                resultsList.innerHTML = '<li>Keine Bahnhöfe gefunden.</li>';
+                resultsList.innerHTML = '<li style="justify-content: center; color: var(--secondary-text-color); cursor: default;">Keine Bahnhöfe gefunden.</li>';
                 return;
             }
 
             for (const s of filtered.slice(0, 100)) {
                 const name = s.tags.name || 'Unbenannt';
-                const ref = s.tags["railway:ref"] ? s.tags["railway:ref"].toUpperCase() : '–';
-                const operator = s.tags.operator || '';
-                const network = s.tags.network || '';
+                const ref = s.tags["railway:ref"] ? s.tags["railway:ref"].toUpperCase() : null;
+                const operator = s.tags.operator || 'Unbekannt';
 
-                let dist = '';
+                let distBadge = '';
                 if (currentPosition && s.lat && s.lon) {
-                    dist = ` (${distance(currentPosition.latitude, currentPosition.longitude, s.lat, s.lon).toFixed(1)} km)`;
+                    const d = distance(currentPosition.latitude, currentPosition.longitude, s.lat, s.lon).toFixed(1);
+                    distBadge = `<span class="result-dist">${d} km</span>`;
                 } else if (s.distance) {
-                    dist = ` (${s.distance.toFixed(1)} km)`;
+                    const d = s.distance.toFixed(1);
+                    distBadge = `<span class="result-dist">${d} km</span>`;
                 }
 
                 const li = document.createElement('li');
-                li.innerHTML = `<strong>${name} (${ref})${dist}</strong><br>
-                        <span class="ref">${operator} ${network ? `<br>${network}` : ''}</span>`;
+                li.innerHTML = `
+                    <div class="result-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></svg>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-title">
+                            ${name}
+                            ${distBadge}
+                        </div>
+                        <div class="result-subtitle">
+                            ${ref ? `<span style="color: var(--text-color); font-weight: 500;">${ref}</span> • ` : ''}${operator}
+                        </div>
+                    </div>
+                    <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                `;
 
                 li.setAttribute('role', 'button');
                 li.setAttribute('tabindex', '0');
@@ -362,7 +517,94 @@
 
         // === Popup anzeigen ===
         function showPopup(station) {
-            popupName.textContent = station.tags.name || 'Unbenannt'; popupRef.textContent = `DS100: ${station.tags["railway:ref"] || '–'}`; popupOperator.textContent = `Betreiber: ${station.tags.operator || '–'}`; popupCoords.textContent = station.lat && station.lon ? `Koordinaten: ${station.lat.toFixed(5)}, ${station.lon.toFixed(5)}` : '';
+            popupName.textContent = station.tags.name || 'Unbenannt'; 
+            
+            const ref = station.tags["railway:ref"];
+            if (ref) {
+                popupRef.textContent = ref.toUpperCase();
+                popupRef.style.display = 'inline-block';
+            } else {
+                popupRef.style.display = 'none';
+            }
+
+            popupOperator.textContent = station.tags.operator || 'Unbekannt';
+            
+            if (currentPosition && station.lat && station.lon) {
+                const dist = distance(currentPosition.latitude, currentPosition.longitude, station.lat, station.lon);
+                popupDist.textContent = `${dist.toFixed(1)} km`;
+            } else {
+                popupDist.textContent = station.lat ? `${station.lat.toFixed(3)}, ${station.lon.toFixed(3)}` : '–';
+            }
+
+            // Maps Button Logic
+            if (station.lat && station.lon) {
+                btnMaps.onclick = () => {
+                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${station.lat},${station.lon}`, '_blank');
+                };
+                btnMaps.disabled = false;
+                btnMaps.style.opacity = '1';
+            } else {
+                btnMaps.disabled = true;
+                btnMaps.style.opacity = '0.5';
+            }
+
+            // Map Logic
+            const mapContainer = document.getElementById('popup-map');
+            if (station.lat && station.lon) {
+                mapContainer.style.display = 'block';
+                
+                if (!popupMap) {
+                    popupMap = L.map('popup-map', { 
+                        zoomControl: false,
+                        attributionControl: false 
+                    });
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(popupMap);
+                }
+                
+                const lat = station.lat;
+                const lon = station.lon;
+                
+                // Custom SVG Icons
+                const stationIcon = L.divIcon({
+                    className: '',
+                    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" fill="#ec0016" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>`,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40]
+                });
+
+                const userIcon = L.divIcon({
+                    className: '',
+                    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#2196F3" stroke="white" stroke-width="3" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"><circle cx="12" cy="12" r="10"></circle></svg>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
+                if (mapMarker) popupMap.removeLayer(mapMarker);
+                mapMarker = L.marker([lat, lon], { icon: stationIcon }).addTo(popupMap);
+                
+                if (userMarker) popupMap.removeLayer(userMarker);
+                
+                const bounds = L.latLngBounds([[lat, lon]]);
+
+                if (currentPosition) {
+                    userMarker = L.marker([currentPosition.latitude, currentPosition.longitude], { icon: userIcon }).addTo(popupMap);
+                    bounds.extend([currentPosition.latitude, currentPosition.longitude]);
+                    popupMap.fitBounds(bounds, { padding: [50, 50] });
+                } else {
+                    popupMap.setView([lat, lon], 14);
+                }
+                
+                // Fix Leaflet rendering in hidden/animated container
+                setTimeout(() => { 
+                    popupMap.invalidateSize(); 
+                    if (currentPosition) popupMap.fitBounds(bounds, { padding: [50, 50] });
+                }, 350);
+            } else {
+                mapContainer.style.display = 'none';
+            }
 
             // Schritt 1: Hintergrund für Screenreader ausblenden
             mainContent.setAttribute('aria-hidden', 'true');
@@ -456,8 +698,7 @@
             }
 
             showLoader();
-            geoBtn.disabled = true;
-            geoBtn.textContent = 'Suche...';
+            geoBtn.querySelector('span').textContent = 'Suche...';
             const originalStatus = statusText.textContent;
             statusText.textContent = 'Standort wird ermittelt...';
 
@@ -468,12 +709,12 @@
                     statusText.textContent = originalStatus.startsWith('Geladen:') ? originalStatus : '';
                     if (refreshTimer) clearInterval(refreshTimer);
                     refreshTimer = setInterval(updateNearbyStations, 5 * 60 * 1000);
-                    geoBtn.textContent = '📍 Standort';
+                    geoBtn.querySelector('span').textContent = 'Umkreis';
                     geoBtn.disabled = false;
                 },
                 err => {
                     statusText.textContent = 'Standortzugriff verweigert';
-                    geoBtn.textContent = '📍 Standort';
+                    geoBtn.querySelector('span').textContent = 'Umkreis';
                     geoBtn.disabled = true; // Keep it disabled if permission is denied
                     console.error(err);
                 }
@@ -487,7 +728,7 @@
             updateNearbyStations();
             // Deaktiviere Web-Geolocation, wenn native Daten kommen
             geoBtn.disabled = true;
-            geoBtn.textContent = '📍 Standort (nativ)';
+            geoBtn.querySelector('span').textContent = 'Umkreis (nativ)';
             if (refreshTimer) clearInterval(refreshTimer);
         }
 
@@ -500,9 +741,10 @@
 
         popupOverlay.addEventListener('click', closePopup);
         popupClose.addEventListener('click', closePopup);
+        popupCloseIcon.addEventListener('click', closePopup);
 
         // === Start ===
-        (async () => {
+        setTimeout(async () => {
             await loadStations(); 
             // Check settings before auto-starting
             if (window.getSettings) {
@@ -511,7 +753,15 @@
                     startGeoTracking();
                 }
             }
-        })();
+            
+            // Check for query param from Global Search
+            const urlParams = new URLSearchParams(window.location.search);
+            const q = urlParams.get('q');
+            if (q) {
+                searchInput.value = q;
+                handleSearch({ target: searchInput });
+            }
+        }, 50);
 
         searchInput.addEventListener('input', debounce(handleSearch));
 

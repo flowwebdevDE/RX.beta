@@ -10,23 +10,110 @@
   <link rel="stylesheet" href="data/styles/global-theme.css">
   <script src="data/scripts/wetter/wetter.js"></script>
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#000000">
+  <style>
+    /* Global Search Overlay */
+    .search-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(242, 242, 247, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 10000;
+        display: flex; flex-direction: column;
+        padding: 20px;
+        transform: translateY(-100%);
+        transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        visibility: hidden;
+    }
+    body.dark-mode .search-overlay { background: rgba(0, 0, 0, 0.9); }
+    .search-overlay.open { transform: translateY(0); visibility: visible; }
+    
+    .search-bar-wrap {
+        display: flex; gap: 10px; align-items: center; margin-bottom: 20px; margin-top: env(safe-area-inset-top);
+    }
+    .search-input-container {
+        flex: 1; position: relative;
+    }
+    .search-input-container svg {
+        position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        color: var(--secondary-text-color); width: 18px; height: 18px;
+    }
+    #global-search {
+        width: 100%; padding: 12px 12px 12px 40px;
+        border-radius: 12px; border: none;
+        background: rgba(118, 118, 128, 0.12);
+        font-size: 17px; color: var(--text-color);
+        outline: none;
+    }
+    #search-cancel {
+        color: var(--accent-color); font-weight: 600; background: none; border: none; font-size: 17px; cursor: pointer;
+    }
+    .search-results {
+        flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+    }
+
+    /* Control Center (Integrated) */
+    .control-center-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+        transition: opacity 0.2s, height 0.2s;
+    }
+    
+    .cc-button {
+        background: rgba(118, 118, 128, 0.12); border: none; border-radius: 20px;
+        aspect-ratio: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        color: var(--text-color); font-size: 12px; font-weight: 600; gap: 8px;
+        transition: background-color 0.2s;
+    }
+    .cc-button.active { background: var(--card-background); color: var(--accent-color); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .cc-button:active { background: var(--border-color); }
+    .cc-button svg { width: 28px; height: 28px; }
+  </style>
 </head>
 <body>
   <!-- Startscreen / Splash Screen -->
-  <div id="splash-screen" style="position: fixed; inset: 0; background: var(--background-color); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
+  <div id="splash-screen" style="position: fixed; inset: 0; background: var(--splash-bg, var(--background-color)); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
     <img src="data/images/logos/logo.png" alt="Logo" style="width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;">
-    <h1 style="font-size: 24px; margin-bottom: 30px; color: var(--text-color); font-weight: 700;">Rail Explorer</h1>
+    <h1 style="font-size: 24px; margin-bottom: 30px; color: var(--text-color); font-weight: 700;">Rail Explorer +</h1>
     <div style="width: 200px; height: 4px; background: rgba(128,128,128,0.2); border-radius: 2px; overflow: hidden;">
-      <div id="splash-progress" style="width: 0%; height: 100%; background: var(--accent-color); transition: width 2s linear;"></div>
+      <div id="splash-progress" style="width: 0%; height: 100%; background: var(--accent-color); transition: width 0.8s linear;"></div>
     </div>
     <p id="splash-greeting" style="margin-top: 20px; color: var(--accent-color); font-weight: 500; min-height: 20px;"></p>
+  </div>
+
+  <!-- Global Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-bar-wrap">
+        <div class="search-input-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="global-search" placeholder="Suchen..." autocomplete="off">
+        </div>
+        <button id="search-cancel">Abbrechen</button>
+    </div>
+
+    <!-- Control Center (Integrated) -->
+    <div id="search-control-center" class="control-center-grid">
+        <button id="cc-flashlight" class="cc-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v4.5"/><path d="M6 10l-2 5h16l-2-5"/><path d="M6 15h12v5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-5z"/></svg>
+            <span>Licht</span>
+        </button>
+        <button id="cc-camera" class="cc-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Kamera</span>
+        </button>
+    </div>
+
+    <div id="search-results" class="search-results"></div>
   </div>
 
   <div class="app">
     <!-- Header -->
     <header class="header">
-      <h1>Rail Explorer</h1>
+      <h1>Rail Explorer +</h1>
       <p>Fahrzeiten berechnen &amp;<br>Betriebsstellen schnell finden</p>
       <a href="settings.html" class="info-icon" aria-label="Einstellungen" style="right: 65px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -83,6 +170,12 @@
         </a>
 
       </div>
+
+      <!-- Kamera Button -->
+      <button id="camera-btn" class="card" style="width: 100%; margin-top: 20px; flex-direction: row; align-items: center; justify-content: center; gap: 12px; padding: 18px; font-size: 17px; font-weight: 600; color: var(--accent-color); border: none; background: var(--card-background); cursor: pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Kamera öffnen
+      </button>
     </main>
   </div>
   <script src="data/scripts/theme-manager.js"></script>
@@ -146,8 +239,227 @@
                 splash.style.opacity = '0';
                 setTimeout(() => { splash.style.display = 'none'; }, 500);
                 sessionStorage.setItem('rx_greeted', 'true');
-            }, 2050); // 2 Sekunden + Puffer
+            }, 850); // 0.8 Sekunden + Puffer
         }
+
+        // Kamera-Button Logik
+        const cameraBtn = document.getElementById('camera-btn');
+        if (cameraBtn) {
+            cameraBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AppLauncher && typeof window.Capacitor.Plugins.AppLauncher.openCamera === 'function') {
+                    window.Capacitor.Plugins.AppLauncher.openCamera();
+                } else {
+                    console.warn('Native Kamera-Funktion (AppLauncher.openCamera) nicht gefunden.');
+                    alert('Diese Funktion ist nur in der nativen App verfügbar.');
+                }
+            });
+        }
+
+        // --- Global Search Logic ---
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('global-search');
+        const searchCancel = document.getElementById('search-cancel');
+        const searchResults = document.getElementById('search-results');
+        const controlCenter = document.getElementById('search-control-center');
+        let touchStartY = 0;
+
+        // --- Control Center Logic ---
+        const flashlightBtn = document.getElementById('cc-flashlight');
+        let isFlashlightOn = false;
+        flashlightBtn.addEventListener('click', () => {
+            isFlashlightOn = !isFlashlightOn;
+            flashlightBtn.classList.toggle('active', isFlashlightOn);
+            if (window.Capacitor?.Plugins?.AppLauncher?.toggleFlashlight) {
+                window.Capacitor.Plugins.AppLauncher.toggleFlashlight({ enable: isFlashlightOn });
+            } else {
+                console.warn('Flashlight function not available.');
+            }
+        });
+
+        document.getElementById('cc-camera').addEventListener('click', () => {
+            if (window.Capacitor?.Plugins?.AppLauncher?.openCamera) {
+                window.Capacitor.Plugins.AppLauncher.openCamera();
+                closeSearch(); // Schließt jetzt das Such-Overlay
+            }
+        });
+
+        // Swipe Down Detection
+        document.addEventListener('touchstart', e => {
+            touchStartY = e.touches[0].clientY;
+        }, {passive: true});
+
+        document.addEventListener('touchmove', e => {
+            const touchY = e.touches[0].clientY;
+            const diff = touchY - touchStartY;
+            if (window.scrollY <= 0 && touchStartY < 100 && diff > 60) {
+                openSearch();
+            }
+        }, {passive: true});
+
+        function openSearch() {
+            searchOverlay.classList.add('open');
+            setTimeout(() => searchInput.focus(), 300);
+            renderSearchResults('');
+            loadStationData(); // Bahnhöfe laden wenn Suche geöffnet wird
+        }
+
+        function closeSearch() {
+            searchOverlay.classList.remove('open');
+            searchInput.blur();
+        }
+
+        searchCancel.addEventListener('click', closeSearch);
+
+        // Search Indexing
+        const cards = Array.from(document.querySelectorAll('.nav-card')).map(card => ({
+            title: card.querySelector('h3')?.textContent || '',
+            desc: card.querySelector('p')?.textContent || '',
+            href: card.getAttribute('href'),
+            icon: card.querySelector('.icon-box')?.innerHTML || ''
+        })).filter(item => item.href); // Nur Links
+
+        // Station Data Loading
+        let stationData = [];
+        async function loadStationData() {
+            if (stationData.length > 0) return;
+            try {
+                const res = await fetch('data/DE_stations.json');
+                const data = await res.json();
+                stationData = data.elements || [];
+                // Wenn Suche offen und leer ist, Vorschläge aktualisieren (damit Bahnhöfe erscheinen)
+                if (searchOverlay.classList.contains('open') && !searchInput.value) {
+                    renderSearchResults('');
+                }
+            } catch (e) { console.warn('Failed to load stations for search', e); }
+        }
+
+        function renderSearchResults(term) {
+            const lower = term.toLowerCase().trim();
+            searchResults.innerHTML = '';
+            
+            // Toggle Control Center / Results
+            if (!lower) {
+                controlCenter.style.display = 'grid';
+                
+                // --- VORSCHLÄGE ---
+                const header = document.createElement('div');
+                header.textContent = 'Vorschläge';
+                header.style.cssText = 'padding: 0 5px; margin-bottom: 10px; font-size: 13px; font-weight: 600; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: 0.5px;';
+                searchResults.appendChild(header);
+
+                const suggestions = [
+                    { title: 'Fahrplan', desc: 'Verbindung suchen', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', action: () => window.location.href = 'main.html' },
+                    { title: 'Wetter', desc: 'Vorhersage', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><circle cx="12" cy="7" r="4"/></svg>', action: () => window.location.href = 'wetter/index.html' }
+                ];
+
+                // Dynamische Bahnhofs-Vorschläge (Zufällig aus großen Bahnhöfen)
+                if (stationData.length > 0) {
+                    // Versuche große Bahnhöfe zu finden (Kategorie 1 oder 2) oder nimm alle
+                    const major = stationData.filter(s => s.tags && (s.tags['railway:station_category'] === '1' || s.tags['railway:station_category'] === '2'));
+                    const pool = major.length > 0 ? major : stationData;
+                    
+                    // 2 Zufällige Bahnhöfe auswählen
+                    for(let i=0; i<2; i++) {
+                        const s = pool[Math.floor(Math.random() * pool.length)];
+                        if(s) {
+                            suggestions.push({
+                                title: s.tags.name,
+                                desc: 'Vorschlag • Bahnhof',
+                                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></svg>',
+                                action: () => window.location.href = `finder.html?q=${encodeURIComponent(s.tags.name)}`
+                            });
+                        }
+                    }
+                }
+
+                suggestions.forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'card nav-card';
+                    div.style.cssText = 'flex-direction: row; align-items: center; padding: 15px; min-height: auto; margin-bottom: 10px;';
+                    div.innerHTML = `
+                        <div class="icon-box" style="margin:0 15px 0 0; width:36px; height:36px; background:var(--button-secondary-bg); color:var(--text-color);">${s.icon}</div>
+                        <div><h3 style="margin:0; font-size:16px;">${s.title}</h3><p style="margin:0; font-size:13px;">${s.desc}</p></div>
+                    `;
+                    div.onclick = s.action;
+                    searchResults.appendChild(div);
+                });
+                return;
+            }
+            controlCenter.style.display = 'none';
+
+            // 1. App Cards filtern
+            const filtered = cards.filter(c => c.title.toLowerCase().includes(lower) || c.desc.toLowerCase().includes(lower));
+            filtered.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'card nav-card'; // Reuse styles
+                div.style.flexDirection = 'row';
+                div.style.alignItems = 'center';
+                div.style.padding = '15px';
+                div.style.minHeight = 'auto';
+                div.innerHTML = `
+                    <div class="icon-box" style="margin-bottom:0; margin-right:15px; width:36px; height:36px;">${item.icon}</div>
+                    <div>
+                        <h3 style="margin:0; font-size:16px;">${item.title}</h3>
+                        <p style="margin:0; font-size:13px;">${item.desc}</p>
+                    </div>
+                `;
+                div.onclick = () => window.location.href = item.href;
+                searchResults.appendChild(div);
+            });
+
+            // 2. Bahnhöfe filtern
+            if (stationData.length > 0) {
+                const stations = stationData.filter(s => (s.tags.name || '').toLowerCase().startsWith(lower)).slice(0, 5);
+                if (stations.length > 0) {
+                    // Trenner
+                    if (filtered.length > 0) searchResults.appendChild(document.createElement('hr'));
+                    
+                    stations.forEach(s => {
+                        const div = document.createElement('div');
+                        div.className = 'card nav-card';
+                        div.style.cssText = 'flex-direction: row; align-items: center; padding: 15px; min-height: auto;';
+                        div.innerHTML = `
+                            <div class="icon-box" style="margin:0 15px 0 0; width:36px; height:36px; background:var(--accent-bg); color:var(--accent-color);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></svg></div>
+                            <div><h3 style="margin:0; font-size:16px;">${s.tags.name}</h3><p style="margin:0; font-size:13px;">Bahnhof • ${s.tags["railway:ref"] || ''}</p></div>
+                        `;
+                        // Direkt zum Finder springen mit Suchbegriff
+                        div.onclick = () => window.location.href = `finder.html?q=${encodeURIComponent(s.tags.name)}`;
+                        searchResults.appendChild(div);
+                    });
+                }
+            }
+
+            // Web-Suche Option (immer anzeigen wenn Text da ist)
+            if (filtered.length > 0) {
+                // Trenner wenn wir gemischte Ergebnisse haben
+                const sep = document.createElement('div');
+                sep.style.cssText = 'height: 1px; background: var(--border-color); margin: 5px 10px; opacity: 0.5;';
+                searchResults.appendChild(sep);
+            }
+
+            const webDiv = document.createElement('div');
+            webDiv.className = 'card nav-card';
+            webDiv.style.flexDirection = 'row';
+            webDiv.style.alignItems = 'center';
+            webDiv.style.padding = '15px';
+            webDiv.style.minHeight = 'auto';
+            
+            webDiv.innerHTML = `
+                <div class="icon-box" style="margin-bottom:0; margin-right:15px; width:36px; height:36px; background: var(--button-secondary-bg); color: var(--text-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                <div>
+                    <h3 style="margin:0; font-size:16px;">Im Web suchen</h3>
+                    <p style="margin:0; font-size:13px;">"${term}" auf Google suchen</p>
+                </div>
+            `;
+            webDiv.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(term)}`, '_system');
+            searchResults.appendChild(webDiv);
+        }
+
+        searchInput.addEventListener('input', (e) => renderSearchResults(e.target.value));
     });
   </script>
 </body>

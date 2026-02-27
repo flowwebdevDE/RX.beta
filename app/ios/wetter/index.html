@@ -4,76 +4,85 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Wetter</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="scripts/charts.js"></script>
-    <script src="scripts/day.js?v=2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="scripts/charts.js" defer></script>
+    <script src="scripts/day.js?v=2" defer></script>
     <!-- Styles aus der App wiederverwenden (Relativ zu app/ios/wetter/) -->
     <link rel="stylesheet" href="../data/styles/dashboard.css">
     <link rel="stylesheet" href="../data/styles/global-theme.css">
     <style>
         /* Layout Fixes */
-        #weather { display: flex; flex-direction: column; gap: 24px; padding-bottom: 40px; }
+        #weather { display: flex; flex-direction: column; gap: 16px; padding-bottom: 40px; }
         
         /* Hauptkarte (Aktuelles Wetter) */
         .weather-main-card { 
             text-align: center; 
-            padding: 40px 20px; 
+            padding: 30px 20px; 
             display: flex; 
             flex-direction: column; 
             align-items: center;
             justify-content: center;
-            min-height: 320px;
+            min-height: auto;
+            background: linear-gradient(180deg, var(--card-background) 0%, var(--background-color) 100%);
+            border: 1px solid var(--border-color);
         }
         
         #placeName { 
-            font-size: 28px; 
+            font-size: 22px; 
             font-weight: 600; 
             color: var(--text-color); 
-            margin: 0 0 5px 0; 
+            margin: 0 0 2px 0; 
         }
         
         #icon svg { 
-            width: 110px; 
-            height: 110px; 
+            width: 100px; 
+            height: 100px; 
             margin: 15px auto; 
             display: block; 
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+            filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
         }
         
         #temp { 
-            font-size: 72px; 
-            font-weight: 200; 
-            margin: 5px 0; 
+            font-size: 56px; 
+            font-weight: 700; 
+            margin: 0; 
             letter-spacing: -2px;
             color: var(--text-color);
+            line-height: 1;
         }
 
         #currentSummary {
-            font-size: 17px;
+            font-size: 16px;
             color: var(--secondary-text-color);
             font-weight: 500;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
             line-height: 1.4;
+            margin-top: 5px;
         }
 
         /* Details Grid (Wind, Sonnenaufgang etc.) */
         #details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 20px;
         }
         
         #details > div {
-            background: var(--background-color);
-            padding: 14px;
-            border-radius: 16px;
-            font-size: 14px;
-            color: var(--secondary-text-color);
+            background: rgba(128, 128, 128, 0.05);
+            padding: 12px;
+            border-radius: var(--card-radius);
+            font-size: 13px;
+            color: var(--text-color);
             text-align: center;
-            font-weight: 500;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
         /* Suche */
@@ -134,20 +143,22 @@
             display: flex; 
             gap: 12px; 
             overflow-x: auto; 
-            padding: 10px 0; 
+            padding: 15px 0 5px 0; 
             -webkit-overflow-scrolling: touch; 
             scrollbar-width: none; /* Firefox */
         }
         #hourlyForecastGrid::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
         .hour { 
-            min-width: 70px; 
+            min-width: 65px; 
             text-align: center; 
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 12px 8px;
+            background: var(--background-color);
+            border-radius: var(--card-radius);
         }
         .hour strong { 
             display: block; 
@@ -164,32 +175,32 @@
         .hour div:last-child { font-weight: 600; font-size: 15px; }
 
         /* 7-Tage Liste */
-        #forecastGrid { display: flex; flex-direction: column; gap: 0; margin-top: 10px; }
+        #forecastGrid { display: flex; flex-direction: column; gap: 6px; margin-top: 15px; }
         .day {
             display: grid; 
             grid-template-columns: 60px 40px 1fr auto; 
             align-items: center; 
-            gap: 16px;
-            padding: 16px 0; 
-            border-bottom: 1px solid var(--border-color); 
+            gap: 10px;
+            padding: 10px 14px; 
+            background: var(--background-color);
+            border-radius: var(--card-radius);
             font-size: 16px;
             color: var(--text-color);
         }
-        .day:last-child { border-bottom: none; }
         .day .icon svg { width: 28px; height: 28px; }
         
         /* Special Params Dashboard Overrides */
         #specialParamsDashboard ul {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 12px !important;
+            gap: 10px !important;
             margin-top: 20px !important;
         }
         #specialParamsDashboard li {
             background: var(--background-color) !important;
             color: var(--text-color) !important;
-            border-radius: 16px !important;
-            padding: 14px !important;
+            border-radius: 14px !important;
+            padding: 12px !important;
             font-size: 13px !important;
             display: flex !important;
             flex-direction: column;
@@ -199,12 +210,36 @@
             flex: auto !important;
         }
         #specialParamsDashboard li strong {
-            font-size: 16px;
-            margin-top: 4px;
+            font-size: 15px;
+            margin-top: 2px;
             color: var(--accent-color);
         }
         #specialParamsDashboard li .icon {
             width: 28px; height: 28px; margin-bottom: 6px; color: var(--secondary-text-color);
+        }
+
+        /* Skeleton Loading */
+        #loading-skeleton {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 40px;
+        }
+        .skeleton-card {
+            background: var(--card-background);
+            border-radius: 20px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .skeleton-block {
+            background: var(--background-color);
+            border-radius: 8px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.2; }
+            100% { opacity: 0.5; }
         }
     </style>
 </head>
@@ -220,7 +255,7 @@
         </header>
 
         <main class="content">
-            <div class="card" style="display: none;">
+            <div class="card" id="search-card" style="display: none;">
                 <div class="searchContainer">
                     <input id="searchBox" placeholder="Ort suchen..." autocomplete="off">
                     <div id="suggestionsList"></div>
@@ -230,27 +265,46 @@
                 </div>
             </div>
 
+            <!-- Skeleton (Visible by default) -->
+            <div id="loading-skeleton">
+                <div class="skeleton-card" style="height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
+                    <div class="skeleton-block" style="width: 50%; height: 30px;"></div>
+                    <div class="skeleton-block" style="width: 100px; height: 100px; border-radius: 50%;"></div>
+                    <div class="skeleton-block" style="width: 30%; height: 60px;"></div>
+                    <div class="skeleton-block" style="width: 70%; height: 20px;"></div>
+                </div>
+                <div class="skeleton-card" style="height: 160px;">
+                    <div class="skeleton-block" style="width: 40%; height: 20px; margin-bottom: 20px;"></div>
+                    <div style="display: flex; gap: 15px; overflow: hidden;">
+                        <div class="skeleton-block" style="width: 70px; height: 90px; flex-shrink: 0;"></div>
+                        <div class="skeleton-block" style="width: 70px; height: 90px; flex-shrink: 0;"></div>
+                        <div class="skeleton-block" style="width: 70px; height: 90px; flex-shrink: 0;"></div>
+                        <div class="skeleton-block" style="width: 70px; height: 90px; flex-shrink: 0;"></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="weather" style="display:none">
                 <div class="card weather-main-card">
                     <h2 id="placeName">—</h2>
                     <p id="icon" style="font-size: 48px; margin: 10px 0;"></p>
                     <h2 id="temp">-</h2>
                     <div id="currentSummary" style="color: var(--secondary-text-color);"></div>
-                    <div id="details" style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left;"></div>
+                    <div id="details"></div>
                     <div id="specialParamsDashboard"></div>
                 </div>
 
-                <div id="dailyOverview" class="card" style="margin-top: 15px;">
+                <div style="margin-top: 15px;" id="dailyOverview" class="card">
                     <h3>Stündliche Vorhersage</h3>
                     <div id="hourlyForecastGrid"></div>
                 </div>
 
                 <div style="display: none;" id="hourlyChartContainer" class="card"></div>
 
-                <div class="card" style="margin-top: 15px;">
+                <div style="margin-top: 15px;" class="card">
                     <details>
                         <summary>7-Tage Vorschau anzeigen</summary>
-                        <div id="forecastGrid" style="margin-top: 15px;"></div>
+                        <div id="forecastGrid"></div>
                     </details>
                 </div>
             </div>
@@ -262,6 +316,20 @@
     <script src="../data/scripts/theme-manager.js"></script>
 
     <div id="offlineNotice" class="card" style="display:none;margin-top:12px;color:#c33;font-weight:600"></div>
+
+    <script>
+        // Skeleton Logic
+        const weatherContainer = document.getElementById('weather');
+        const skeleton = document.getElementById('loading-skeleton');
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    skeleton.style.display = weatherContainer.style.display !== 'none' ? 'none' : 'flex';
+                }
+            });
+        });
+        observer.observe(weatherContainer, { attributes: true });
+    </script>
 </body>
 
 </html>

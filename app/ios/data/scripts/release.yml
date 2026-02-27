@@ -1,0 +1,33 @@
+name: Create OTA Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggert bei Tags wie v3.2.0
+  workflow_dispatch: # Ermöglicht manuelles Starten über GitHub
+    inputs:
+      version:
+        description: 'Version (z.B. v3.2.0)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Erlaubt das Erstellen von Releases
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Zip www folder
+        run: |
+          cd www
+          zip -r ../dist.zip ./*
+
+      - name: Create Release & Upload Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.version || github.ref_name }}
+          files: dist.zip
+          generate_release_notes: true
