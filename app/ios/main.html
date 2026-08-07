@@ -8,20 +8,13 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="theme-color" content="#000000">
   <link rel="icon" href="data/images/logos/logo.png" type="images/png">
-  <link rel="stylesheet" href="data/styles/main.css">
-  <link rel="stylesheet" href="data/styles/dashboard.css">
-  <link rel="stylesheet" href="data/styles/global-theme.css">
+  <link rel="stylesheet" href="data/styles/main.css?v=3.5">
+  <link rel="stylesheet" href="data/styles/dashboard.css?v=3.5">
+  <link rel="stylesheet" href="data/styles/global-theme.css?v=3.5">
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
-
-  <!-- Maplibre GL -->
-  <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js" defer></script>
-
-  <!-- Maplibre GL Leaflet  -->
-  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js" defer></script>
 
   <meta name="apple-mobile-web-app-capable" content="yes">
 
@@ -103,9 +96,9 @@
   </div>
 
   <!-- libs -->
-  <script src="data/scripts/functions.js" defer></script>
+  <script src="data/scripts/functions.js?v=3.5" defer></script>
   <script src="data/scripts/lock.js" defer></script>
-  <script src="data/scripts/theme-manager.js" defer></script>
+  <script src="data/scripts/theme-manager.js?v=3.5" defer></script>
   <script>
     // Haptisches Feedback für Android
     function vibrate() {
@@ -119,19 +112,6 @@
       button.addEventListener('click', vibrate);
     });
 
-    // Ergebnis-Card anzeigen wenn berechnet wird
-    document.getElementById('calc').addEventListener('click', () => {
-        document.getElementById('results-card').style.display = 'flex';
-        // Scroll to results
-        setTimeout(() => {
-            document.getElementById('results-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-    });
-
-    document.getElementById('clear').addEventListener('click', () => {
-        document.getElementById('results-card').style.display = 'none';
-    });
-
     // Funktion, um von Android aufgerufen zu werden, um die Karte zu zentrieren oder Marker zu setzen
     function updateMapLocationFromNative(latitude, longitude) {
       console.log(`Native Position für Karte erhalten: ${latitude}, ${longitude}`);
@@ -143,7 +123,7 @@
 
     // Service Worker registrieren
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./data/sw_main.js')
+      navigator.serviceWorker.register('./sw_main.js')
         .then(registration => console.log('Service Worker (main) erfolgreich registriert:', registration))
         .catch(error => console.error('Service Worker (main) Registrierung fehlgeschlagen:', error));
     }

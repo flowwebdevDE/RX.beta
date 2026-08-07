@@ -1,5 +1,5 @@
 (function() {
-    const APP_VERSION = '3.4';
+    const APP_VERSION = '3.5';
 
     const DESIGN_KEY = 'rx_design';
     const DARKMODE_KEY = 'rx_darkmode';
@@ -151,14 +151,24 @@
                         }
                         
                         /* Navigation Links in Sidebar */
-                        body.design-tablet .header .info-icon {
-                            position: static;
-                            margin-top: 10px;
+                        body.design-tablet .header .header-actions {
+                            position: static !important;
+                            margin-top: auto;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+                            width: 100%;
+                        }
+                        body.design-tablet .header .header-actions .info-icon {
+                            position: static !important;
+                            inset: auto !important;
                             display: flex;
                             align-items: center;
-                            gap: 15px;
+                            justify-content: flex-start;
+                            gap: 14px;
                             width: 100%;
-                            padding: 14px;
+                            min-height: 46px;
+                            padding: 12px 14px;
                             border-radius: 14px;
                             color: var(--text-color);
                             text-decoration: none;
@@ -166,21 +176,17 @@
                             transition: all 0.2s;
                             background: transparent;
                         }
-                        body.design-tablet .header .info-icon:hover {
+                        body.design-tablet .header .header-actions .info-icon:hover {
                             background: var(--background-color);
                             transform: translateX(5px);
                         }
-                        body.design-tablet .header .info-icon svg {
+                        body.design-tablet .header .header-actions .info-icon svg {
                             width: 24px; height: 24px;
                             stroke-width: 2.5;
                         }
-                        body.design-tablet .header .info-icon::after {
+                        body.design-tablet .header .header-actions .info-icon::after {
                             content: attr(aria-label);
                             font-size: 16px;
-                        }
-                        /* Push first info-icon to bottom */
-                        body.design-tablet .header .info-icon:first-of-type {
-                            margin-top: auto;
                         }
 
                         /* Content Area */

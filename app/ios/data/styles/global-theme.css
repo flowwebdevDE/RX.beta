@@ -11,6 +11,18 @@
     --button-secondary-text: #000000;
     --font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
     --splash-bg: var(--background-color);
+    --app-shell-offset: 30px;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --card-shadow-pressed: 0 2px 10px rgba(0, 0, 0, 0.06);
+    --focus-ring: 0 0 0 4px var(--accent-bg);
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    background: #000000;
 }
 
 /* Dark Mode */
@@ -77,9 +89,65 @@ body {
     -webkit-user-select: none;
 }
 
+.app,
+#main-content {
+    isolation: isolate;
+}
+
 .card, .nav-card, .popup-card, .options-card {
     background-color: var(--card-background) !important;
     color: var(--text-color) !important;
+}
+
+.card {
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: var(--card-shadow);
+}
+
+body.dark-mode .card {
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+a,
+button,
+input,
+select,
+textarea,
+[role="button"] {
+    font: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring) !important;
+}
+
+button:disabled,
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.form-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.msg,
+.sighting,
+.result-title,
+.result-subtitle,
+.summary-box,
+.connection-card,
+#status,
+#table-wrap,
+#summary,
+.settings-input {
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 h1, h2, h3, h4, h5, h6, p, span, .ref, a {
@@ -106,6 +174,33 @@ input, select, textarea {
 body.dark-mode input, 
 body.dark-mode select {
     background: rgba(118, 118, 128, 0.24) !important;
+}
+
+.leaflet-container.map-dark-mode .leaflet-tile {
+    filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9);
+}
+
+.leaflet-container.map-dark-mode .leaflet-control,
+.leaflet-container.map-dark-mode .leaflet-popup-content-wrapper,
+.leaflet-container.map-dark-mode .leaflet-popup-tip {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+.header-actions {
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-actions .info-icon {
+    position: static;
+}
+
+.header-actions .info-icon::after {
+    content: none;
 }
 
 /* Spezifische Input Overrides für Dark Mode */
@@ -430,12 +525,43 @@ body.design-tablet .info-icon {
     background: var(--button-secondary-bg);
 }
 
-body.design-tablet a[href="settings.html"].info-icon {
+body.design-tablet .header-actions {
+    position: static !important;
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+}
+
+body.design-tablet .header-actions .info-icon {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 46px;
+    border-radius: 14px !important;
+    padding: 12px 14px !important;
+    justify-content: flex-start !important;
+    gap: 12px;
+    text-decoration: none;
+}
+
+body.design-tablet .header-actions .info-icon::after {
+    content: attr(aria-label);
+    color: var(--text-color);
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1;
+}
+
+body.design-tablet .header > a[href="settings.html"].info-icon {
     left: 40px !important;
     right: auto !important;
 }
 
-body.design-tablet a[href="changelog.html"].info-icon {
+body.design-tablet .header > a[href="changelog.html"].info-icon {
     left: 100px !important;
     right: auto !important;
 }

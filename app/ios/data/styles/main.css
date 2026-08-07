@@ -21,11 +21,13 @@
 
 .input-wrapper {
     position: relative;
+    min-width: 0;
 }
 
 input[type="text"],
 input[type="number"] {
     width: 100%;
+    min-width: 0;
     padding: 16px;
     font-size: 16px;
     border-radius: 16px;
@@ -138,6 +140,13 @@ input:focus {
     height: 350px; /* Feste Höhe für die Karte */
     border-radius: 24px !important;
     margin-top: 0;
+}
+
+.hint {
+    color: var(--secondary-text-color);
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0;
 }
 
 #map {
@@ -380,15 +389,36 @@ input:focus {
 .row-inputs {
     display: flex;
     gap: 12px;
+    min-width: 0;
 }
 .station-input-wrapper {
     flex-grow: 1;
+    min-width: 0;
     position: relative;
 }
 .track-input {
     width: 70px !important;
     text-align: center;
     flex-shrink: 0;
+}
+
+@media (max-width: 380px) {
+    .action-buttons {
+        gap: 10px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 14px 12px;
+    }
+
+    .track-input {
+        width: 58px !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* New: Platform Badge in Timeline */

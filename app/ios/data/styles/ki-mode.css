@@ -44,13 +44,15 @@ body {
 }
 
 #map {
-    height: 40%;
+    flex: 0 0 clamp(220px, 36%, 340px);
+    min-height: 220px;
+    height: auto;
     width: 100%;
     z-index: 1;
 }
 
 #chat-container {
-    flex-grow: 1; /* Füllt den restlichen Platz aus */
+    flex: 1 1 auto; /* Füllt den restlichen Platz aus */
     display: flex;
     flex-direction: column;
     background-color: var(--background-color);

@@ -1,5 +1,8 @@
 console.log("Weather widget loaded");
 
+let weatherPermissionBlocked = false;
+let weatherRefreshTimer = null;
+
 // --- Mapping Wettercodes zu Text ---
 const weatherText = code => ({
   0: 'Klarer Himmel',
@@ -123,7 +126,7 @@ async function loadWeather(lat, lon) {
     document.getElementById('weather-location').textContent = locationName;
 
   } catch (err) {
-    console.error(err);
+    console.warn("Wetter-Widget: Wetterdaten konnten nicht geladen werden", err);
     renderUnavailable("Verbindungsfehler");
   }
 }
@@ -135,10 +138,17 @@ function updateWeather() {
   if (window.getSettings) {
       const settings = window.getSettings();
       console.log("Wetter-Widget: Einstellungen geladen", settings);
+      if (!settings.weatherEnabled) {
+          return renderUnavailable("Wetter deaktiviert");
+      }
       if (!settings.locationEnabled) {
           console.log("Wetter-Widget: Standortzugriff in Einstellungen deaktiviert");
           return renderUnavailable("Standort deaktiviert");
       }
+  }
+
+  if (weatherPermissionBlocked) {
+      return renderUnavailable("Standort verweigert");
   }
 
   if (!navigator.geolocation) {
@@ -148,13 +158,26 @@ function updateWeather() {
 
   console.log("Wetter-Widget: Frage Standort ab...");
   navigator.geolocation.getCurrentPosition(
-    pos => { console.log("Wetter-Widget: Standort erhalten", pos.coords); loadWeather(pos.coords.latitude, pos.coords.longitude); },
-    err => { console.error("Wetter-Widget: Standort-Fehler", err); renderUnavailable("Standort verweigert"); }
+    pos => {
+      weatherPermissionBlocked = false;
+      console.log("Wetter-Widget: Standort erhalten", pos.coords);
+      loadWeather(pos.coords.latitude, pos.coords.longitude);
+    },
+    err => {
+      if (err && err.code === err.PERMISSION_DENIED) {
+        weatherPermissionBlocked = true;
+        console.info("Wetter-Widget: Standort wurde verweigert");
+        return renderUnavailable("Standort verweigert");
+      }
+      console.warn("Wetter-Widget: Standort konnte nicht ermittelt werden", err);
+      renderUnavailable("Standort nicht verfügbar");
+    },
+    { enableHighAccuracy: false, timeout: 8000, maximumAge: 10 * 60 * 1000 }
   );
 }
 
 // --- Auto-Start und wiederholtes Laden alle 20 Sekunden ---
 window.addEventListener("load", () => {
   updateWeather(); // einmalig beim Laden
-  setInterval(updateWeather, 20000); // alle 20 Sekunden
+  weatherRefreshTimer = setInterval(updateWeather, 5 * 60 * 1000); // alle 5 Minuten
 });

@@ -6,15 +6,20 @@
 const map = L.map('map', { zoomControl: false }).setView([50.490, 10.070], 6.5);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-let mapGlLayer;
+let baseTileLayer;
 function updateMapTheme(isDark) {
-    if (mapGlLayer) map.removeLayer(mapGlLayer);
-    mapGlLayer = L.maplibreGL({
-        style: isDark ? 'https://tiles.openfreemap.org/styles/dark' : 'https://tiles.openfreemap.org/styles/positron',
-    }).addTo(map);
+    if (!baseTileLayer) {
+        baseTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    }
+    map.getContainer().classList.toggle('map-dark-mode', Boolean(isDark));
 }
 updateMapTheme(document.body.classList.contains('dark-mode'));
 window.addEventListener('rx-settings-changed', (e) => updateMapTheme(e.detail.darkMode));
+window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 250));
+window.addEventListener('resize', () => map.invalidateSize());
 
 const routeLayer = L.layerGroup().addTo(map);
 const stationLayer = L.layerGroup().addTo(map);

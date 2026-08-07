@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Rail Explorer</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="data/styles/dashboard.css">
-  <link rel="stylesheet" href="data/styles/wetter.css">
-  <link rel="stylesheet" href="data/styles/global-theme.css">
-  <script src="data/scripts/wetter/wetter.js"></script>
+  <link rel="stylesheet" href="data/styles/dashboard.css?v=3.5">
+  <link rel="stylesheet" href="data/styles/wetter.css?v=3.5">
+  <link rel="stylesheet" href="data/styles/global-theme.css?v=3.5">
+  <script src="data/scripts/wetter/wetter.js?v=3.5"></script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="theme-color" content="#000000">
@@ -52,6 +52,114 @@
     .search-results {
         flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
     }
+    .search-section-label {
+        padding: 0 5px;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--secondary-text-color);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .search-result-card {
+        flex-direction: row;
+        align-items: center;
+        padding: 15px;
+        min-height: auto;
+        margin-bottom: 10px;
+        text-align: left;
+        cursor: pointer;
+    }
+    .search-result-icon {
+        margin: 0 15px 0 0;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        background: var(--button-secondary-bg);
+        color: var(--text-color);
+    }
+    .search-result-icon.accent {
+        background: var(--accent-bg);
+        color: var(--accent-color);
+    }
+    .search-result-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 650;
+        line-height: 1.25;
+    }
+    .search-result-desc {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: var(--secondary-text-color) !important;
+        line-height: 1.25;
+    }
+    .search-separator {
+        height: 1px;
+        background: var(--border-color);
+        margin: 5px 10px;
+        opacity: 0.5;
+    }
+
+    .splash-screen {
+        position: fixed;
+        inset: 0;
+        background: var(--splash-bg, var(--background-color));
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease;
+    }
+    .splash-logo {
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .splash-title {
+        font-size: 24px;
+        margin-bottom: 30px;
+        color: var(--text-color);
+        font-weight: 700;
+    }
+    .splash-progress-track {
+        width: 200px;
+        height: 4px;
+        background: rgba(128,128,128,0.2);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    #splash-progress {
+        width: 0%;
+        height: 100%;
+        background: var(--accent-color);
+        transition: width 0.8s linear;
+    }
+    #splash-greeting {
+        margin-top: 20px;
+        color: var(--accent-color);
+        font-weight: 500;
+        min-height: 20px;
+    }
+
+    .camera-launch-btn {
+        width: 100%;
+        margin-top: 20px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 18px;
+        font-size: 17px;
+        font-weight: 650;
+        color: var(--accent-color) !important;
+        border: none;
+        background: var(--card-background);
+        cursor: pointer;
+    }
 
     /* Control Center (Integrated) */
     .control-center-grid {
@@ -76,13 +184,13 @@
 </head>
 <body>
   <!-- Startscreen / Splash Screen -->
-  <div id="splash-screen" style="position: fixed; inset: 0; background: var(--splash-bg, var(--background-color)); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
-    <img src="data/images/logos/logo.png" alt="Logo" style="width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;">
-    <h1 style="font-size: 24px; margin-bottom: 30px; color: var(--text-color); font-weight: 700;">Rail Explorer +</h1>
-    <div style="width: 200px; height: 4px; background: rgba(128,128,128,0.2); border-radius: 2px; overflow: hidden;">
-      <div id="splash-progress" style="width: 0%; height: 100%; background: var(--accent-color); transition: width 0.8s linear;"></div>
+  <div id="splash-screen" class="splash-screen">
+    <img src="data/images/logos/logo.png" alt="Logo" class="splash-logo">
+    <h1 class="splash-title">Rail Explorer +</h1>
+    <div class="splash-progress-track">
+      <div id="splash-progress"></div>
     </div>
-    <p id="splash-greeting" style="margin-top: 20px; color: var(--accent-color); font-weight: 500; min-height: 20px;"></p>
+    <p id="splash-greeting"></p>
   </div>
 
   <!-- Global Search Overlay -->
@@ -115,12 +223,14 @@
     <header class="header">
       <h1>Rail Explorer +</h1>
       <p>Fahrzeiten berechnen &amp;<br>Betriebsstellen schnell finden</p>
-      <a href="settings.html" class="info-icon" aria-label="Einstellungen" style="right: 65px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      </a>
-      <a href="changelog.html" class="info-icon" aria-label="Informationen">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-      </a>
+      <div class="header-actions" aria-label="App-Aktionen">
+        <a href="settings.html" class="info-icon" aria-label="Einstellungen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </a>
+        <a href="changelog.html" class="info-icon" aria-label="Informationen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        </a>
+      </div>
     </header>
 
     <!-- Content -->
@@ -172,13 +282,13 @@
       </div>
 
       <!-- Kamera Button -->
-      <button id="camera-btn" class="card" style="width: 100%; margin-top: 20px; flex-direction: row; align-items: center; justify-content: center; gap: 12px; padding: 18px; font-size: 17px; font-weight: 600; color: var(--accent-color); border: none; background: var(--card-background); cursor: pointer;">
+      <button id="camera-btn" class="card camera-launch-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         Kamera öffnen
       </button>
     </main>
   </div>
-  <script src="data/scripts/theme-manager.js"></script>
+  <script src="data/scripts/theme-manager.js?v=3.5"></script>
   <script>
     window.addEventListener('rx-settings-changed', (e) => {
         const { weatherEnabled, locationEnabled } = e.detail;
@@ -346,7 +456,7 @@
                 // --- VORSCHLÄGE ---
                 const header = document.createElement('div');
                 header.textContent = 'Vorschläge';
-                header.style.cssText = 'padding: 0 5px; margin-bottom: 10px; font-size: 13px; font-weight: 600; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: 0.5px;';
+                header.className = 'search-section-label';
                 searchResults.appendChild(header);
 
                 const suggestions = [
@@ -376,11 +486,10 @@
 
                 suggestions.forEach(s => {
                     const div = document.createElement('div');
-                    div.className = 'card nav-card';
-                    div.style.cssText = 'flex-direction: row; align-items: center; padding: 15px; min-height: auto; margin-bottom: 10px;';
+                    div.className = 'card nav-card search-result-card';
                     div.innerHTML = `
-                        <div class="icon-box" style="margin:0 15px 0 0; width:36px; height:36px; background:var(--button-secondary-bg); color:var(--text-color);">${s.icon}</div>
-                        <div><h3 style="margin:0; font-size:16px;">${s.title}</h3><p style="margin:0; font-size:13px;">${s.desc}</p></div>
+                        <div class="icon-box search-result-icon">${s.icon}</div>
+                        <div><h3 class="search-result-title">${s.title}</h3><p class="search-result-desc">${s.desc}</p></div>
                     `;
                     div.onclick = s.action;
                     searchResults.appendChild(div);
@@ -393,16 +502,12 @@
             const filtered = cards.filter(c => c.title.toLowerCase().includes(lower) || c.desc.toLowerCase().includes(lower));
             filtered.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'card nav-card'; // Reuse styles
-                div.style.flexDirection = 'row';
-                div.style.alignItems = 'center';
-                div.style.padding = '15px';
-                div.style.minHeight = 'auto';
+                div.className = 'card nav-card search-result-card';
                 div.innerHTML = `
-                    <div class="icon-box" style="margin-bottom:0; margin-right:15px; width:36px; height:36px;">${item.icon}</div>
+                    <div class="icon-box search-result-icon accent">${item.icon}</div>
                     <div>
-                        <h3 style="margin:0; font-size:16px;">${item.title}</h3>
-                        <p style="margin:0; font-size:13px;">${item.desc}</p>
+                        <h3 class="search-result-title">${item.title}</h3>
+                        <p class="search-result-desc">${item.desc}</p>
                     </div>
                 `;
                 div.onclick = () => window.location.href = item.href;
@@ -414,15 +519,18 @@
                 const stations = stationData.filter(s => (s.tags.name || '').toLowerCase().startsWith(lower)).slice(0, 5);
                 if (stations.length > 0) {
                     // Trenner
-                    if (filtered.length > 0) searchResults.appendChild(document.createElement('hr'));
+                    if (filtered.length > 0) {
+                        const stationSep = document.createElement('div');
+                        stationSep.className = 'search-separator';
+                        searchResults.appendChild(stationSep);
+                    }
                     
                     stations.forEach(s => {
                         const div = document.createElement('div');
-                        div.className = 'card nav-card';
-                        div.style.cssText = 'flex-direction: row; align-items: center; padding: 15px; min-height: auto;';
+                        div.className = 'card nav-card search-result-card';
                         div.innerHTML = `
-                            <div class="icon-box" style="margin:0 15px 0 0; width:36px; height:36px; background:var(--accent-bg); color:var(--accent-color);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></svg></div>
-                            <div><h3 style="margin:0; font-size:16px;">${s.tags.name}</h3><p style="margin:0; font-size:13px;">Bahnhof • ${s.tags["railway:ref"] || ''}</p></div>
+                            <div class="icon-box search-result-icon accent"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></svg></div>
+                            <div><h3 class="search-result-title">${s.tags.name}</h3><p class="search-result-desc">Bahnhof • ${s.tags["railway:ref"] || ''}</p></div>
                         `;
                         // Direkt zum Finder springen mit Suchbegriff
                         div.onclick = () => window.location.href = `finder.html?q=${encodeURIComponent(s.tags.name)}`;
@@ -435,24 +543,20 @@
             if (filtered.length > 0) {
                 // Trenner wenn wir gemischte Ergebnisse haben
                 const sep = document.createElement('div');
-                sep.style.cssText = 'height: 1px; background: var(--border-color); margin: 5px 10px; opacity: 0.5;';
+                sep.className = 'search-separator';
                 searchResults.appendChild(sep);
             }
 
             const webDiv = document.createElement('div');
-            webDiv.className = 'card nav-card';
-            webDiv.style.flexDirection = 'row';
-            webDiv.style.alignItems = 'center';
-            webDiv.style.padding = '15px';
-            webDiv.style.minHeight = 'auto';
+            webDiv.className = 'card nav-card search-result-card';
             
             webDiv.innerHTML = `
-                <div class="icon-box" style="margin-bottom:0; margin-right:15px; width:36px; height:36px; background: var(--button-secondary-bg); color: var(--text-color);">
+                <div class="icon-box search-result-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </div>
                 <div>
-                    <h3 style="margin:0; font-size:16px;">Im Web suchen</h3>
-                    <p style="margin:0; font-size:13px;">"${term}" auf Google suchen</p>
+                    <h3 class="search-result-title">Im Web suchen</h3>
+                    <p class="search-result-desc">"${term}" auf Google suchen</p>
                 </div>
             `;
             webDiv.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(term)}`, '_system');

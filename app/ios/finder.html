@@ -7,8 +7,8 @@
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Betriebsstellensuche</title>
-    <link rel="stylesheet" href="data/styles/dashboard.css">
-    <link rel="stylesheet" href="data/styles/global-theme.css">
+    <link rel="stylesheet" href="data/styles/dashboard.css?v=3.5">
+    <link rel="stylesheet" href="data/styles/global-theme.css?v=3.5">
     <!-- Leaflet Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
@@ -130,6 +130,16 @@
         .chevron-icon {
             color: var(--secondary-text-color);
             opacity: 0.3;
+        }
+        .result-ref {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        .empty-result {
+            justify-content: center;
+            color: var(--secondary-text-color);
+            cursor: default;
+            text-align: center;
         }
 
         /* ===== POPUP ===== */
@@ -294,7 +304,7 @@
     </div>
 
     <div id="popup-overlay"></div>
-    <div id="popup">
+    <div id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-name">
         <div class="popup-header">
             <div style="flex: 1; padding-right: 10px;">
                 <h2 id="popup-name" style="margin: 0; font-size: 22px; line-height: 1.2;"></h2>
@@ -460,7 +470,7 @@
         function renderStations(filtered) {
             resultsList.innerHTML = '';
             if (filtered.length === 0) {
-                resultsList.innerHTML = '<li style="justify-content: center; color: var(--secondary-text-color); cursor: default;">Keine Bahnhöfe gefunden.</li>';
+                resultsList.innerHTML = '<li class="empty-result">Keine Bahnhöfe gefunden.</li>';
                 return;
             }
 
@@ -489,7 +499,7 @@
                             ${distBadge}
                         </div>
                         <div class="result-subtitle">
-                            ${ref ? `<span style="color: var(--text-color); font-weight: 500;">${ref}</span> • ` : ''}${operator}
+                            ${ref ? `<span class="result-ref">${ref}</span> • ` : ''}${operator}
                         </div>
                     </div>
                     <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -633,9 +643,18 @@
 
         function trapFocus(e) {
             if (e.key !== 'Tab') return;
-            // Im Popup gibt es nur ein fokussierbares Element: den Button
-            // Wenn Tab gedrückt wird, verhindern wir das Standardverhalten und der Fokus bleibt.
-            e.preventDefault();
+            const focusable = Array.from(popup.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'));
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
 
         // === Suchfunktion (Start-of-Input + Sortierung) ===
@@ -767,7 +786,7 @@
 
     </script>
     <script src="data/scripts/lock.js"></script>
-    <script src="data/scripts/theme-manager.js"></script>
+    <script src="data/scripts/theme-manager.js?v=3.5"></script>
 </body>
 
 </html>

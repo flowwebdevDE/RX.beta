@@ -60,12 +60,15 @@ function dijkstra(graph, startId, endId, trainVmax_kmh) {
 const map = L.map('map', { zoomControl: false }).setView([52.517, 13.388], 9.5);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-let mapGlLayer;
+let baseTileLayer;
 function updateMapTheme(isDark) {
-    if (mapGlLayer) map.removeLayer(mapGlLayer);
-    mapGlLayer = L.maplibreGL({
-        style: isDark ? 'https://tiles.openfreemap.org/styles/dark' : 'https://tiles.openfreemap.org/styles/positron',
-    }).addTo(map);
+    if (!baseTileLayer) {
+        baseTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    }
+    map.getContainer().classList.toggle('map-dark-mode', Boolean(isDark));
 }
 
 // Initial Theme Check & Listener
@@ -87,6 +90,7 @@ const viaInput = document.getElementById('via');
 const vmaxInput = document.getElementById('vmax');
 const calcBtn = document.getElementById('calc');
 const clearBtn = document.getElementById('clear');
+const resultsCard = document.getElementById('results-card');
 const summaryDiv = document.getElementById('summary');
 const tableWrap = document.getElementById('table-wrap');
 const fromList = document.getElementById('from-list');
@@ -94,6 +98,18 @@ const toList = document.getElementById('to-list');
 const viaList = document.getElementById('via-list');
 
 let selectedFrom = null, selectedTo = null, selectedVias = [];
+
+function showResultsCard() {
+  if (!resultsCard) return;
+  resultsCard.style.display = 'flex';
+  setTimeout(() => {
+    resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function hideResultsCard() {
+  if (resultsCard) resultsCard.style.display = 'none';
+}
 
 // ------------------------------------------------------
 // 🟩 Lokale JSON-basierte Bahnhofsdaten laden
@@ -324,6 +340,7 @@ clearBtn.addEventListener('click', () => {
   routeLayer.clearLayers();
   summaryDiv.textContent = 'Keine Route berechnet.';
   tableWrap.innerHTML = '';
+  hideResultsCard();
 });
 
 // ------------------------------------------------------
@@ -502,6 +519,7 @@ async function computeRoute(points, trainVmax_kmh) {
 calcBtn.addEventListener('click', async () => {
   // NEU: Prüfen, ob eine Internetverbindung besteht.
   if (!navigator.onLine) {
+    showResultsCard();
     summaryDiv.textContent = 'Keine Internetverbindung.';
     tableWrap.innerHTML = '<p class="hint">Die Routenberechnung erfordert eine aktive Internetverbindung, um auf die Overpass-API zuzugreifen.</p>';
     return;
@@ -512,6 +530,8 @@ calcBtn.addEventListener('click', async () => {
       alert('Bitte Start- und Zielbahnhof wählen.');
       return;
     }
+
+    showResultsCard();
 
     const viaPoints = selectedVias;
     const points = [selectedFrom, ...viaPoints, selectedTo];
